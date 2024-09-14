@@ -1,0 +1,82 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run --machine --start-paused -d emulator-5554 --devtools-server-address http://127.0.0.1:9100/ --target /Users/apple/Desktop/Mywork/ser_app/lib/main.dart
+
+## exception
+
+StateError: Bad state: StreamSink is closed
+
+```
+#0      _StreamSinkImpl.add (dart:_http/http_impl.dart:912:7)
+#1      _WebSocketImpl.add (dart:_http/websocket_impl.dart:1222:11)
+#2      VmService._call.<anonymous closure> (package:vm_service/src/vm_service.dart:1785:22)
+#3      VmService._call (package:vm_service/src/vm_service.dart:1787:8)
+#4      VmService.streamListen (package:vm_service/src/vm_service.dart:1710:7)
+#5      FlutterVmService.findExtensionIsolate (package:flutter_tools/src/vmservice.dart:982:21)
+#6      FlutterResidentDevtoolsHandler._waitForExtensionsForDevice (package:flutter_tools/src/resident_devtools_handler.dart:234:38)
+#7      FlutterResidentDevtoolsHandler._devicesWithExtensions (package:flutter_tools/src/resident_devtools_handler.dart:226:59)
+#8      FlutterResidentDevtoolsHandler.hotRestart (package:flutter_tools/src/resident_devtools_handler.dart:302:61)
+#9      HotRunner.restart (package:flutter_tools/src/run_hot.dart:793:42)
+<asynchronous suspension>
+#10     _AsyncCompleter.complete (dart:async/future_impl.dart:41:3)
+<asynchronous suspension>
+#11     Domain.handleCommand.<anonymous closure> (package:flutter_tools/src/commands/daemon.dart:297:22)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[!] Flutter (Channel beta, 3.23.0-0.1.pre, on macOS 14.5 23F79 darwin-arm64, locale en-EG)
+    • Flutter version 3.23.0-0.1.pre on channel beta at /Users/apple/Desktop/flutter
+    ! Warning: `dart` on your path resolves to /opt/homebrew/Cellar/dart/3.2.4/libexec/bin/dart, which is not inside your current Flutter SDK checkout at /Users/apple/Desktop/flutter. Consider adding /Users/apple/Desktop/flutter/bin to the front of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 2feea7a407 (3 months ago), 2024-06-06 10:19:10 +0700
+    • Engine revision bb10c54666
+    • Dart version 3.5.0 (build 3.5.0-180.3.beta)
+    • DevTools version 2.36.0
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update checks and upgrades.
+
+[!] Android toolchain - develop for Android devices (Android SDK version 34.0.0)
+    • Android SDK at /Users/apple/Library/Android/sdk
+    • Platform android-34, build-tools 34.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 17.0.9+0-17.0.9b1087.7-11185874)
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/docs/get-started/install/macos#android-setup for more details.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 15.4)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 15F31d
+    • CocoaPods version 1.15.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2023.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.9+0-17.0.9b1087.7-11185874)
+
+[✓] VS Code (version 1.81.0)
+    • VS Code at /Users/apple/Downloads/Visual Studio Code.app/Contents
+    • Flutter extension version 3.97.20240902
+
+[✓] Connected device (4 available)
+    • sdk gphone64 arm64 (mobile)     • emulator-5554         • android-arm    • Android null (API null)
+    • macOS (desktop)                 • macos                 • darwin-arm64   • macOS 14.5 23F79 darwin-arm64
+    • Mac Designed for iPad (desktop) • mac-designed-for-ipad • darwin         • macOS 14.5 23F79 darwin-arm64
+    • Chrome (web)                    • chrome                • web-javascript • Google Chrome 128.0.6613.138
+
+[✓] Network resources
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.
+```

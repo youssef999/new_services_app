@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "978854599781",
+    "project_id": "servicesapp2024",
+    "storage_bucket": "servicesapp2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978854599781:android:a2a098eea34adaf0497a8c",
+        "android_client_info": {
+          "package_name": "com.appNeed.services"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdoJ6CCJlPfs1V4--1b5s2k_d1KSSadcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -20,18 +20,16 @@ import '../../Home/models/cat.dart';
 import '../views/verfied_email.dart';
 
 class AuthController extends GetxController {
-  
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController checkPassController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController roleId = TextEditingController();
   TextEditingController empCatController = TextEditingController();
   TextEditingController priceController = TextEditingController();
 
-  TextEditingController detailsController=TextEditingController();
-
-
+  TextEditingController detailsController = TextEditingController();
 
   bool loading = false;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -48,11 +46,8 @@ class AuthController extends GetxController {
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
 
-
-
   Future<void> getLocationPermission() async {
-    _permissionGranted =
-    await location.requestPermission();
+    _permissionGranted = await location.requestPermission();
     print("PER====" + _permissionGranted.toString());
     if (_permissionGranted == PermissionStatus.granted) {
       await location.requestPermission();
@@ -60,7 +55,6 @@ class AuthController extends GetxController {
     }
   }
 
- 
   User? user = FirebaseAuth.instance.currentUser;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -70,12 +64,7 @@ class AuthController extends GetxController {
   final List<String> countryNames = [];
   final List<String> cityNames = [];
 
-
-  
-
   String selectedItem = 'تنظيف';
-
- 
 
   XFile? pickedImageXFile;
 
@@ -150,20 +139,13 @@ class AuthController extends GetxController {
     update();
   }
 
-
-
-
- 
-
-
-
   String token = '';
 
   getDeviceToken() async {
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-    await _firebaseMessaging.requestPermission();
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    await firebaseMessaging.requestPermission();
     // Get the device token
-    token = (await _firebaseMessaging.getToken())!;
+    token = (await firebaseMessaging.getToken())!;
   }
 
   addTokenToFirebase() async {
@@ -176,11 +158,11 @@ class AuthController extends GetxController {
       result += chars[random.nextInt(chars.length)];
     }
 
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-    await _firebaseMessaging.requestPermission();
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    await firebaseMessaging.requestPermission();
 
     // Get the device token
-    String? token = await _firebaseMessaging.getToken();
+    String? token = await firebaseMessaging.getToken();
     await FirebaseFirestore.instance.collection('tokens').doc(result).set({
       'token': token!,
     }).then((value) {
@@ -247,32 +229,25 @@ class AuthController extends GetxController {
     }
   }
 
-
-  
-
-
   userLogin(String roleId) async {
-    isLoading=true;
+    isLoading = true;
     update();
-    if (emailController.text.length > 2
-        && passController.text.length > 5) {
+    if (emailController.text.length > 2 && passController.text.length > 5) {
       try {
         final cred = await _auth.signInWithEmailAndPassword(
-            email:
-            emailController.text,
-            password: passController.text);
+            email: emailController.text, password: passController.text);
         Future.delayed(const Duration(seconds: 1)).then((value) {
-            print("DONE");
-            box.write('email', emailController.text);
-            box.write('roleId',roleId);
-            loading = false;
-            CustomLoading.cancelLoading();
-            update();
-            Get.offAll(const MainHome());
-         // print('Received data: $value');
+          print("DONE");
+          box.write('email', emailController.text);
+          box.write('roleId', roleId);
+          loading = false;
+          CustomLoading.cancelLoading();
+          update();
+          Get.offAll(const MainHome());
+          // print('Received data: $value');
         }).catchError((error) {
-  CustomLoading.cancelLoading();
-           appMessage(text: 'خطا في تسجيل الدخول', fail: true);
+          CustomLoading.cancelLoading();
+          appMessage(text: 'خطا في تسجيل الدخول', fail: true);
         });
       } catch (e) {
         CustomLoading.cancelLoading();
@@ -280,21 +255,21 @@ class AuthController extends GetxController {
         update();
         String error = '';
         print("E====$e");
-        if (e.toString()
-            .contains('The supplied auth credential is incorrect, malformed or has expired.')) {
-         error = 'wrongData'.tr;
+        if (e.toString().contains(
+            'The supplied auth credential is incorrect, malformed or has expired.')) {
+          error = 'wrongData'.tr;
           appMessage(text: error, fail: true);
-          
-        } else if (e.toString().contains('The supplied auth credential is incorrect, malformed or has expired.')) {
+        } else if (e.toString().contains(
+            'The supplied auth credential is incorrect, malformed or has expired.')) {
           error = 'wrongMail'.tr;
-           appMessage(text: error, fail: true);
+          appMessage(text: error, fail: true);
         } else {
           error = 'wrongData'.tr;
-           appMessage(text: error, fail: true);
+          appMessage(text: error, fail: true);
         }
       }
     } else {
-     // CustomLoading.cancelLoading();
+      // CustomLoading.cancelLoading();
       if (emailController.text.contains('@') == false) {
         appMessage(text: 'wrongMail'.tr, fail: false);
       }
@@ -302,40 +277,33 @@ class AuthController extends GetxController {
         appMessage(text: 'wrongPass'.tr, fail: false);
       }
     }
-    isLoading=false;
+    isLoading = false;
     update();
   }
 
-
- register(String roleId)async{
- final box=GetStorage();
-    try{
- await _auth
+  register(String roleId, String email, String password, String phone) async {
+    final box = GetStorage();
+    try {
+      await _auth
           .createUserWithEmailAndPassword(
-        email: 'test3@gmail.com',
-        //emailController.text,
-        password: '123456'
-        //passController.text,
-      ).then((user) async {
-
-        if(roleId=='0'){
- 
-           addNewUser();
-        
-        }
-        
-        else{
-
+              email: email,
+              //emailController.text,
+              password: password
+              //passController.text,
+              )
+          .then((user) async {
+        if (roleId == '0') {
+          addNewUser(user, phone);
+        } else {
           addNewWorker();
-
         }
-        
-    box.write('email', emailController.text);
-    appMessage(text: 'تم التسجيل بنجاح', fail: false);
-    Get.offAll( const MainHome());
+
+        box.write('email', emailController.text);
+        appMessage(text: 'تم التسجيل بنجاح', fail: false);
+        Get.offAll(const MainHome());
       });
-    }catch(e){
-        print("EEE=="+e.toString());
+    } catch (e) {
+      print("EEE==" + e.toString());
     }
   }
 
@@ -344,32 +312,30 @@ class AuthController extends GetxController {
     print("SENT....");
   }
 
- List<Cat>catList=[];
- List<String>catListNames=[];
-
+  List<Cat> catList = [];
+  List<String> catListNames = [];
 
   Future<void> getCats() async {
     try {
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('cat').get();
+          await FirebaseFirestore.instance.collection('cat').get();
 
       catList = querySnapshot.docs.map((DocumentSnapshot doc) {
         return Cat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
       update();
 
-      for(int i=0;i<catList.length;i++){
+      for (int i = 0; i < catList.length; i++) {
         catListNames.add(catList[i].name);
-         update();
+        update();
       }
       print("Cats loaded: ${catList.length} ads found.");
     } catch (e) {
       print("Error fetching ads: $e");
     }
-  
-}
+  }
 
-  addNewUser() async {
+  addNewUser(UserCredential user, String phone) async {
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
@@ -379,11 +345,15 @@ class AuthController extends GetxController {
       result += chars[random.nextInt(chars.length)];
     }
     try {
-      await FirebaseFirestore.instance.collection('users').doc(result).set({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.user?.uid)
+          .set({
         'name': nameController.text,
         'email': emailController.text,
+        'phone': phone,
         'id': result,
-        'image':''
+        'image': ''
       }).then((value) {
         update();
         // ignore: avoid_print
@@ -391,7 +361,7 @@ class AuthController extends GetxController {
         appMessage(text: 'welcome'.tr, fail: false);
         box.write('email', emailController.text);
         box.write('name', nameController.text);
-         box.write('roleId','0');
+        box.write('roleId', '0');
       });
     } catch (e) {
       update();
@@ -400,7 +370,7 @@ class AuthController extends GetxController {
     }
   }
 
-   addNewWorker() async {
+  addNewWorker() async {
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
@@ -410,23 +380,28 @@ class AuthController extends GetxController {
       result += chars[random.nextInt(chars.length)];
     }
     try {
-      await FirebaseFirestore.instance.collection('serviceProviders').doc(result).set({
+      await FirebaseFirestore.instance
+          .collection('serviceProviders')
+          .doc(result)
+          .set({
         'name': nameController.text,
         'email': emailController.text,
-        'cat':'',
-        'details':"",
-        'price':"",
+        'cat': '',
+        'details': "",
+        'price': "",
         'id': result,
-        "lat":"",
-        "lng":"",
-        'image':''
+        "lat": "",
+        "lng": "",
+        'image': '',
+        'rating': 0,
+        'ratingCount': 0
       }).then((value) {
         update();
         print("DONE");
         appMessage(text: 'welcome'.tr, fail: false);
         box.write('email', emailController.text);
         box.write('name', nameController.text);
-        box.write('roleId','1');
+        box.write('roleId', '1');
       });
     } catch (e) {
       update();
@@ -434,7 +409,6 @@ class AuthController extends GetxController {
       appMessage(text: "error".tr, fail: true);
     }
   }
-
 
   Future uploadProfileImageToFirebaseStorage(List<XFile> images) async {
     for (int i = 0; i < images.length; i++) {

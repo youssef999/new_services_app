@@ -8,17 +8,16 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 buildBottomNavigationMenu(context, bottomNavBarController, int index) {
+  final box = GetStorage();
+  String roleId = box.read('roleId') ?? '1';
 
-  final box=GetStorage();
-  String roleId=box.read('roleId')??'1';
-
-  if(roleId=='1'){
+  if (roleId == '1') {
     return BottomAppBar(
       elevation: 3,
       color: kBottomBarColor,
       //Colors.blue[400]!.withOpacity( 0.4),
       child: Container(
-        height: 64,
+        height: 80,
         // margin: const EdgeInsets.only(
         //   left: 24 * 0.7,
         //   right: 24 * 0.7,
@@ -32,22 +31,20 @@ buildBottomNavigationMenu(context, bottomNavBarController, int index) {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-      //back
-       bottomItemWidget(index,'assets/images/back.png',
+            //back
+            bottomItemWidget(index, 'assets/images/back.png',
                 bottomNavBarController, 0, AppColors.primary),
 
-            bottomItemWidget(index,'assets/images/home.png', bottomNavBarController, 1,
-                AppColors.primary),
+            bottomItemWidget(index, 'assets/images/home.png',
+                bottomNavBarController, 1, AppColors.primary),
 
-           bottomItemWidget(index,'assets/images/ref2.png', bottomNavBarController, 2,
-               AppColors.primary),
-
+            bottomItemWidget(index, 'assets/images/ref2.png',
+                bottomNavBarController, 2, AppColors.primary),
           ],
         ),
       ),
     );
-  }else{
-
+  } else {
     return BottomAppBar(
       elevation: 0,
       color: AppColors.primary,
@@ -65,46 +62,38 @@ buildBottomNavigationMenu(context, bottomNavBarController, int index) {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            bottomItemWidget(index, 'assets/icon/home.svg',
+                bottomNavBarController, 0, AppColors.primary),
 
-            bottomItemWidget(index,'assets/icon/home.svg', bottomNavBarController, 0,
-                AppColors.primary),
-
-            bottomItemWidget(index,'assets/icon/messagetext.svg',
+            bottomItemWidget(index, 'assets/icon/messagetext.svg',
                 bottomNavBarController, 1, AppColors.primary),
 
-            bottomItemWidget(index,'assets/icon/cross.svg', bottomNavBarController, 2,
-                AppColors.primary),
+            bottomItemWidget(index, 'assets/icon/cross.svg',
+                bottomNavBarController, 2, AppColors.primary),
 
+            bottomItemWidget(index, 'assets/icon/details.svg',
+                bottomNavBarController, 3, AppColors.primary),
 
+            bottomItemWidget(index, 'assets/icon/my_wallet.svg',
+                bottomNavBarController, 4, AppColors.primary),
 
-            bottomItemWidget(index,'assets/icon/details.svg', bottomNavBarController, 3,
-                AppColors.primary),
-
-            bottomItemWidget(index,'assets/icon/my_wallet.svg', bottomNavBarController, 4,
-                AppColors.primary),
-
-bottomItemWidget(index,'assets/icon/profile.svg', bottomNavBarController, 5,
-    AppColors.primary.withOpacity(0.1)),
-
+            bottomItemWidget(index, 'assets/icon/profile.svg',
+                bottomNavBarController, 5, AppColors.primary.withOpacity(0.1)),
 
             // bottomItemWidget('assets/icon/seetings.webp', bottomNavBarController, 5,
             //     AppColors.whiteColor.withOpacity(0.1)),
 
             // bottomItemWidget('assets/icon/my_gift.svg', bottomNavBarController, 3,
             //     AppColors.transparent),
-
           ],
         ),
       ),
     );
-
-
-
   }
 }
 
 bottomItemWidget(
-    int index,
+  int index,
   var icon,
   bottomNavBarController,
   page,
@@ -116,23 +105,17 @@ bottomItemWidget(
         bottomNavBarController.selectedIndex.value = page;
         print(bottomNavBarController.selectedIndex.value);
 
-        if(index==1){
-
-          if(page==0){
+        if (index == 1) {
+          if (page == 0) {
             print("0000");
             Get.back();
           }
 
-          if(page==1){
-           // Get.offAll(RootView());
+          if (page == 1) {
+            // Get.offAll(RootView());
           }
 
-          if(page==2){
-
-          }
-
-
-
+          if (page == 2) {}
         }
       },
       child: CircleAvatar(
@@ -141,8 +124,8 @@ bottomItemWidget(
         child: Image.asset(
           icon,
           color: bottomNavBarController.selectedIndex.value == page
-              ?Colors.white
-          //kPrimaryColor
+              ? Colors.white
+              //kPrimaryColor
               : Colors.white,
           height: 24,
         ),

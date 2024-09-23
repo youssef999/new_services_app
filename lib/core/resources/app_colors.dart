@@ -3,21 +3,21 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-
-  static Color primary = const Color(0xffc5baf3);
+  // static Color primary = const Color(0xff8775F3);
+  static Color primary = const Color(0xff474AC4);
+  static Color grey = const Color(0xffC0C2CB);
   static Color backgroundColor = Colors.white;
-   static Color DropDownColor = Colors.grey[200]!;
+  static Color DropDownColor = Colors.grey[200]!;
   static Color imageCardColor = Colors.grey[200]!;
-  static Color mainTextColor =Colors.white;
-  static Color secondaryTextColor =Colors.black;
-    static Color greyTextColor =Colors.grey;
+  static Color mainTextColor = Colors.white;
+  static Color secondaryTextColor = Colors.black;
+  static Color greyTextColor = Colors.grey;
   static Color cardColor = Colors.white;
   static Color appBarColor = const Color(0xff9b9be8);
   static Color iconColor = const Color(0xffb4a7d6);
 
   static Color inActiveIconColor = Colors.grey[400]!;
-    static Color activeIconColor= Colors.white;
-
+  static Color activeIconColor = Colors.white;
 }
 //     checkTheme(){
 //     final box=GetStorage();

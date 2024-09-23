@@ -73,17 +73,18 @@ import 'package:freelancerApp/core/resources/app_styles.dart';
 import 'package:freelancerApp/core/resources/colors.dart';
 import 'package:get/get.dart';
 
-PreferredSizeWidget CustomAppBar(
-  String text, BuildContext context) {
-
+PreferredSizeWidget CustomAppBar(String text, BuildContext context) {
   return AppBar(
     elevation: 0.1,
     centerTitle: true,
     toolbarHeight: 60,
-    backgroundColor:AppColors.appBarColor,
+    backgroundColor: AppColors.primary,
     title: Padding(
       padding: const EdgeInsets.all(7),
-      child:Text(text,style: Styles.appBarTextStyle,),
+      child: Text(
+        text,
+        style: Styles.appBarTextStyle,
       ),
+    ),
   );
 }

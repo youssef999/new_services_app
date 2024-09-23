@@ -20,82 +20,77 @@ import '../../../core/resources/app_styles.dart';
 import 'register_view2.dart';
 
 class SignupView extends StatefulWidget {
-
   String roleId;
 
- 
- SignupView({super.key,required this.roleId});
+  SignupView({super.key, required this.roleId});
 
   @override
   State<SignupView> createState() => _SignupViewState();
 }
 
 class _SignupViewState extends State<SignupView> {
-
-
-AuthController controller =Get.put(AuthController());
- @override
+  AuthController controller = Get.put(AuthController());
+  @override
   void initState() {
-   controller.getCats();
+    controller.getCats();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
-
- if(widget.roleId=='0'){
-   return UserRegisterView(controller: controller,);
-
- }
- else{
-   return const WorkerRegisterView();
- 
- }
+    if (widget.roleId == '0') {
+      return UserRegisterView(
+        controller: controller,
+      );
+    } else {
+      return const WorkerRegisterView();
+    }
   }
 }
 
-
 class UserRegisterView extends StatelessWidget {
-
   AuthController controller;
-  UserRegisterView({super.key,required this.controller});
+  UserRegisterView({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-      AuthController controller = Get.put(AuthController());
-     controller.loginFormKey = GlobalKey<FormState>();
+    AuthController controller = Get.put(AuthController());
+    controller.loginFormKey = GlobalKey<FormState>();
 
-
-  return  Scaffold(
-  
-      appBar:CustomAppBar('', context),
-      body:
-      
-      
-       GetBuilder<AuthController>(
-         builder: (_) {
-           return Form(
-            key: controller.loginFormKey,
-            child: Container(
-              color:Colors.white,
-              //decoration: AppDecoration,
-              child: ListView(
+    return Scaffold(
+      body: GetBuilder<AuthController>(builder: (_) {
+        return Form(
+          key: controller.loginFormKey,
+          child: Container(
+            color: Colors.white,
+            //decoration: AppDecoration,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                
-                 
                   Column(children: [
                     Image.asset(
-                        AppAssets.logo,
-                        fit: BoxFit.fill,
-                        height: 160,
-                      ),
-           
-                      // Image.asset(
-                      //   'assets/images/Text.png',
-                      //   fit: BoxFit.fill,
-                      // ),
-                    const SizedBox(height: 11,),
+                      AppAssets.logo,
+                      fit: BoxFit.fill,
+                      width: 300,
+                    ),
+                    Text(
+                      'أهلا بك  في دليل اليمن',
+                      style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'أطلب خدمتك من اي مكان',
+                      style: TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -108,16 +103,6 @@ class UserRegisterView extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomTextFormField(
-                            hint: 'email'.tr,
-                            obs: false,
-                            color:AppColors.primary,
-                            icon: Icons.email,
-                            validateMessage: 'wrongEmail'.tr,
-                            controller: controller.emailController),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                         CustomTextFormField(
                             hint: 'الاسم'.tr,
                             obs: false,
                             color: AppColors.primary,
@@ -126,7 +111,16 @@ class UserRegisterView extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                      
+                        CustomTextFormField(
+                            hint: 'email'.tr,
+                            obs: false,
+                            color: AppColors.primary,
+                            icon: Icons.email,
+                            validateMessage: 'wrongEmail'.tr,
+                            controller: controller.emailController),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         CustomTextFormField(
                             hint: 'password'.tr,
                             obs: true,
@@ -134,58 +128,65 @@ class UserRegisterView extends StatelessWidget {
                             validateMessage: 'wrongPass'.tr,
                             obx: true,
                             controller: controller.passController),
-                             const SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
-                       
+                        CustomTextFormField(
+                            hint: 'الهاتف'.tr,
+                            obs: true,
+                            color: AppColors.primary,
+                            validateMessage: 'رقم الهاتف غير صحيح'.tr,
+                            obx: true,
+                            controller: controller.phoneController),
                         const SizedBox(
-                          height: 3,
+                          height: 20,
                         ),
-                          CustomButton(text: 'انشاء حساب',
-                           onPressed:(){
-           
-                           }),
-                      
-                        const SizedBox(height: 6,),
+                        CustomButton(
+                            text: 'انشاء حساب',
+                            onPressed: () {
+                              controller.register(
+                                '0',
+                                controller.emailController.text,
+                                controller.passController.text,
+                                controller.phoneController.text,
+                              );
+                            }),
+                        const SizedBox(
+                          height: 6,
+                        ),
                         const Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             SizedBox(
                               width: 200,
                             ),
-                         
                           ],
                         ),
-                        const SizedBox(
-                          height: 3
-                        ),
+                        const SizedBox(height: 3),
                         Center(
                             child: Text(
                           'or'.tr,
                           style:
-                               TextStyle(color: AppColors.primary, fontSize: 20),
+                              TextStyle(color: AppColors.primary, fontSize: 20),
                         )),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "تمتلك حساب بالفعل".tr,
-                              style: TextStyle(
-                                  fontSize: 15, color: kPrimaryColor),
+                              "لديك حساب بالفعل؟".tr,
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.black),
                             ),
                             TextButton(
                               onPressed: () {
-                                 controller.register(
-                              '0'
-                            );
-                                
+                                Get.back();
                               },
                               child: Text(
                                 'تسجيل حساب'.tr,
-                                style:  const TextStyle(
+                                style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.black),
+                                    color: AppColors.primary),
                               ),
                             )
                           ],
@@ -196,24 +197,33 @@ class UserRegisterView extends StatelessWidget {
                 ],
               ),
             ),
-                 );
-         }
-       ),
+          ),
+        );
+      }),
     );
   }
 }
 
+class WorkerRegisterView extends StatefulWidget {
+  const WorkerRegisterView({
+    super.key,
+  });
 
+  @override
+  State<WorkerRegisterView> createState() => _WorkerRegisterViewState();
+}
 
-class WorkerRegisterView extends StatelessWidget {
-  
+class _WorkerRegisterViewState extends State<WorkerRegisterView> {
+  AuthController controller = Get.put(AuthController());
 
-  const WorkerRegisterView({super.key,});
+  @override
+  void initState() {
+    controller.loginFormKey = GlobalKey<FormState>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    AuthController controller = Get.put(AuthController());
-    controller.loginFormKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: CustomAppBar('', context),
       body: GetBuilder<AuthController>(
@@ -259,42 +269,42 @@ class WorkerRegisterView extends StatelessWidget {
                           children: [
                             Text(
                               "اختر القسم ",
-                              style: TextStyle(color: AppColors.secondaryTextColor),
+                              style: TextStyle(
+                                  color: AppColors.secondaryTextColor),
                             ),
                           ],
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: AppColors.DropDownColor,
-                          ),
-                         // child: Obx(() => 
-              
-                         child: GetBuilder<AuthController>(
-                           builder: (_) {
-                             return DropdownButton<String>(
-                                    underline: const SizedBox.shrink(),
-                                    value: controller.selectedItem,
-                                    onChanged: (newValue) {
-                                      //controller.changeCatValue(newValue!);
-                                    },
-                                    items: controller.catListNames.map((String item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            item,
-                                            style: TextStyle(color: AppColors.greyTextColor),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.DropDownColor,
+                            ),
+                            // child: Obx(() =>
+
+                            child: GetBuilder<AuthController>(builder: (_) {
+                              return DropdownButton<String>(
+                                underline: const SizedBox.shrink(),
+                                value: controller.selectedItem,
+                                onChanged: (newValue) {
+                                  controller.changeCatValue(newValue!);
+                                },
+                                items:
+                                    controller.catListNames.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        item,
+                                        style: TextStyle(
+                                            color: AppColors.greyTextColor),
+                                      ),
+                                    ),
                                   );
-                           }
-                         )),
-                       
+                                }).toList(),
+                              );
+                            })),
                         const SizedBox(height: 20),
                         CustomTextFormField(
                           hint: 'password'.tr,
@@ -327,7 +337,10 @@ class WorkerRegisterView extends StatelessWidget {
                           text: 'انشاء حساب',
                           onPressed: () {
                             controller.register(
-                              '1'
+                              '1',
+                              controller.emailController.text,
+                              controller.passController.text,
+                              controller.phoneController.text,
                             );
                           },
                         ),
@@ -335,7 +348,8 @@ class WorkerRegisterView extends StatelessWidget {
                         Center(
                           child: Text(
                             'or'.tr,
-                            style: TextStyle(color: AppColors.primary, fontSize: 20),
+                            style: TextStyle(
+                                color: AppColors.primary, fontSize: 20),
                           ),
                         ),
                         Row(
@@ -343,7 +357,8 @@ class WorkerRegisterView extends StatelessWidget {
                           children: [
                             Text(
                               "تمتلك حساب بالفعل".tr,
-                              style: TextStyle(fontSize: 15, color: kPrimaryColor),
+                              style:
+                                  TextStyle(fontSize: 15, color: kPrimaryColor),
                             ),
                             TextButton(
                               onPressed: () {
@@ -352,7 +367,9 @@ class WorkerRegisterView extends StatelessWidget {
                               child: Text(
                                 'تسجيل حساب'.tr,
                                 style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
                               ),
                             ),
                           ],

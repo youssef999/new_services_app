@@ -1,90 +1,95 @@
-
-
-
-
-
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/resources/app_colors.dart';
 import 'package:freelancerApp/features/Home/views/home_view.dart';
 import 'package:freelancerApp/features/workers_part/views/workers_home.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:iconly/iconly.dart';
 import '../../Tasks/views/user_tasks_view.dart';
 import '../../Work/views/add_work.dart';
 import '../../settings/views/settings_view.dart';
 import '../../workers_part/views/worker_taks.dart';
-
-
 
 class MainHome extends StatefulWidget {
   const MainHome({super.key});
 
   @override
   State createState() => _State();
-
 }
 
 List<Widget> fragmentScreens = [
- 
   const HomeView(),
   const AddWork(),
   const UserTasksView(),
   const SettingsView(),
-  
 ];
 
-List<TabItem<dynamic>>iconsList=[
-
-            const TabItem(icon: Icons.home,title: '',),
-            const TabItem(icon: Icons.add,title: ''),
-            const TabItem(icon: Icons.list,title: ''),
-            const TabItem(icon: Icons.settings,title: '',),
+List<TabItem<dynamic>> iconsList = [
+  const TabItem(
+    icon: IconlyBold.home,
+    title: '',
+  ),
+  const TabItem(icon: IconlyBold.plus, title: ''),
+  const TabItem(icon: IconlyBold.category, title: ''),
+  const TabItem(
+    icon: IconlyBold.setting,
+    title: '',
+  ),
 ];
 
 int indexNumber = 0;
 
 class _State extends State<MainHome> {
-
   @override
   void initState() {
+    final box = GetStorage();
+    String roleId = box.read('roleId') ?? '0';
+    print("ROLEID====" + roleId);
 
-    final box=GetStorage();
-    String roleId=box.read('roleId')??'0';
-    print("ROLEID===="+roleId);
+    if (roleId == '0') {
+      fragmentScreens = [
+        const HomeView(),
+        const AddWork(),
+        const UserTasksView(),
+        const SettingsView(),
+      ];
 
-    if(roleId=='0'){
-       fragmentScreens = [
-  const HomeView(),
-  const AddWork(),
-  const UserTasksView(),
-  const SettingsView(),
-];
-
-iconsList=[
-  
-            const TabItem(icon: Icons.home,title: '',),
-            const TabItem(icon: Icons.add,title: ''),
-            const TabItem(icon: Icons.list,title: ''),
-            const TabItem(icon: Icons.settings,title: '',),
-];
-    }else{
-
-  fragmentScreens = [
-  const WorkersHome(),
-  const WorkerTasks(),
-  //const UserTasksView(),
-  const SettingsView(),
-];
-iconsList=[
-            const TabItem(icon: Icons.home,title: '',),
-            const TabItem(icon: Icons.list,title: ''),
-          //  const TabItem(icon: Icons.list,title: ''),
-            const TabItem(icon: Icons.settings,title: '',),
-];
+      iconsList = [
+        const TabItem(
+          icon: IconlyBold.home,
+          title: '',
+        ),
+        const TabItem(icon: Icons.add, title: ''),
+        const TabItem(icon: IconlyBold.category, title: ''),
+        const TabItem(
+          icon: IconlyBold.setting,
+          title: '',
+        ),
+      ];
+    } else {
+      fragmentScreens = [
+        const WorkersHome(),
+        const WorkerTasks(),
+        //const UserTasksView(),
+        const SettingsView(),
+      ];
+      iconsList = [
+        const TabItem(
+          icon: Icons.home,
+          title: '',
+        ),
+        const TabItem(icon: Icons.list, title: ''),
+        //  const TabItem(icon: Icons.list,title: ''),
+        const TabItem(
+          icon: Icons.settings,
+          title: '',
+        ),
+      ];
     }
     //WorkersHome
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return const HelloConvexAppBar();
@@ -92,7 +97,6 @@ iconsList=[
 }
 
 class HelloConvexAppBar extends StatefulWidget {
-  
   const HelloConvexAppBar({super.key});
 
   @override
@@ -102,28 +106,21 @@ class HelloConvexAppBar extends StatefulWidget {
 class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
   @override
   Widget build(BuildContext context) {
-
     //Color backgroundCovex = Colors.white;
 
     return Scaffold(
-      backgroundColor:AppColors.appBarColor,
-    
-      body: Container(
-          child:
-      fragmentScreens[indexNumber]
-      ),
-      bottomNavigationBar: ConvexAppBar
-        (
-          backgroundColor:
-          AppColors.primary,
-          elevation: 0.0,
-          height:48,
-          top: -14,
-          //curveSize: 10,  
+      backgroundColor: AppColors.appBarColor,
+      body: Container(child: fragmentScreens[indexNumber]),
+      bottomNavigationBar: ConvexAppBar(
+          backgroundColor: AppColors.primary,
+          elevation: 2,
+          height: 60,
+          top: -8,
+          //curveSize: 10,
           activeColor: AppColors.activeIconColor,
           //color: AppColors.inActiveIconColor,
           style: TabStyle.reactCircle,
-          items:  iconsList,
+          items: iconsList,
           initialActiveIndex: 0,
           onTap: (int i) {
             setState(() {
@@ -131,8 +128,8 @@ class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
             });
             print(i);
           }
-        //=> print('click index='),
-      ),
+          //=> print('click index='),
+          ),
     );
   }
 }
@@ -166,7 +163,6 @@ class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
 //     ];
 
 //     List<String> txtList = [
-
 
 //       //'profile'.tr,
 //       'Home',
@@ -232,7 +228,6 @@ class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
 //                     GoRouter.of(context).push(AppRouter.kHomeView);
 //                   }
 
-
 //                   //
 //                 },
 //               ),
@@ -241,4 +236,3 @@ class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
 //     );
 //   }
 //}
-

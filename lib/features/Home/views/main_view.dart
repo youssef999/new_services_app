@@ -53,7 +53,6 @@ class _State extends State<MainHome> {
         const UserTasksView(),
         const SettingsView(),
       ];
-
       iconsList = [
         const TabItem(
           icon: IconlyBold.home,
@@ -67,6 +66,7 @@ class _State extends State<MainHome> {
         ),
       ];
     } else {
+
       fragmentScreens = [
         const WorkersHome(),
         const WorkerTasks(),
@@ -75,15 +75,10 @@ class _State extends State<MainHome> {
       ];
       iconsList = [
         const TabItem(
-          icon: Icons.home,
-          title: '',
-        ),
+          icon: Icons.home, title: '' ),
         const TabItem(icon: Icons.list, title: ''),
         //  const TabItem(icon: Icons.list,title: ''),
-        const TabItem(
-          icon: Icons.settings,
-          title: '',
-        ),
+        const TabItem( icon: Icons.settings,title: ''),
       ];
     }
     //WorkersHome
@@ -102,7 +97,6 @@ class HelloConvexAppBar extends StatefulWidget {
   @override
   State<HelloConvexAppBar> createState() => _HelloConvexAppBarState();
 }
-
 class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
   @override
   Widget build(BuildContext context) {

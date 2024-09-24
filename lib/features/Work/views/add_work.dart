@@ -35,30 +35,34 @@ class _AddWorkState extends State<AddWork> {
           return ListView(
             children: [
               const SizedBox(
-                height: 3,
+                height: 14,
               ),
               controller.images.isEmpty
                   ? InkWell(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey[200]!),
-                            color: Colors.grey[200]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                AppAssets.imagePlaceHolder,
-                                height: 90,
-                              ),
-                              Text(
-                                'اضف صورة لوصف طلبك ',
-                                style: TextStyle(
-                                    color: AppColors.secondaryTextColor,
-                                    fontSize: 18),
-                              ),
-                            ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 44.0,right: 44),
+                        child: Container(
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(22),
+                              border: Border.all(color: Colors.grey[200]!),
+                              color: Colors.grey[100]),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  AppAssets.imagePlaceHolder,
+                                  height: 90,
+                                ),
+                                Text(
+                                  'اضف صورة لوصف طلبك ',
+                                  style: TextStyle(
+                                      color: AppColors.secondaryTextColor,
+                                      fontSize: 18,fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -262,11 +266,20 @@ class _AddWorkState extends State<AddWork> {
               const SizedBox(
                 height: 14,
               ),
-              CustomButton(
-                  text: 'اضافة العمل ',
-                  onPressed: () {
-                    controller.addWorkToFirestore();
-                  })
+              Padding(
+                padding: const EdgeInsets.only(left: 18.0,right: 18),
+                child: CustomButton(
+                    text: 'اضافة العمل ',
+                    onPressed: () {
+
+                      controller.addWorkToFirestore();
+
+
+                    }),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
             ],
           );
         }),

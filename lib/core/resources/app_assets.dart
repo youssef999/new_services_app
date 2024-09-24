@@ -7,12 +7,16 @@ class AppAssets {
 
   static const String imagePlaceHolder = '$imagePath/placeImage.png';
  static const String logo = '$imagePath/logo.jpg';
+ static const String logo2 = '$imagePath/logo2.jpg';
  static const String whatsApp = '$imagePath/whats.webp';
  static const String noTasks = '$imagePath/order_empty.webp';
   static const String workers = '$imagePath/worker.jpg';
    static const String users = '$imagePath/user2.png';
      static const String emptyTasks = '$imagePath/empty.avif';
      static const String whatsAppIcon = '$imagePath/whats.webp';
+
+     static const String egyptImage = '$imagePath/egy.avif';
+     static const String kwtImage = '$imagePath/kwt.jpg';
  //order_empty.webp
 }
 

@@ -9,12 +9,13 @@ class WorkerProvider{
   final String email;
   final String lat;
   final String lng;
+  final num rate;
   final String name;
   final String details;
   final String price;
 
   WorkerProvider({required this.id,
-   required this.details,
+   required this.details,required this.rate,
    required this.lat,required this.lng,
   required this.cat,required this.email,required this.image,required this.name,
   required this.price
@@ -27,6 +28,7 @@ class WorkerProvider{
       details: json['details'] ?? '',
       image: json['image'] ?? '', 
       lat: json['lat'] ?? '',
+      rate: json['rating'] ?? 0.0,
       lng: json['lng'] ?? '',
       cat: json['cat'] ?? '',
       email: json['email'] ?? '',
@@ -37,6 +39,7 @@ class WorkerProvider{
   Map<String, dynamic> toMap() {
     return {
       'image': image,
+      'rating':rate,
       'cat': cat,
       'email': email,
       'name': name,

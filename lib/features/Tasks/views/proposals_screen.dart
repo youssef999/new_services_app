@@ -28,7 +28,6 @@ class _ProposalScreenState extends State<ProposalScreen> {
     super.initState();
     _proposalsFuture = controller.fetchProposals(widget.taskId);
   }
-
   // Function to accept a proposal
   Future<void> _acceptProposal(Proposal proposal) async {
     try {
@@ -107,119 +106,125 @@ class _ProposalScreenState extends State<ProposalScreen> {
           },
         ),
       ),
-      body: FutureBuilder<List<Proposal>>(
-        future: _proposalsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('لا يوجد عروض مقدمة بعد'));
-          }
+      body: Padding(
+        padding: const EdgeInsets.only(left:18.0,right: 18,top:21),
+        child: FutureBuilder<List<Proposal>>(
+          future: _proposalsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('لا يوجد عروض مقدمة بعد'));
+            }
+            final proposals = snapshot.data!;
 
-          final proposals = snapshot.data!;
-
-          return ListView.builder(
-            itemCount: proposals.length,
-            itemBuilder: (context, index) {
-              final proposal = proposals[index];
-              return Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(0, 0),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.task,
-                          color: AppColors.primary,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+            return ListView.builder(
+              itemCount: proposals.length,
+              itemBuilder: (context, index) {
+                final proposal = proposals[index];
+                return Container(
+                  margin: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.task,
+                            color: AppColors.primary,
+                            size: 30,
+                          ),
+                          const SizedBox(width: 16.0),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  proposal.name,
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  proposal.details,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16.0),
+                          Row(
                             children: [
                               Text(
-                                proposal.name,
-                                style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                proposal.details,
+                                proposal.price,
                                 style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(width: 4.0),
+                              const Text(
+                                'KWD',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Row(
+                        ],
+                      ),
+                      const SizedBox(height: 16.0),
+                      FittedBox(
+                        child: Row(
                           children: [
-                            Text(
-                              proposal.price,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                              ),
+                            CustomButton(
+                              text: 'قبول',
+                              btnColor: Colors.green,
+                              onPressed: () =>
+                                 controller.changeStatusProposal(proposal,
+                                 'accepted'
+                                 ),
                             ),
-                            const SizedBox(width: 4.0),
-                            const Text(
-                              'KWD',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w900,
-                              ),
+                            const SizedBox(width: 10),
+                            CustomButton(
+                              text: 'رفض',
+                              btnColor: Colors.red,
+                              onPressed: () =>   controller.changeStatusProposal(
+                                  proposal,'rejected'),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    FittedBox(
-                      child: Row(
-                        children: [
-                          CustomButton(
-                            text: 'قبول',
-                            btnColor: Colors.green,
-                            onPressed: () => _acceptProposal(proposal),
-                          ),
-                          const SizedBox(width: 10),
-                          CustomButton(
-                            text: 'رفض',
-                            btnColor: Colors.red,
-                            onPressed: () => _rejectProposal(proposal),
-                          ),
-                        ],
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

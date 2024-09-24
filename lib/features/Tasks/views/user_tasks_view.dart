@@ -28,7 +28,6 @@ class _UserTasksViewState extends State<UserTasksView> {
   @override
   void initState() {
     controller.getUserTaskList();
-
     super.initState();
   }
 
@@ -40,7 +39,7 @@ class _UserTasksViewState extends State<UserTasksView> {
 
         if (status == 'finished' && !isDialogShown) {
           isDialogShown = true;
-          showTaskCompletionConfirmationDialog(taskId);
+        //  showTaskCompletionConfirmationDialog(taskId);
         }
         await Future.delayed(
             const Duration(seconds: 5)); // Poll every 5 seconds
@@ -302,7 +301,7 @@ class TaskWidget extends StatelessWidget {
         ),
       ], borderRadius: BorderRadius.circular(12), color: AppColors.cardColor),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
         child: Column(
           children: [
             const SizedBox(
@@ -316,7 +315,7 @@ class TaskWidget extends StatelessWidget {
                     Row(
                       children: [
                         CircleAvatar(
-                          radius: 40,
+                          radius: 31,
                           backgroundImage: NetworkImage(task.image),
                         ),
                         const SizedBox(

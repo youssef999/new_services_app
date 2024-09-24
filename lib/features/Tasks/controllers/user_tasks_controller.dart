@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/const/app_message.dart';
+import 'package:freelancerApp/features/Home/views/main_view.dart';
 import 'package:freelancerApp/features/Tasks/models/task.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,29 @@ import '../models/proposal.dart';
 class UserTasksController extends GetxController {
   List<Task> userTaskList = [];
   List<Proposal> userProposalList = [];
+
+
+
+
+  changeStatusProposal(Proposal proposal,String status) async {
+    try {
+      CollectionReference collectionRef =
+      FirebaseFirestore.instance.collection('proposals');
+      // Update the status field of the document with the given ID
+      await collectionRef.doc(proposal.id).update({
+        'status': status,
+      });
+      print("Document with ID $status has been updated successfully!");
+      if(status=='accepted'){
+        appMessage(text: 'تم قبول الطلب', fail: false);
+        Get.offAll(const MainHome());
+      }else{
+        appMessage(text: 'تم رفض الطلب', fail: false);
+      }
+    } catch (e) {
+      print("Error updating document: $e");
+    }
+  }
 
   Future<void> showDeleteConfirmationDialog(
       BuildContext context, dynamic value) async {
@@ -86,12 +110,13 @@ class UserTasksController extends GetxController {
   }
 
   Future<List<Proposal>> fetchProposals(String taskId) async {
+
+    print("fetching proposals $taskId");
     userProposalList = [];
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       final CollectionReference proposalsCollection =
           firestore.collection('proposals');
-
       // Query Firestore for proposals with the given taskId and order by task_date
       final QuerySnapshot querySnapshot = await proposalsCollection
           .where('task_id', isEqualTo: taskId)

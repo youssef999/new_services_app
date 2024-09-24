@@ -33,7 +33,6 @@ void main() async {
   ]);
   final box = GetStorage();
   String keylocal = box.read('locale') ?? 'x';
-
   ///en //ar //' '
   Locale lang = const Locale('ar');
 

@@ -17,108 +17,163 @@ import '../../../core/resources/app_styles.dart';
 import 'register_view2.dart';
 
 class LoginView extends StatelessWidget {
-  String type;
+  final String type;
   LoginView({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
     AuthController controller = Get.put(AuthController());
-
     controller.loginFormKey = GlobalKey<FormState>();
 
+    print("TYPEEEE===" + type);
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: null,
-      body: Form(
-        key: controller.loginFormKey,
-        child: GetBuilder<AuthController>(builder: (_) {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(children: [
-                  Image.asset(
-                    height: 210,
-                    AppAssets.logo,
-                    fit: BoxFit.cover,
-                  ),
-                  Text(
-                    'مرحبا بعودتك في دليل اليمن',
-                    style: TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 11,
-                  ),
-                ]),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                      //color: AppColors.primaryDarkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(25))),
+      backgroundColor: AppColors.backgroundColor, // Improved background color for better contrast
+      appBar: AppBar(
+        toolbarHeight: 42,
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+      ),
+      body: SafeArea(
+        child: Form(
+          key: controller.loginFormKey,
+          child: GetBuilder<AuthController>(
+            builder: (_) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(9.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CustomTextFormField(
+                      const SizedBox(height: 10),
+                      // Logo and Welcome Text
+                      Center(
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              AppAssets.logo2,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'أهلاً بك في التطبيق',
+                              style: TextStyle(
+                                color: AppColors.secondaryTextColor,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'قم بتسجيل الدخول للمتابعة',
+                              style: TextStyle(
+                                color: AppColors.greyTextColor,
+                                fontSize: 18,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      // Email Input
+                      Padding(
+                        padding: const EdgeInsets.only
+                          (left: 8.0,
+                        right: 8
+                        ),
+                        child: CustomTextFormField(
                           hint: 'البريد الالكتروني',
                           obs: false,
                           color: AppColors.primary,
                           validateMessage: 'بريد الكتروني غير صحيح',
-                          controller: controller.emailController),
-                      const SizedBox(
-                        height: 20,
+                          controller: controller.emailController,
+                          icon: Icons.email, // Icon for email
+                        ),
                       ),
-                      CustomTextFormField(
+                      const SizedBox(height: 20),
+                      // Password Input
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0,
+                        right: 8
+                        ),
+                        child: CustomTextFormField(
                           hint: 'كلمة المرور ',
                           obs: true,
                           color: AppColors.primary,
                           validateMessage: 'كلمة المرور غير صحيحة',
-                          obx: true,
-                          controller: controller.passController),
-                      const SizedBox(
-                        height: 2,
+                          controller: controller.passController,
+                          icon: Icons.lock, // Icon for password
+                        ),
                       ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const SizedBox(
-                            width: 200,
-                          ),
-                          InkWell(
-                            child: Custom_Text(
-                              text: 'نسيت كلمة المرور؟',
-                              color: Colors.grey[600]!,
+                      const SizedBox(height: 5),
+                      // Forgot Password
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(const ForgotPass());
+                          },
+                          child: Text(
+                            'نسيت كلمة المرور؟',
+                            style: TextStyle(
+                              color: AppColors.secondaryTextColor,
                               fontSize: 15,
+                              decoration: TextDecoration.underline,
                             ),
-                            onTap: () {
-                              Get.to(const ForgotPass());
-                            },
-                          )
-                        ],
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 20),
-                      CustomButton(
+                      const SizedBox(height: 25),
+                      // Login Button
+                      Padding(
+                        padding: const EdgeInsets.only(left:28.0
+                        ,right: 28
+                        ),
+                        child: CustomButton(
                           text: 'تسجيل دخول',
                           onPressed: () {
-                            controller.userLogin('0');
-                          }),
-                      const SizedBox(
-                        height: 6,
+
+
+                          //  controller.loginWithPhone( context);
+                            controller.userLogin(type);
+                          },
+                          color1: AppColors.primary,
+                          color2: AppColors.secondaryTextColor,
+                          //fontSize: 18,
+                        ),
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 20),
+                      // Divider
                       Center(
-                          child: Text(
-                        'او'.tr,
-                        style:
-                            TextStyle(color: AppColors.primary, fontSize: 20),
-                      )),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(child: Divider(color: Colors.grey[300])),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                'أو'.tr,
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Expanded(child: Divider(color: Colors.grey[300])),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Register Option
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -128,28 +183,28 @@ class LoginView extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.to(SignupView(
-                                roleId: type,
-                              ));
+                              Get.to(SignupView(roleId: type));
                             },
                             child: Text(
                               'انشاء حساب'.tr,
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.primary),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary,
+                              ),
                             ),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          );
-        }),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 }
+

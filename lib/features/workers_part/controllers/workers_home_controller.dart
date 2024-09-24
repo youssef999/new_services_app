@@ -15,7 +15,6 @@ class WorkersHomeController extends GetxController{
   List<Cat> catList=[];
 List<String>catNamesList=[];
 List<bool> checkListValues=[];
-
 String selectedCat='';
 
  Future<void> getCats() async {

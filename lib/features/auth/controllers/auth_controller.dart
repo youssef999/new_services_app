@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/widgets/Custom_Text.dart';
 import 'package:freelancerApp/core/widgets/custom_loading.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
+import 'package:freelancerApp/features/Home/views/select_country.dart';
 import 'package:freelancerApp/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -28,6 +29,10 @@ class AuthController extends GetxController {
   TextEditingController roleId = TextEditingController();
   TextEditingController empCatController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+
+  TextEditingController cityController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
   TextEditingController detailsController = TextEditingController();
 
@@ -229,7 +234,109 @@ class AuthController extends GetxController {
     }
   }
 
+
+  Future<void> loginWithPhone( BuildContext context) async {
+    // VerificationCompleted callback, auto-sign in on certain devices
+    verificationCompleted(PhoneAuthCredential credential) async {
+      await _auth.signInWithCredential(credential);
+      Get.snackbar('تمت بنجاح', 'تم تسجيل دخولك بنجاح',
+          backgroundColor: Colors.green, colorText: Colors.white);
+    }
+
+    // VerificationFailed callback, if the verification failed
+    verificationFailed(FirebaseAuthException e) {
+      Get.snackbar('Error', e.message ?? 'Phone verification failed',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+
+    // CodeSent callback, when the code is sent to the phone number
+    codeSent(String verificationId, int? resendToken) async {
+      String smsCode = '';  // Enter SMS code from user
+
+      // Show dialog to enter OTP
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('رمز OTP'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  smsCode = value;  // Update the entered OTP
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                // Create a PhoneAuthCredential with the code
+                PhoneAuthCredential credential =
+
+                PhoneAuthProvider.credential(
+                  verificationId: verificationId,
+                  smsCode: smsCode,
+                );
+                // Sign the user in with the credential
+                await _auth.signInWithCredential(credential).then((value) {
+                  Get.snackbar('Success', 'Logged in successfully!',
+                      backgroundColor: Colors.green, colorText: Colors.white);
+                  Navigator.of(context).pop();  // Close dialog
+                }).catchError((e) {
+                  Get.snackbar('Error', 'Failed to login',
+                      backgroundColor: Colors.red, colorText: Colors.white);
+                });
+              },
+              child: const Text('Verify'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // CodeAutoRetrievalTimeout callback, for timeouts
+    codeAutoRetrievalTimeout(String verificationId) {
+      Get.snackbar('Timeout', 'OTP auto retrieval timeout',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+
+    try {
+      await _auth.verifyPhoneNumber(
+    phoneNumber: phoneController.text,
+    verificationCompleted: (PhoneAuthCredential credential) async {
+    await FirebaseAuth.instance.signInWithCredential(credential);
+    },
+    verificationFailed: (FirebaseAuthException e) {
+    print('Verification failed: ${e.message}');
+    },
+    codeSent: (String verificationId, int? resendToken) {
+    print('Code sent');
+    // You can store the verificationId for later use
+    },
+    codeAutoRetrievalTimeout: (String verificationId) {
+    print('Timeout');
+    },
+    timeout: const Duration(seconds: 60),
+
+    forceResendingToken: 0,
+
+
+        // Force reCAPTCHA if needed
+      // Forces reCAPTCHA flow
+    );
+
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to verify phone number',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+  }
+
   userLogin(String roleId) async {
+
+    print("role ... id .. ==="+roleId);
+
     isLoading = true;
     update();
     if (emailController.text.length > 2 && passController.text.length > 5) {
@@ -237,14 +344,21 @@ class AuthController extends GetxController {
         final cred = await _auth.signInWithEmailAndPassword(
             email: emailController.text, password: passController.text);
         Future.delayed(const Duration(seconds: 1)).then((value) {
-          print("DONE");
+          print("........................DONE.......................");
+         
           box.write('email', emailController.text);
           box.write('roleId', roleId);
           loading = false;
           CustomLoading.cancelLoading();
           update();
-          Get.offAll(const MainHome());
-          // print('Received data: $value');
+          if(roleId=='0'){
+            Get.offAll(const SelectCountryView());
+          }else{
+            Get.offAll(const MainHome());
+          }
+
+          appMessage(text: 'تم التسجيل بنجاح ', fail: false);
+
         }).catchError((error) {
           CustomLoading.cancelLoading();
           appMessage(text: 'خطا في تسجيل الدخول', fail: true);
@@ -283,6 +397,7 @@ class AuthController extends GetxController {
 
   register(String roleId, String email, String password, String phone) async {
     final box = GetStorage();
+    box.write('roleId', roleId);
     try {
       await _auth
           .createUserWithEmailAndPassword(
@@ -297,10 +412,9 @@ class AuthController extends GetxController {
         } else {
           addNewWorker();
         }
-
         box.write('email', emailController.text);
         appMessage(text: 'تم التسجيل بنجاح', fail: false);
-        Get.offAll(const MainHome());
+
       });
     } catch (e) {
       print("EEE==" + e.toString());
@@ -362,6 +476,7 @@ class AuthController extends GetxController {
         box.write('email', emailController.text);
         box.write('name', nameController.text);
         box.write('roleId', '0');
+        Get.offAll(const MainHome());
       });
     } catch (e) {
       update();
@@ -371,6 +486,7 @@ class AuthController extends GetxController {
   }
 
   addNewWorker() async {
+    addNewAddress();
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
@@ -386,14 +502,17 @@ class AuthController extends GetxController {
           .set({
         'name': nameController.text,
         'email': emailController.text,
-        'cat': '',
-        'details': "",
-        'price': "",
+        'cat': selectedItem,
+        'details': detailsController.text,
+        'price': priceController.text,
         'id': result,
         "lat": "",
         "lng": "",
-        'image': '',
+        'image': imageLink,
         'rating': 0,
+        'country':countryController.text,
+        'city':cityController.text,
+        'address':addressController.text,
         'ratingCount': 0
       }).then((value) {
         update();
@@ -401,13 +520,31 @@ class AuthController extends GetxController {
         appMessage(text: 'welcome'.tr, fail: false);
         box.write('email', emailController.text);
         box.write('name', nameController.text);
-        box.write('roleId', '1');
+        Get.offAll(const MainHome());
       });
     } catch (e) {
       update();
       print(e);
       appMessage(text: "error".tr, fail: true);
     }
+  }
+
+  addNewAddress()async{
+    const String chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
+    Random random = Random();
+    String result = '';
+    final box = GetStorage();
+    for (int i = 0; i < 12; i++) {
+      result += chars[random.nextInt(chars.length)];
+  }
+      await FirebaseFirestore.instance
+          .collection('adresses')
+          .doc(result)
+          .set({
+        'name': addressController.text,
+        "country":countryController.text
+      });
   }
 
   Future uploadProfileImageToFirebaseStorage(List<XFile> images) async {

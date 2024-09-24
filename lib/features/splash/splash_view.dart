@@ -21,7 +21,6 @@ class _SplashViewState extends State<SplashView> {
 
     final box=GetStorage();
     String email=box.read('email')??'x';
-   
 
    Future.delayed(const Duration(seconds: 3), () {
 

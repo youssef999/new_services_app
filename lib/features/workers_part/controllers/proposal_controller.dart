@@ -25,12 +25,13 @@ List<WorkerProvider>workerData=[];
 getWorkerData()async{
   final box=GetStorage();
   String email=box.read('email');
+  print("EMAIL==="+email);
     try {
       print("GET TASKS");
       // Fetch all documents from the 'ads' collection
       QuerySnapshot querySnapshot =
       await FirebaseFirestore.instance.collection('serviceProviders')
-      .where('email',isEqualTo:email )
+      .where('email',isEqualTo:email)
      // .where('user_email',isEqualTo: 'test@gmail.com')
       .get();
       workerData = querySnapshot.docs.map((DocumentSnapshot doc) {
@@ -45,6 +46,8 @@ getWorkerData()async{
 }
 
 addProposal({required Task task})async{
+
+  print("ADD PROPOSAL...");
  const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();

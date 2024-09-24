@@ -15,6 +15,7 @@ class AppColors {
   static Color cardColor = Colors.white;
   static Color appBarColor = const Color(0xff9b9be8);
   static Color iconColor = const Color(0xffb4a7d6);
+  static Color appBarIconColor = Colors.white;
 
   static Color inActiveIconColor = Colors.grey[400]!;
   static Color activeIconColor = Colors.white;

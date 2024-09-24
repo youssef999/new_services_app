@@ -331,7 +331,33 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                           icon: Icons.price_change,
                           validateMessage: 'ادخل السعر ',
                           controller: controller.priceController,
+                        ),const SizedBox(height: 20),
+
+                        CustomTextFormField(
+                          hint: 'البلد',
+                          obs: false,
+                          color: AppColors.primary,
+                          icon: Icons.price_change,
+                          validateMessage: ' ',
+                          controller: controller.countryController,
+                        ),const SizedBox(height: 20),
+                        CustomTextFormField(
+                          hint: 'المدينة',
+                          obs: false,
+                          color: AppColors.primary,
+                          icon: Icons.location_city,
+                          validateMessage: ' ',
+                          controller: controller.cityController,
+                        ),const SizedBox(height: 20),
+                        CustomTextFormField(
+                          hint: 'المنطقة',
+                          obs: false,
+                          color: AppColors.primary,
+                          icon: Icons.location_city_sharp,
+                          validateMessage: ' ',
+                          controller: controller.addressController,
                         ),
+
                         const SizedBox(height: 20),
                         CustomButton(
                           text: 'انشاء حساب',

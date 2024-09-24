@@ -70,7 +70,7 @@ import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/resources/app_styles.dart';
-import 'package:freelancerApp/core/resources/colors.dart';
+
 import 'package:get/get.dart';
 
 PreferredSizeWidget CustomAppBar(String text, BuildContext context) {
@@ -78,6 +78,12 @@ PreferredSizeWidget CustomAppBar(String text, BuildContext context) {
     elevation: 0.1,
     centerTitle: true,
     toolbarHeight: 60,
+    leading: IconButton(
+      onPressed: () {
+        Get.back();
+      },
+      icon:  Icon(Icons.arrow_back,color:AppColors.appBarIconColor,),
+    ),
     backgroundColor: AppColors.primary,
     title: Padding(
       padding: const EdgeInsets.all(7),

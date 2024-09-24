@@ -107,7 +107,12 @@ class WorkController extends GetxController {
     checkValidation();
     Future.delayed(const Duration(seconds: 2), () async {
       if (validation == true) {
+        // Generate a new document ID
+        String docId = FirebaseFirestore
+            .instance.collection('tasks').doc().id;
+
         Map<String, dynamic> data = {
+          "id": docId, // Add the document ID as a field
           "title": title.text,
           "user_name": userDataList[0].name,
           "user_phone": userDataList[0].phone,
@@ -121,10 +126,11 @@ class WorkController extends GetxController {
           "hasAcceptedProposal": false,
           //"image": images,
         };
+
         try {
-          CollectionReference collection =
-              FirebaseFirestore.instance.collection('tasks');
-          await collection.add(data).then((value) {
+          // Create a reference with the generated document ID
+          CollectionReference collection = FirebaseFirestore.instance.collection('tasks');
+          await collection.doc(docId).set(data).then((value) {
             appMessage(text: 'تم اضافة مشروعك بنجاح', fail: false);
             Get.offAll(const MainHome());
             title.clear();
@@ -144,6 +150,7 @@ class WorkController extends GetxController {
       }
     });
   }
+
 
   checkValidation() {
     if (title.text.isEmpty) {

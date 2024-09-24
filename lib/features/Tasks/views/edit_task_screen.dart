@@ -288,9 +288,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     backgroundColor: AppColors.primary,
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    //if (_formKey.currentState!.validate()) {
                       _saveTask();
-                    }
+                   // }
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(12.0),
@@ -309,6 +309,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   }
 
   void _saveTask() async {
+
+    print("SAVE TASK...");
     CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
     String taskId = widget.task.id;
 

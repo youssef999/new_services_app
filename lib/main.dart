@@ -17,25 +17,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'core/resources/check_theme.dart';
 import 'features/Home/views/home_view.dart';
 
+
 final navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseApi().initNotifications();
   await GetStorage.init();
-  // configureFirebaseMessaging();
   CheckTheme();
-  AwesomeNotifications().initialize(null, [
+
+  AwesomeNotifications().initialize(null,[
     NotificationChannel(
         channelKey: 'basic-channel',
         channelName: 'Basic notifications',
         channelDescription: 'notification chanel for testing')
   ]);
+
   final box = GetStorage();
   String keylocal = box.read('locale') ?? 'x';
-  ///en //ar //' '
   Locale lang = const Locale('ar');
-
   if (keylocal != 'x') {
     lang = Locale(keylocal);
   } else {
@@ -56,7 +57,6 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   List<Map<String, dynamic>> tokenList = [];
   String? token = '';
-
   addTokenToFireBase() async {
     await FirebaseFirestore.instance.collection('tokens').add({
       'token': token,

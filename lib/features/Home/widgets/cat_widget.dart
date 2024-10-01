@@ -30,7 +30,7 @@ class CatWidget extends StatelessWidget {
             ),
             Custom_Text(
                 text: cat.name,
-                fontSize: 16,
+                fontSize: 15,
                 color: AppColors.secondaryTextColor),
           ],
         ),

@@ -28,9 +28,7 @@ class _CatViewState extends State<CatView> {
           itemCount: widget.catList.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)
         , itemBuilder: (context, index) {
-
           return CatWidget(cat: widget.catList[index]);
-
           
         })
       ),

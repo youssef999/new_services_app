@@ -46,7 +46,6 @@ getWorkerData()async{
 }
 
 addProposal({required Task task})async{
-
   print("ADD PROPOSAL...");
  const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';

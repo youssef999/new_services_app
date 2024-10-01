@@ -7,9 +7,14 @@ import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/Core/widgets/Custom_Text.dart';
 import 'package:freelancerApp/features/Home/controller/home_controller.dart';
 import 'package:freelancerApp/features/Home/models/ad.dart';
+import 'package:freelancerApp/features/Home/models/cat.dart';
+import 'package:freelancerApp/features/Home/models/sub_cat.dart';
 import 'package:freelancerApp/features/Home/widgets/cat_widget.dart';
+import 'package:freelancerApp/features/Home/widgets/wokrer_subcat.dart';
 import 'package:freelancerApp/features/Home/widgets/workers_widget.dart';
 import 'package:freelancerApp/features/cat/cat_view.dart';
+import 'package:freelancerApp/features/subCat_views/subcat_home_view.dart';
+import 'package:freelancerApp/features/workers/models/workers.dart';
 import 'package:get/get.dart';
 import 'all_workers.dart';
 
@@ -30,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
     controller.getAllWorkers('All');
     controller.getAds();
     controller.getCats();
+    controller.getSubCats();
     super.initState();
   }
 
@@ -90,7 +96,22 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
               const SizedBox(height: 16),
-              CatListView(controller: controller),
+              Padding(
+        padding: const EdgeInsets.only(top:28.0,left: 10,right: 10),
+        child: GridView.builder(
+          itemCount: controller.catList.length,
+          shrinkWrap: true,
+          physics:const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)
+        , itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: CatWidget(cat:controller.catList[index]),
+          );
+          
+        })
+      ),
+             // CatListView(controller: controller),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,10 +138,113 @@ class _HomeViewState extends State<HomeView> {
                   )
                 ],
               ),
+              
               const SizedBox(height: 11),
+             
               WorkerProvidersList(controller: controller),
-              const SizedBox(height: 16),
 
+
+          const SizedBox(height: 11),
+
+         
+              for(int i=0;i<controller.catList.length;i++)
+
+              Container(
+                decoration:BoxDecoration(borderRadius:BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:  Column(
+                    children: [
+                     const SizedBox(height: 5,),
+
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 31,
+                            backgroundImage:NetworkImage(controller.catList[i].imageUrl,),
+                          ),
+
+                        const SizedBox(width: 11,),
+
+                         Text(controller.catList[i].name,style: 
+                          const TextStyle(fontWeight: FontWeight.bold),)
+                        ],
+                      ),
+                      const SizedBox(height: 5,),
+
+                      
+                      SizedBox(
+                        height: 154,
+                        //width: double.infinity,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: controller.subCatList.length,
+                          itemBuilder: (context, index) {
+                           if(controller.subCatList[index].cat==controller.catList[i].name){
+                              print("index==xx="+index.toString());
+        
+                            print("HERE1 ${controller.subCatList[index].name}");
+                            print("HERE2 ${controller.catList[i].name}");
+                                         return InkWell(
+                                           child: Padding(
+                                             padding: const EdgeInsets.all(8.0),
+                                             child: Container(
+                                              height: 102,
+                                              width: 122,
+                                              decoration:BoxDecoration(
+                                                borderRadius:BorderRadius.circular(12),
+                                                color: AppColors.cardColor
+                                              ),
+                                                   child:Padding(
+                                                       padding: const EdgeInsets.all(4.0),
+                                                               child: Column(children: [
+                                                                     const SizedBox(height: 1,),
+                                           
+                                                                     ClipRRect(
+                                                                      borderRadius: BorderRadius.circular(12),
+                                                                       child: Image.network(
+                                                                        controller.subCatList[index].image,
+                                                                        height: 70,
+                                                                       ),
+                                                                     ),
+                                                                    const SizedBox(height: 6,),
+                                                                      Text(controller.subCatList[index].name,
+                                                                    style:TextStyle(color:AppColors.secondaryTextColor,
+                                                                   fontSize: 15,fontWeight: FontWeight.bold
+                                                                               ),
+                                                                               ), 
+                                                                             ],),
+                                                                           ),
+                                                                         ),
+                                           ),
+                                           onTap:(){
+                                            //SubCatHomeView
+                                            Get.to(SubCatHomeView(subcat: controller.subCatList[index].name
+                                            , cat: controller.catList[i].name,
+
+                                            ));
+                                           },
+                                         );
+                           }else{
+                            print("ELSEXXX");
+                             return Container();
+                           }
+                        
+                        }),
+                      )
+                      
+                    ],
+                    
+                  ),
+                ),
+              ),
+
+
+
+
+              
+            
               // New Features Section
               FeaturesSection(),
 
@@ -129,6 +253,67 @@ class _HomeViewState extends State<HomeView> {
           );
         }),
       ),
+    );
+  }
+}
+
+
+
+
+
+
+class WorkerProviderWithCatWidget extends StatelessWidget {
+
+  Cat cat;
+  SubCat subCat;
+  List<WorkerProvider> workersSubCatList;
+
+ WorkerProviderWithCatWidget({super.key,required this.cat,required this.subCat,required this.workersSubCatList});
+
+  @override
+  Widget build(BuildContext context) {
+    return  Container(
+      padding: const EdgeInsets.only(top: 10,left: 10,right: 10),
+      child: Column(children: [
+        const SizedBox(height: 10,),
+        Row(children: [
+      
+         CircleAvatar(
+          radius: 44,
+          backgroundImage:NetworkImage(cat.imageUrl,),
+         ),
+         const SizedBox(width: 12,),
+          //Image.network(cat.imageUrl,width: 40,height: 40,),
+          Text(cat.name,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+        ],),
+        Text(subCat.name,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 14),),
+        const SizedBox(height: 10,),
+
+
+       //WorkerCardWidget(worker: workersSubCatList[0]),
+        SizedBox(
+          height: 80,
+          child: ListView.builder(
+            itemCount: workersSubCatList.length,
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              
+             if(workersSubCatList[index].subCat==subCat.name){
+ 
+  return WorkerSubCatCardWidget(worker: workersSubCatList[index]);
+             
+             
+            }else{
+
+return   const SizedBox();
+            }
+              
+            
+          
+          }),
+        )
+      ],),
     );
   }
 }

@@ -44,7 +44,6 @@ dependencies:
   flutter_carousel_slider: null
   flutter_carousel_widget: ^3.0.1
   flutter_firebase_recaptcha: ^1.0.2
-  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.0
   flutter_local_notifications: ^17.2.2
   flutter_localizations:
@@ -74,13 +73,14 @@ dependencies:
   uuid: ^4.2.1
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.14.1"
   flutter_test:
     sdk: flutter
 flutter_launcher_icons:
   ios: true
   android: true
   remove_alpha_ios: true
-  image_path: "assets/images/logo.png"
+  image_path: "assets/images/logo2.jpg"
 
 # For information on the generic Dart part of this file, see the
 # The following section is specific to Flutter packages.

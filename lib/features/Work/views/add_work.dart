@@ -5,12 +5,16 @@ import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/widgets/Custom_button.dart';
 import 'package:freelancerApp/core/widgets/custom_app_bar.dart';
+import 'package:freelancerApp/core/widgets/custom_dropdown.dart';
 import 'package:freelancerApp/core/widgets/custom_textformfield.dart';
 import 'package:freelancerApp/features/Work/controllers/work_controller.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddWork extends StatefulWidget {
-  const AddWork({super.key});
+  String cat;
+  String subCat;
+ AddWork({super.key,required this.cat,required this.subCat});
 
   @override
   State<AddWork> createState() => _AddWorkState();
@@ -21,16 +25,23 @@ class _AddWorkState extends State<AddWork> {
 
   @override
   void initState() {
+    controller.getCats();
     controller.getUserData();
+    if(widget.cat.length>1){
+      print("HERE");
+      controller.selectedCat = widget.cat;
+    }
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar('أضف خدمة', context),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.only(top:13.0,left: 13,
+            right: 13),
         child: GetBuilder<WorkController>(builder: (_) {
           return ListView(
             children: [
@@ -42,7 +53,6 @@ class _AddWorkState extends State<AddWork> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 44.0,right: 44),
                         child: Container(
-
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(22),
                               border: Border.all(color: Colors.grey[200]!),
@@ -94,6 +104,56 @@ class _AddWorkState extends State<AddWork> {
               const SizedBox(
                 height: 10,
               ),
+              Text('القسم',
+              style:TextStyle(
+                color: AppColors.secondaryTextColor,
+                fontSize: 18,fontWeight:FontWeight.bold
+              ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+
+              Container(
+              width:
+              MediaQuery.of(context).size.width*0.83,
+          decoration:BoxDecoration(
+          borderRadius:BorderRadius.circular(13),
+          color:Colors.white
+          ),
+          child:
+          DropdownButton<String>(
+          isExpanded: true,
+          value:controller.selectedCat,
+          onChanged: (String? newValue) {
+          if (newValue != null) {
+            controller.changeCatValue(newValue);
+          }},
+          items: controller.catListNames.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+          value: value,
+          child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(value,style: GoogleFonts.cairo(fontSize: 20,fontWeight: FontWeight.w400),),
+          ),
+          );
+          }).toList(),
+          ),
+          ),
+
+              const SizedBox(
+                height: 10,
+              ),
+
+
+
+              // CustomDropDown(value: controller.selectedCat,
+              //     items: controller.catListNames,
+              //   function: (){
+              // //  print("vvv=="+v.toString());
+              //   controller.changeCatValue('cc');
+              //   }
+              // ),
               (controller.selectedDate == null)
                   ? InkWell(
                       child: Container(
@@ -271,9 +331,7 @@ class _AddWorkState extends State<AddWork> {
                 child: CustomButton(
                     text: 'اضافة العمل ',
                     onPressed: () {
-
                       controller.addWorkToFirestore();
-
 
                     }),
               ),

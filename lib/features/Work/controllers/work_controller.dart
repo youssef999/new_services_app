@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/const/app_message.dart';
+import 'package:freelancerApp/features/Home/models/cat.dart';
 import 'package:freelancerApp/features/Home/views/home_view.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
 import 'package:get/get.dart';
@@ -150,7 +151,37 @@ class WorkController extends GetxController {
       }
     });
   }
+List<Cat>catList=[];
+List<String>catListNames=[];
+String selectedCat='خدمات الصيانة';
 
+  Future<void> getCats() async {
+    catList=[];
+    catListNames=[];
+    print("HERE CATS......");
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('cat').get();
+      catList =
+          querySnapshot.docs.map((DocumentSnapshot doc) {
+        return Cat.fromFirestore
+          (doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+      for(int i=0;i<catList.length;i++){
+        catListNames.add(catList[i].name);
+      }
+      selectedCat=catList[0].name;
+      update();
+      print("Cats loaded: ${catList.length}.");
+    } catch (e) {
+      print("Error fetching ads: $e");
+    }
+  }
+
+  changeCatValue(String cat){
+    selectedCat=cat;
+    update();
+  }
 
   checkValidation() {
     if (title.text.isEmpty) {

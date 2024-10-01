@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/features/Home/models/ad.dart';
 import 'package:freelancerApp/features/Home/models/address.dart';
+import 'package:freelancerApp/features/Home/models/sub_cat.dart';
 import 'package:freelancerApp/features/Home/views/worker_address.dart';
 import 'package:freelancerApp/features/workers/models/workers.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,6 +21,7 @@ class HomeController extends GetxController {
 
   List<Ad>adsList = [];
   List<Cat>catList = [];
+  List<SubCat>subCatList = [];
   List<String>countryList = [
     'مصر','الكويت'
   ];
@@ -42,7 +44,6 @@ List<WorkerProvider> workersList = [];
 List<WorkerProvider> workersAddressList = [];
   double userCurrentLat=0.0;
   double userCurrentLng=0.0;
-
 
 
 
@@ -329,24 +330,101 @@ double _deg2rad(double deg) {
   }
 
 
+List<WorkerProvider> workersSubCatList=[];
+
+ Future<void> getWorkersWithCats({required String cat
+ ,required String subCat}) async {
+    print("HERE CATS......");
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance
+      .collection('serviceProviders').get();
+      workersSubCatList = querySnapshot.docs.map((DocumentSnapshot doc) {
+        return WorkerProvider
+        .fromFirestore(doc.data()
+         as Map<String, dynamic>, doc.id);
+
+      }).toList();
+      update();
+      print("workers loaded: ${workersSubCatList.length}.");
+    } catch (e) {
+      print("Error fetching ads: $e");
+    }
+  }
   Future<void> getCats() async {
+    print("HERE CATS......");
     try {
       QuerySnapshot querySnapshot =
       await FirebaseFirestore.instance.collection('cat').get();
-
       catList = querySnapshot.docs.map((DocumentSnapshot doc) {
         return Cat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+
       }).toList();
       update();
-      print("Cats loaded: ${adsList.length} ads found.");
+      print("Cats loaded: ${catList.length}.");
     } catch (e) {
       print("Error fetching ads: $e");
     }
   }
 
+    Future<void> getSubCats() async {
+    List<SubCat>data=[];
+    subCatList=[];
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('sub_cat')
+     // .where('cat',isEqualTo:cat)
+      .get();
+      data = querySnapshot.docs.map((DocumentSnapshot doc) {
+        return SubCat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+      subCatList.addAll(data);
+      update();
+      print("SUB Cats loaded: ${subCatList.length} ads found.");
+    } catch (e) {
+      print("Error fetching ads: $e");
+    }
+  }
  // List<WorkerProvider> workersList = [];
 
   List<WorkerProvider> workersCatList=[];
+
+
+
+    Future<void> getWorkersWithSubCat
+        (String subCat,String cat) async {
+
+      workersSubCatList=[];
+     print("subCAT==="+subCat);
+     print("cat=="+cat);
+   
+      List<WorkerProvider>data=[];
+      try {
+        // Fetch all documents from the 'ads' collection
+        QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance
+        .collection('serviceProviders')
+        .where('cat',isEqualTo: cat)
+          .where('sub_cat',isEqualTo:subCat)
+            .get();
+        // Map each document to an Ad instance and add to adsList
+       data= querySnapshot.docs.map((DocumentSnapshot doc) {
+          // Convert the document data to the Ad model using fromFirestore
+          return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
+
+        workersSubCatList.addAll(data);
+
+        update();
+        
+        print("Worker Sub Cat ${workersSubCatList.length} .");
+      }
+       catch (e) {
+        print("Error fetching ads: $e");
+    }
+  }
+
+
 
   Future<void> getAllWorkers(String cat) async {
 

@@ -19,7 +19,7 @@ class MainHome extends StatefulWidget {
 
 List<Widget> fragmentScreens = [
   const HomeView(),
-  const AddWork(),
+  AddWork(cat: '', subCat: '',),
   const UserTasksView(),
   const SettingsView(),
 ];
@@ -49,7 +49,9 @@ class _State extends State<MainHome> {
     if (roleId == '0') {
       fragmentScreens = [
         const HomeView(),
-        const AddWork(),
+        AddWork(subCat: '', cat: '',
+
+        ),
         const UserTasksView(),
         const SettingsView(),
       ];

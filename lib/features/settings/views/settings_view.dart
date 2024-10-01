@@ -40,9 +40,9 @@ class _SettingsViewState extends State<SettingsView> {
               const SizedBox(
                 height: 12,
               ),
-              (controller.userData.isNotEmpty)
-                  ? UserCardWidget(userData: controller.userData[0])
-                  : const Center(child: CircularProgressIndicator()),
+              // (controller.userData.isNotEmpty)
+              //     ? UserCardWidget(userData: controller.userData[0])
+              //     : const Center(child: CircularProgressIndicator()),
               const SizedBox(
                 height: 30,
               ),

@@ -6,6 +6,7 @@ class WorkerProvider{
   final String id;
   final String image;
   final String cat;
+  final String subCat;
   final String email;
   final String lat;
   final String lng;
@@ -16,6 +17,7 @@ class WorkerProvider{
 
   WorkerProvider({required this.id,
    required this.details,required this.rate,
+   required this.subCat,
    required this.lat,required this.lng,
   required this.cat,required this.email,required this.image,required this.name,
   required this.price
@@ -26,6 +28,7 @@ class WorkerProvider{
     return WorkerProvider(
       id: documentId,
       details: json['details'] ?? '',
+      subCat: json['sub_cat'] ?? '',
       image: json['image'] ?? '', 
       lat: json['lat'] ?? '',
       rate: json['rating'] ?? 0.0,
@@ -40,6 +43,7 @@ class WorkerProvider{
     return {
       'image': image,
       'rating':rate,
+      'sub_cat':subCat,
       'cat': cat,
       'email': email,
       'name': name,

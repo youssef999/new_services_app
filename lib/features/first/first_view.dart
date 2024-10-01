@@ -74,7 +74,7 @@ class FirstView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               AppAssets.users,
-                              width: 100,
+                              width: 90,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -82,7 +82,7 @@ class FirstView extends StatelessWidget {
                             "تسجيل كمستخدم",
                             style: TextStyle(
                               color: AppColors.secondaryTextColor,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -91,7 +91,7 @@ class FirstView extends StatelessWidget {
                             "استمتع بخدماتنا المميزة",
                             style: TextStyle(
                               color: AppColors.secondaryTextColor,
-                              fontSize: 16,
+                              fontSize: 13,
                             ),
                           ),
                         ],
@@ -123,7 +123,7 @@ class FirstView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               AppAssets.workers,
-                              width: 100,
+                              width: 90
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -131,7 +131,7 @@ class FirstView extends StatelessWidget {
                             "تسجيل كعامل",
                             style: TextStyle(
                               color: AppColors.secondaryTextColor,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -140,7 +140,7 @@ class FirstView extends StatelessWidget {
                             "انضم إلى فريق عملنا اليوم",
                             style: TextStyle(
                               color: AppColors.secondaryTextColor,
-                              fontSize: 16,
+                              fontSize: 13,
                             ),
                           ),
                         ],

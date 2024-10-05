@@ -45,7 +45,7 @@ getWorkerData()async{
     }
 }
 
-addProposal({required Task task})async{
+addProposal({required Task task,required BuildContext context})async{
   print("ADD PROPOSAL...");
  const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
@@ -74,13 +74,15 @@ addProposal({required Task task})async{
       }).then((value) {
         update();
         print("DONE");
-        appMessage(text: ' تم اضافة طلبك بنجاح ', fail: false);
+        appMessage(text: ' تم اضافة طلبك بنجاح ', fail: false,
+        context: context
+        );
         Get.offAll(const MainHome());
       });
     } catch (e) {
       update();
       print(e);
-      appMessage(text: "error".tr, fail: true);
+      appMessage(text: "error".tr, fail: true,context: context);
     }
 }
 

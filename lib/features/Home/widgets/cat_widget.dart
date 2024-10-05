@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/features/Home/models/cat.dart';
+import 'package:freelancerApp/features/subCat_views/subcat_view.dart';
 import 'package:freelancerApp/features/workers/views/workers_view.dart';
 import 'package:get/get.dart';
 import '../../../Core/widgets/Custom_Text.dart';
@@ -26,17 +27,25 @@ class CatWidget extends StatelessWidget {
                   width: 45,
                 )),
             const SizedBox(
-              height: 7,
+              height: 5,
             ),
-            Custom_Text(
-                text: cat.name,
-                fontSize: 15,
-                color: AppColors.secondaryTextColor),
+            Center(
+              child:Text(
+                cat.name,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+              // child: Custom_Text(
+              //     text: cat.name,
+              //     fontSize: 14,
+              //     color: AppColors.secondaryTextColor),
+            ),
           ],
         ),
       ),
       onTap: () {
-        Get.to(WorkersCatView(cat: cat.name));
+        Get.to(SubCatView(cat: cat.name));
+
       },
     );
   }

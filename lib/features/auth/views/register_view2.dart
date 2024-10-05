@@ -20,9 +20,11 @@ import '../../../core/resources/app_styles.dart';
 import 'register_view2.dart';
 
 class SignupView extends StatefulWidget {
-  String roleId;
 
-  SignupView({super.key, required this.roleId});
+  String roleId;
+  String email;
+
+  SignupView({super.key, required this.roleId,required this.email});
 
   @override
   State<SignupView> createState() => _SignupViewState();
@@ -33,6 +35,12 @@ class _SignupViewState extends State<SignupView> {
   @override
   void initState() {
     controller.getCats();
+    if(widget.email!='x'){
+      controller.emailController.text=widget.email;
+    }
+   // if(widget.roleId=='1'){
+      controller.getCities('مصر');
+   // }
     super.initState();
   }
 
@@ -75,7 +83,7 @@ class UserRegisterView extends StatelessWidget {
                       width: 300,
                     ),
                     Text(
-                      'أهلا بك  في دليل اليمن',
+                      'أهلا بك  ',
                       style: TextStyle(
                           color: AppColors.primary,
                           fontSize: 23,
@@ -149,6 +157,7 @@ class UserRegisterView extends StatelessWidget {
                                 controller.emailController.text,
                                 controller.passController.text,
                                 controller.phoneController.text,
+                                context
                               );
                             }),
                         const SizedBox(
@@ -274,6 +283,8 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                             ),
                           ],
                         ),
+
+                        // drop down category
                         Container(
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
@@ -305,6 +316,8 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                                 }).toList(),
                               );
                             })),
+
+
                         const SizedBox(height: 20),
                         CustomTextFormField(
                           hint: 'password'.tr,
@@ -333,22 +346,87 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                           controller: controller.priceController,
                         ),const SizedBox(height: 20),
 
-                        CustomTextFormField(
-                          hint: 'البلد',
-                          obs: false,
-                          color: AppColors.primary,
-                          icon: Icons.price_change,
-                          validateMessage: ' ',
-                          controller: controller.countryController,
-                        ),const SizedBox(height: 20),
-                        CustomTextFormField(
-                          hint: 'المدينة',
-                          obs: false,
-                          color: AppColors.primary,
-                          icon: Icons.location_city,
-                          validateMessage: ' ',
-                          controller: controller.cityController,
-                        ),const SizedBox(height: 20),
+                        // drop down country
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.DropDownColor,
+                            ),
+                            child: GetBuilder<AuthController>(builder: (_) {
+                              return DropdownButton<String>(
+                                underline: const SizedBox.shrink(),
+                                value: controller.selectedCountry,
+                                onChanged: (newValue) {
+                                  controller.changeCountry(newValue!);
+                                },
+                                items:
+                                controller.countryList.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        item,
+                                        style: TextStyle(
+                                            color: AppColors.greyTextColor),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            })),
+                        const SizedBox(height: 20),
+
+                        // drop down city
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.DropDownColor,
+                            ),
+                            child: GetBuilder<AuthController>(builder: (_) {
+                              return DropdownButton<String>(
+                                underline: const SizedBox.shrink(),
+                                value: controller.selectedCity,
+                                onChanged: (newValue) {
+                                  controller.changeSelectedCity(newValue!);
+                                },
+                                items: controller.cityNames.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        item,
+                                        style: TextStyle(
+                                            color: AppColors.greyTextColor),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            })),
+
+                        // CustomTextFormField(
+                        //   hint: 'البلد',
+                        //   obs: false,
+                        //   color: AppColors.primary,
+                        //   icon: Icons.price_change,
+                        //   validateMessage: ' ',
+                        //   controller: controller.countryController,
+                        // ),
+
+                        // CustomTextFormField(
+                        //   hint: 'المدينة',
+                        //   obs: false,
+                        //   color: AppColors.primary,
+                        //   icon: Icons.location_city,
+                        //   validateMessage: ' ',
+                        //   controller: controller.cityController,
+                        // ),
+                        const SizedBox(height: 20),
+
                         CustomTextFormField(
                           hint: 'المنطقة',
                           obs: false,
@@ -366,7 +444,7 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                               '1',
                               controller.emailController.text,
                               controller.passController.text,
-                              controller.phoneController.text,
+                              controller.phoneController.text,context
                             );
                           },
                         ),

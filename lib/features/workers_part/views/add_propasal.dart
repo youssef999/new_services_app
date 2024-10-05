@@ -64,7 +64,7 @@ class _AddProposalState extends State<AddProposal> {
             CustomButton(
               text: 'اضف الان',
               onPressed: () {
-                controller.addProposal(task: widget.task);
+                controller.addProposal(task: widget.task,context: context);
               },
             ),
           ],
@@ -77,7 +77,6 @@ class _AddProposalState extends State<AddProposal> {
 class TaskWidget extends StatelessWidget {
   Task task;
   TaskWidget({super.key, required this.task});
-
   String formatDate(String date) {
     try {
       DateTime parsedDate = DateTime.parse(date);

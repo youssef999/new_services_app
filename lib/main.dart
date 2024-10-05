@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:freelancerApp/core/localization/local.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
+import 'package:freelancerApp/features/onBoarding/onBoarding_view.dart';
 import 'package:freelancerApp/firebase_api.dart';
 import 'package:freelancerApp/routes/app_pages.dart';
 import 'package:get/get.dart';
@@ -26,14 +27,12 @@ void main() async {
   await FirebaseApi().initNotifications();
   await GetStorage.init();
   CheckTheme();
-
   AwesomeNotifications().initialize(null,[
     NotificationChannel(
         channelKey: 'basic-channel',
         channelName: 'Basic notifications',
         channelDescription: 'notification chanel for testing')
   ]);
-
   final box = GetStorage();
   String keylocal = box.read('locale') ?? 'x';
   Locale lang = const Locale('ar');
@@ -42,9 +41,6 @@ void main() async {
   } else {
     box.write('locale', 'ar');
   }
-  // if (defaultTargetPlatform == TargetPlatform.android) {
-  //   WebView.platform = SurfaceAndroidWebView();
-  // }
   runApp(const MainApp());
 }
 
@@ -93,7 +89,8 @@ class _MainAppState extends State<MainApp> {
         translations: MyLocal(),
         navigatorKey: navigatorKey,
         title: "",
-        home: const MainHome(),
+        home: OnBoardingView(),
+       // home: const MainHome(),
         theme: ThemeData(
             // تطبيق خط Cairo كنوع النص الافتراضي
             textTheme: GoogleFonts.cairoTextTheme(
@@ -123,7 +120,8 @@ class _MainAppState extends State<MainApp> {
         //locale:lang,
         translations: MyLocal(),
         title: " ",
-        home: const MainHome(),
+        home: OnBoardingView(),
+        //const MainHome(),
         // locale: lang,
         //  supportedLocales: supportedLocales,
         // initialRoute: Theme1AppPages.INITIAL,

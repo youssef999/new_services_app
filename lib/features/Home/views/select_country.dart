@@ -14,6 +14,7 @@ class SelectCountryView extends StatefulWidget {
 }
 
 class _SelectCountryViewState extends State<SelectCountryView> {
+
   HomeController controller = Get.put(HomeController());
 
   @override
@@ -26,7 +27,7 @@ class _SelectCountryViewState extends State<SelectCountryView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'اختر الدولة التي تفضلها',
+              'selectCountry'.tr,
               style: TextStyle(
                   color: AppColors.primary,
                   fontSize: 20,
@@ -42,7 +43,6 @@ class _SelectCountryViewState extends State<SelectCountryView> {
                       controller.changeCountry(
                           controller.countryList[index]
                       );
-
                       Get.offAll(const MainHome());
 
                     },

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/const/app_message.dart';
 import 'package:freelancerApp/features/Home/models/cat.dart';
+import 'package:freelancerApp/features/Home/models/sub_cat.dart';
 import 'package:freelancerApp/features/Home/views/home_view.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
 import 'package:get/get.dart';
@@ -16,14 +17,22 @@ class WorkController extends GetxController {
 
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
+  TextEditingController address = TextEditingController();
   TextEditingController minPrice = TextEditingController();
   TextEditingController maxPrice = TextEditingController();
-
+  TextEditingController locationDescription=TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   TimeOfDay? endSelectedTime;
   bool validation = false;
+  String locationName='';
 
+
+
+  changeLocationName(String name){
+    locationName=name;
+    update();
+  }
   List<User> userDataList = [];
 
   getUserData() async {
@@ -49,6 +58,9 @@ class WorkController extends GetxController {
 
   Future<void> selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
+      helpText: "selectTime".tr,
+      cancelText: 'cancel'.tr,
+      confirmText: 'ok'.tr,
       context: context,
       initialTime: TimeOfDay.now(), // Initial time in the time picker
     );
@@ -64,6 +76,9 @@ class WorkController extends GetxController {
 
   Future<void> selectEndTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
+       helpText: "selectTime".tr,
+      cancelText: 'cancel'.tr,
+      confirmText: 'ok'.tr,
       context: context,
       initialTime: TimeOfDay.now(), // Initial time in the time picker
     );
@@ -75,6 +90,9 @@ class WorkController extends GetxController {
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+        helpText: "selectDate".tr,
+        cancelText: 'cancel'.tr,
+        confirmText: 'ok'.tr,
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
@@ -104,8 +122,8 @@ class WorkController extends GetxController {
     update();
   }
 
-  Future<void> addWorkToFirestore() async {
-    checkValidation();
+  Future<void> addWorkToFirestore(BuildContext context) async {
+    checkValidation(context);
     Future.delayed(const Duration(seconds: 2), () async {
       if (validation == true) {
         // Generate a new document ID
@@ -132,7 +150,7 @@ class WorkController extends GetxController {
           // Create a reference with the generated document ID
           CollectionReference collection = FirebaseFirestore.instance.collection('tasks');
           await collection.doc(docId).set(data).then((value) {
-            appMessage(text: 'تم اضافة مشروعك بنجاح', fail: false);
+            appMessage(text: 'تم اضافة مشروعك بنجاح', fail: false,context: context);
             Get.offAll(const MainHome());
             title.clear();
             description.clear();
@@ -152,8 +170,11 @@ class WorkController extends GetxController {
     });
   }
 List<Cat>catList=[];
+List<SubCat>subCatList=[];
 List<String>catListNames=[];
+List<String>subCatListNames=[];
 String selectedCat='خدمات الصيانة';
+String selectedSubCat='فني طابعات و احبار';
 
   Future<void> getCats() async {
     catList=[];
@@ -178,26 +199,69 @@ String selectedCat='خدمات الصيانة';
     }
   }
 
+  Future<void> getSubCats(String cat) async {
+    subCatList=[];
+    subCatListNames=[];
+    print("HERE CATS......");
+    try {
+      if(cat.length>1){
+        QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('sub_cat')
+            .where('cat',isEqualTo: cat)
+            .get();
+       subCatList =
+            querySnapshot.docs.map((DocumentSnapshot doc) {
+              return SubCat.fromFirestore
+                (doc.data() as Map<String, dynamic>, doc.id);
+            }).toList();
+      }
+      else{
+        QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('sub_cat')
+            .get();
+   subCatList =
+            querySnapshot.docs.map((DocumentSnapshot doc) {
+              return SubCat.fromFirestore
+                (doc.data() as Map<String, dynamic>, doc.id);
+            }).toList();
+      }
+
+      print("Subcat==XXX="+subCatList.length.toString());
+      for(int i=0;i<subCatList.length;i++){
+        subCatListNames.add(subCatList[i].name);
+      }
+      selectedSubCat=subCatListNames[0];
+      update();
+      print("sub Cat loaded: ${catList.length}.");
+      print("sub Cat loaded: ${subCatListNames}.");
+    } catch (e) {
+      print("Error fetching ads: $e");
+    }
+  }
+
+
+
   changeCatValue(String cat){
     selectedCat=cat;
     update();
+    getSubCats(cat);
   }
 
-  checkValidation() {
+  checkValidation(BuildContext context) {
     if (title.text.isEmpty) {
-      appMessage(text: 'ادخل عنوان المشروع', fail: true);
+      appMessage(text: 'ادخل عنوان المشروع', fail: true,context: context);
     } else if (description.text.isEmpty) {
-      appMessage(text: 'ادخل وصف المشروع', fail: true);
+      appMessage(text: 'ادخل وصف المشروع', fail: true, context: context);
     } else if (minPrice.text.isEmpty) {
-      appMessage(text: 'ادخل اقل كمية المشروع', fail: true);
+      appMessage(text: 'ادخل اقل كمية المشروع', fail: true, context: context);
     } else if (maxPrice.text.isEmpty) {
-      appMessage(text: 'ادخل اكبر كمية المشروع', fail: true);
+      appMessage(text: 'ادخل اكبر كمية المشروع', fail: true, context: context);
     } else if (selectedTime == null) {
-      appMessage(text: 'ادخل وقت تنفيذ المشروع', fail: true);
+      appMessage(text: 'ادخل وقت تنفيذ المشروع', fail: true, context: context);
     } else if (endSelectedTime == null) {
-      appMessage(text: 'ادخل وقت  نهائي لتنفيذ المشروع', fail: true);
+      appMessage(text: 'ادخل وقت  نهائي لتنفيذ المشروع', fail: true, context: context);
     } else if (selectedDate == null) {
-      appMessage(text: 'ادخل تاريخ تنفيذ المشروع', fail: true);
+      appMessage(text: 'ادخل تاريخ تنفيذ المشروع', fail: true, context: context);
     } else {
       validation = true;
       update();

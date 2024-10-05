@@ -3,6 +3,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:freelancerApp/core/const/app_message.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
 import 'package:freelancerApp/features/Tasks/models/task.dart';
@@ -47,7 +48,7 @@ class FilterTasksController extends GetxController{
   }
 
 
-  void cancelTask(Proposal task) async {
+  void cancelTask(Proposal task,BuildContext context) async {
   // Reference to Firestore
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   try {
@@ -56,7 +57,7 @@ class FilterTasksController extends GetxController{
       'status': 'ملغي',
     });
     print('Task canceled successfully');
-    appMessage(text: 'تم الغاء الطلب بنجاح', fail: false);
+    appMessage(text: 'تم الغاء الطلب بنجاح', fail: false,context: context);
     Get.offAll(const MainHome());
   
   } catch (e) {

@@ -205,7 +205,7 @@ class _ProposalScreenState extends State<ProposalScreen> {
                               btnColor: Colors.green,
                               onPressed: () =>
                                  controller.changeStatusProposal(proposal,
-                                 'accepted'
+                                 'accepted',context
                                  ),
                             ),
                             const SizedBox(width: 10),
@@ -213,7 +213,7 @@ class _ProposalScreenState extends State<ProposalScreen> {
                               text: 'رفض',
                               btnColor: Colors.red,
                               onPressed: () =>   controller.changeStatusProposal(
-                                  proposal,'rejected'),
+                                  proposal,'rejected',context),
                             ),
                           ],
                         ),

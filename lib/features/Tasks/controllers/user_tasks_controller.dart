@@ -14,7 +14,7 @@ class UserTasksController extends GetxController {
 
 
 
-  changeStatusProposal(Proposal proposal,String status) async {
+  changeStatusProposal(Proposal proposal,String status,BuildContext context) async {
     try {
       CollectionReference collectionRef =
       FirebaseFirestore.instance.collection('proposals');
@@ -24,10 +24,12 @@ class UserTasksController extends GetxController {
       });
       print("Document with ID $status has been updated successfully!");
       if(status=='accepted'){
-        appMessage(text: 'تم قبول الطلب', fail: false);
+        appMessage(text: 'تم قبول الطلب', fail: false,
+            context: context
+        );
         Get.offAll(const MainHome());
       }else{
-        appMessage(text: 'تم رفض الطلب', fail: false);
+        appMessage(text: 'تم رفض الطلب', fail: false, context: context);
       }
     } catch (e) {
       print("Error updating document: $e");
@@ -59,7 +61,7 @@ class UserTasksController extends GetxController {
             TextButton(
               child: const Text('احذف الان '),
               onPressed: () async {
-                await deleteTask(value);
+                await deleteTask(value,context);
                 Navigator.of(context).pop(); // Dismiss the dialog
                 // Call deleteTask if confirmed
               },
@@ -70,7 +72,7 @@ class UserTasksController extends GetxController {
     );
   }
 
-  Future<void> deleteTask(dynamic value) async {
+  Future<void> deleteTask(dynamic value,BuildContext context) async {
     print("delete task $value");
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -80,7 +82,7 @@ class UserTasksController extends GetxController {
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         await doc.reference.delete();
         print('Deleted task with ID: ${doc.id}');
-        appMessage(text: 'تم الحذف بنجاح ', fail: false);
+        appMessage(text: 'تم الحذف بنجاح ', fail: false, context: context);
         getUserTaskList();
       }
       print('All matching tasks deleted successfully.');

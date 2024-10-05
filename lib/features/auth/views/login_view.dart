@@ -16,16 +16,31 @@ import '../../../core/resources/app_colors.dart';
 import '../../../core/resources/app_styles.dart';
 import 'register_view2.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   final String type;
   LoginView({super.key, required this.type});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+
+  AuthController controller = Get.put(AuthController());
+  @override
+  void initState() {
+
+    controller.getAllUsers();
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
     AuthController controller = Get.put(AuthController());
     controller.loginFormKey = GlobalKey<FormState>();
 
-    print("TYPEEEE===" + type);
+    print("TYPEEEE===" + widget.type);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor, // Improved background color for better contrast
@@ -57,7 +72,7 @@ class LoginView extends StatelessWidget {
                           children: [
                             Image.asset(
                               AppAssets.logo2,
-                              height: 150,
+                              height: 123,
                               fit: BoxFit.cover,
                             ),
                             const SizedBox(height: 4),
@@ -133,6 +148,8 @@ class LoginView extends StatelessWidget {
                       ),
                       const SizedBox(height: 25),
                       // Login Button
+
+                      (controller.isLoading==false)?
                       Padding(
                         padding: const EdgeInsets.only(left:28.0
                         ,right: 28
@@ -140,17 +157,20 @@ class LoginView extends StatelessWidget {
                         child: CustomButton(
                           text: 'تسجيل دخول',
                           onPressed: () {
-
-
                           //  controller.loginWithPhone( context);
-                            controller.userLogin(type);
+                            controller.userLogin(widget.type,context);
                           },
                           color1: AppColors.primary,
                           color2: AppColors.secondaryTextColor,
                           //fontSize: 18,
                         ),
-                      ),
-                      const SizedBox(height: 20),
+                      ):Center(child: CircularProgressIndicator(
+                        color:AppColors.primary,
+                      )),
+                      
+                      
+                      
+                      const SizedBox(height: 15),
                       // Divider
                       Center(
                         child: Row(
@@ -172,7 +192,38 @@ class LoginView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
+                      
+                      InkWell(
+                        child: Container(
+                          decoration:BoxDecoration(
+                            borderRadius: BorderRadius.circular(21),
+                            color: AppColors.primary,
+                          ),
+                          padding:const  EdgeInsets.all(10),
+                          child: Row(children: [
+
+                            Image.asset(AppAssets.googleIcon,
+                            width:50 ,
+                            height: 31,
+                            ),
+
+                          const  SizedBox(width: 12,),
+
+                            Text('تسجيل دخول بواسطة جوجل',
+                              style:TextStyle(color: AppColors.mainTextColor,
+                                  fontSize: 18,fontWeight: FontWeight.bold),)
+
+                          ],),
+                        ),
+                        onTap:(){
+                          print("TRY TO LOGIN======"+widget.type.toString());
+                          controller.tryToLogin(context, widget.type);
+                        },
+                      ),
+                      
+                      
+                      
                       // Register Option
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +234,9 @@ class LoginView extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.to(SignupView(roleId: type));
+                              Get.to(SignupView(roleId: widget.type,
+                              email: 'x',
+                              ));
                             },
                             child: Text(
                               'انشاء حساب'.tr,
@@ -196,6 +249,7 @@ class LoginView extends StatelessWidget {
                           ),
                         ],
                       ),
+
                     ],
                   ),
                 ),

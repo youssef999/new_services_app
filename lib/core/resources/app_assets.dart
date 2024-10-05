@@ -9,6 +9,7 @@ class AppAssets {
  static const String logo = '$imagePath/logo.jpg';
  static const String logo2 = '$imagePath/logo2.jpg';
  static const String whatsApp = '$imagePath/whats.webp';
+ static const String googleIcon = '$imagePath/google.png';
  static const String noTasks = '$imagePath/order_empty.webp';
   static const String workers = '$imagePath/worker.jpg';
    static const String users = '$imagePath/user2.png';
@@ -19,6 +20,7 @@ class AppAssets {
  
      static const String egyptImage = '$imagePath/egy.avif';
      static const String kwtImage = '$imagePath/kwt.jpg';
+     static const String suadiImage = '$imagePath/sau.png';
  //order_empty.webp
 }
 

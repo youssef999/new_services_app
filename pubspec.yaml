@@ -56,13 +56,16 @@ dependencies:
   get_storage: null
   google_fonts: ^4.0.4
   google_maps_flutter: ^2.5.0
+  awesome_snackbar_content: ^0.1.4
   iconly: ^1.0.1
   iconsax: null
   image_picker: null
   intl: null
+  flutter_onboarding_slider: ^1.0.11
   intl_phone_field: ^3.2.0
   location: ^5.0.3
   permission_handler: ^11.0.1
+  google_sign_in: ^6.2.1
   random_string: ^2.3.1
   rate: ^0.0.2
   search_map_location: ^0.0.6

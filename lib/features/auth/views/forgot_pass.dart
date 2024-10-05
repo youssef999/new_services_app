@@ -35,7 +35,7 @@ class ForgotPass extends StatelessWidget {
              Padding(
                padding: const EdgeInsets.all(12.0),
                child: CustomButton(text: 'send'.tr, onPressed: (){
-                controller.resetPassword();
+                controller.resetPassword(context);
               
                }),
              )

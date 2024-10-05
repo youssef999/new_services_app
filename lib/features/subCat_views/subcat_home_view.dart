@@ -86,7 +86,8 @@ class _SubCatHomeViewState extends State<SubCatHomeView> {
                   ),
                 ),
                 onTap: () {
-                  Get.to(AddWork(cat: '', subCat: '',));
+                  Get.to(AddWork(cat: widget.cat
+                    , subCat: widget.subcat,));
                 },
               ),
               const SizedBox(height: 10),

@@ -7,13 +7,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/widgets/Custom_Text.dart';
 import 'package:freelancerApp/core/widgets/custom_loading.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
 import 'package:freelancerApp/features/Home/views/select_country.dart';
+import 'package:freelancerApp/features/auth/views/register_view2.dart';
 import 'package:freelancerApp/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import '../../../../Core/const/app_message.dart';
@@ -69,7 +72,69 @@ class AuthController extends GetxController {
   final List<String> countryNames = [];
   final List<String> cityNames = [];
 
-  String selectedItem = 'تنظيف';
+  String selectedItem = 'خدمات الكمبيوتر';
+
+
+
+
+  List<String>countryList = [
+    'مصر','الكويت','السعودية'
+  ];
+  List<String>countryImageList = [
+
+    AppAssets.egyptImage,
+    AppAssets.kwtImage,
+    AppAssets.suadiImage,
+  ];
+
+  String selectedCountry='مصر';
+
+  String selectedCity = 'القاهرة';
+
+  final box=GetStorage();
+
+  changeCountry(String country){
+    selectedCountry=country;
+   // box.write('country', country);
+    update();
+    print("COUNTRY====$country");
+    getCities(country);
+  }
+
+
+  getCities(String country) async {
+
+    print("cc=xx==$country");
+
+    cityNames.clear();
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('city')
+       .where('country', isEqualTo: country)
+        .get();
+
+    try {
+      List<Map<String, dynamic>> data = querySnapshot.docs
+          .map((DocumentSnapshot doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
+      for(int i=0;i<data.length;i++){
+        cityNames.add(data[i]['city']);
+      }
+      selectedCity = data[0]['city'];
+    } catch (e) {
+      print("E....cc...");
+      print(e);
+      print("E...xx....");
+    }
+    print("CITY====$cityNames");
+    update();
+  }
+
+  changeSelectedCity(String city) {
+    selectedCity = city;
+    update();
+  }
 
   XFile? pickedImageXFile;
 
@@ -98,8 +163,6 @@ class AuthController extends GetxController {
   bool isImage = false;
 
   bool isLoading = false;
-
-  final box = GetStorage();
 
   changeCatValue(String val) {
     selectedItem = val;
@@ -200,7 +263,7 @@ class AuthController extends GetxController {
     update();
   }
 
-  changePassword() async {
+  changePassword(BuildContext context) async {
     if (passController.text == checkPassController.text &&
         passController.text.length > 5) {
       try {
@@ -211,23 +274,25 @@ class AuthController extends GetxController {
       }
     } else {
       appMessage(
-          text: 'كلمة المرور غير متطابقة او عددها اقل من 6 ', fail: true);
+          text: 'كلمة المرور غير متطابقة او عددها اقل من 6 ', fail: true, context: context);
     }
   }
 
-  Future<void> resetPassword() async {
+  Future<void> resetPassword(BuildContext context) async {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: emailController.text)
           .then((value) {
-        appMessage(text: "تم ارسال رسالة لتغيير كلمة المرور", fail: true);
+        appMessage(text: "تم ارسال رسالة لتغيير كلمة المرور", fail: true,
+
+            context: context);
 
         Get.offNamed(Routes.LOGIN)!
-            .then((value) => appMessage(text: "checkMail".tr, fail: false));
+            .then((value) => appMessage(text: "checkMail".tr, fail: false, context: context));
       });
       // Password reset email sent successfully
     } catch (e) {
-      appMessage(text: 'ادخل بريد سليم ', fail: false);
+      appMessage(text: 'ادخل بريد سليم ', fail: false, context: context);
       // Handle any errors that occur during the password reset process
       // ignore: avoid_print
       print('Error sending password reset email: $e');
@@ -333,69 +398,132 @@ class AuthController extends GetxController {
     }
   }
 
-  userLogin(String roleId) async {
 
-    print("role ... id .. ==="+roleId);
 
-    isLoading = true;
-    update();
-    if (emailController.text.length > 2 && passController.text.length > 5) {
-      try {
-        final cred = await _auth.signInWithEmailAndPassword(
-            email: emailController.text, password: passController.text);
-        Future.delayed(const Duration(seconds: 1)).then((value) {
-          print("........................DONE.......................");
-         
-          box.write('email', emailController.text);
-          box.write('roleId', roleId);
-          loading = false;
-          CustomLoading.cancelLoading();
-          update();
-          if(roleId=='0'){
-            Get.offAll(const SelectCountryView());
-          }else{
-            Get.offAll(const MainHome());
-          }
+   List<Map<String,dynamic>>users=[];
+   List<String> usersEmails=[];
 
-          appMessage(text: 'تم التسجيل بنجاح ', fail: false);
+  void getAllUsers() async {
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('UserData').get();
 
-        }).catchError((error) {
-          CustomLoading.cancelLoading();
-          appMessage(text: 'خطا في تسجيل الدخول', fail: true);
-        });
-      } catch (e) {
-        CustomLoading.cancelLoading();
-        loading = false;
-        update();
-        String error = '';
-        print("E====$e");
-        if (e.toString().contains(
-            'The supplied auth credential is incorrect, malformed or has expired.')) {
-          error = 'wrongData'.tr;
-          appMessage(text: error, fail: true);
-        } else if (e.toString().contains(
-            'The supplied auth credential is incorrect, malformed or has expired.')) {
-          error = 'wrongMail'.tr;
-          appMessage(text: error, fail: true);
-        } else {
-          error = 'wrongData'.tr;
-          appMessage(text: error, fail: true);
-        }
-      }
-    } else {
-      // CustomLoading.cancelLoading();
-      if (emailController.text.contains('@') == false) {
-        appMessage(text: 'wrongMail'.tr, fail: false);
-      }
-      if (passController.text.length < 5) {
-        appMessage(text: 'wrongPass'.tr, fail: false);
-      }
+      List<Map<String, dynamic>> data = querySnapshot.docs
+          .map((DocumentSnapshot doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      users = data;
+    } catch (error) {
+      // ignore: avoid_print
+      print("Error fetching data: $error");
     }
-    isLoading = false;
-    update();
+    addUsersMails();
   }
 
-  register(String roleId, String email, String password, String phone) async {
+  addUsersMails() {
+    for (int i = 0; i < users.length; i++) {
+      usersEmails.add(users[i]['email']);
+    }
+  }
+
+
+  tryToLogin(BuildContext context, String roleId) async {
+
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+
+    final credintional = GoogleAuthProvider.credential(
+        accessToken: gAuth.accessToken, idToken: gAuth.idToken);
+    return await FirebaseAuth.instance
+        .signInWithCredential(credintional)
+        .then((value) {
+
+      print("Sign in done");
+      appMessage(text: 'Done', fail: false, context: context);
+      final box = GetStorage();
+      if (usersEmails.contains(value.user!.email)) {
+        box.write('email', value.user!.email.toString());
+        print("HERE main home");
+        Get.offAll(const MainHome());
+      } else {
+        box.write('email', value.user!.email.toString());
+
+        print("HERE sign up");
+       Get.offAll(SignupView(roleId: roleId,
+       email: value.user!.email.toString(),
+       ));
+      }
+    }).catchError((e) {
+      print("ERROR===" + e);
+      Get.snackbar('error'.tr, e.toString(),
+          duration: const Duration(seconds: 10));
+    });
+  }
+
+
+
+  userLogin(String roleId, BuildContext context) async {
+    print("role ... id .. ==="+roleId);
+    isLoading = true;
+    update();
+    Future.delayed(const Duration(seconds: 1)).then((value) async {
+      if (emailController.text.length > 2 && passController.text.length > 5) {
+        try {
+          final cred = await _auth.signInWithEmailAndPassword(
+              email: emailController.text, password: passController.text);
+          Future.delayed(const Duration(seconds: 1)).then((value) {
+            print("........................DONE.......................");
+            box.write('email', emailController.text);
+            box.write('roleId', roleId);
+            loading = false;
+            CustomLoading.cancelLoading();
+            update();
+            if(roleId=='0'){
+              Get.offAll(const SelectCountryView());
+            }else{
+              Get.offAll(const MainHome());
+            }
+
+            appMessage(text: 'تم التسجيل بنجاح ', fail: false, context: context);
+
+          }).catchError((error) {
+            CustomLoading.cancelLoading();
+            appMessage(text: 'خطا في تسجيل الدخول', fail: true, context: context);
+          });
+        } catch (e) {
+          CustomLoading.cancelLoading();
+          loading = false;
+          update();
+          String error = '';
+          print("E====$e");
+          if (e.toString().contains(
+              'The supplied auth credential is incorrect, malformed or has expired.')) {
+            error = 'wrongData'.tr;
+            appMessage(text: error, fail: true, context: context);
+          } else if (e.toString().contains(
+              'The supplied auth credential is incorrect, malformed or has expired.')) {
+            error = 'wrongMail'.tr;
+            appMessage(text: error, fail: true, context: context);
+          } else {
+            error = 'wrongData'.tr;
+            appMessage(text: error, fail: true, context: context);
+          }
+        }
+      } else {
+        // CustomLoading.cancelLoading();
+        if (emailController.text.contains('@') == false) {
+          appMessage(text: 'wrongMail'.tr, fail: false, context: context);
+        }
+        if (passController.text.length < 5) {
+          appMessage(text: 'wrongPass'.tr, fail: false, context: context);
+        }
+      }
+      isLoading = false;
+      update();
+    });
+
+  }
+
+  register(String roleId, String email, String password, String phone,BuildContext context) async {
     final box = GetStorage();
     box.write('roleId', roleId);
     try {
@@ -408,12 +536,12 @@ class AuthController extends GetxController {
               )
           .then((user) async {
         if (roleId == '0') {
-          addNewUser(user, phone);
+          addNewUser(user, phone,context);
         } else {
-          addNewWorker();
+          addNewWorker(context);
         }
         box.write('email', emailController.text);
-        appMessage(text: 'تم التسجيل بنجاح', fail: false);
+        appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
 
       });
     } catch (e) {
@@ -449,7 +577,7 @@ class AuthController extends GetxController {
     }
   }
 
-  addNewUser(UserCredential user, String phone) async {
+  addNewUser(UserCredential user, String phone,BuildContext context) async {
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
@@ -472,7 +600,7 @@ class AuthController extends GetxController {
         update();
         // ignore: avoid_print
         print("DONE");
-        appMessage(text: 'welcome'.tr, fail: false);
+        appMessage(text: 'welcome'.tr, fail: false, context: context);
         box.write('email', emailController.text);
         box.write('name', nameController.text);
         box.write('roleId', '0');
@@ -481,11 +609,11 @@ class AuthController extends GetxController {
     } catch (e) {
       update();
       print(e);
-      appMessage(text: "error".tr, fail: true);
+      appMessage(text: "error".tr, fail: true, context: context);
     }
   }
 
-  addNewWorker() async {
+  addNewWorker(BuildContext context) async {
     addNewAddress();
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
@@ -517,7 +645,7 @@ class AuthController extends GetxController {
       }).then((value) {
         update();
         print("DONE");
-        appMessage(text: 'welcome'.tr, fail: false);
+        appMessage(text: 'welcome'.tr, fail: false, context: context);
         box.write('email', emailController.text);
         box.write('name', nameController.text);
         Get.offAll(const MainHome());
@@ -525,7 +653,7 @@ class AuthController extends GetxController {
     } catch (e) {
       update();
       print(e);
-      appMessage(text: "error".tr, fail: true);
+      appMessage(text: "error".tr, fail: true, context: context);
     }
   }
 

@@ -23,12 +23,13 @@ class HomeController extends GetxController {
   List<Cat>catList = [];
   List<SubCat>subCatList = [];
   List<String>countryList = [
-    'مصر','الكويت'
+    'مصر','الكويت','السعودية'
   ];
   List<String>countryImageList = [
 
     AppAssets.egyptImage,
     AppAssets.kwtImage,
+    AppAssets.suadiImage,
   ];
 
   String selectedCountry='مصر';
@@ -44,8 +45,6 @@ List<WorkerProvider> workersList = [];
 List<WorkerProvider> workersAddressList = [];
   double userCurrentLat=0.0;
   double userCurrentLng=0.0;
-
-
 
 
   Future<void> getAllWorkersWithAddress(String address) async {
@@ -130,11 +129,6 @@ List<String>addressName=[];
 List<bool> checkListValues=[];
 
 
-
-
-
-
-
   changeAddressValue(int index,bool val){
     for(int i=0;i<checkListValues.length;i++){
       checkListValues[i]=false;
@@ -168,7 +162,8 @@ List<bool> checkListValues=[];
                 content: SizedBox(
                   //  height: 300, // Adjust the height as needed
                   width: double.maxFinite,
-                  child: ListView.builder(
+                  child:
+                  ListView.builder(
                     shrinkWrap: true,
                     itemCount: addressName.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -186,6 +181,7 @@ List<bool> checkListValues=[];
                       );
                     },
                   ),
+
                 ),
                 actions: <Widget>[
                   TextButton(
@@ -209,13 +205,14 @@ List<bool> checkListValues=[];
 
 
 getAllAddress() async {
-  final box=GetStorage();
-  String country=box.read('country')??'';
+  // final box=GetStorage();
+  // String country=box.read('country')??'';
 addressName.clear();
   try {
     // Reference to the Firestore collection
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('adresses').where('country',isEqualTo: country) // Replace with your collection name
+        .collection('adresses')
+        //.where('country',isEqualTo: country) // Replace with your collection name
         .get();
     for (var doc in querySnapshot.docs) {
       if (doc['name'] != null) {
@@ -233,9 +230,6 @@ addressName.clear();
 }
 
 
-
-
-
 Future<void> requestLocationPermission() async {
   var status = await Permission.locationWhenInUse.status;
   if (!status.isGranted) {
@@ -244,36 +238,6 @@ Future<void> requestLocationPermission() async {
 }
 
 
-
-// Future<void> getAllWorkers(double userLat, double userLng) async {
-//   print('WorkerListNearby ..20 km');
-//   try {
-//     // Fetch all documents from the 'serviceProviders' collection
-//     QuerySnapshot querySnapshot =
-//         await FirebaseFirestore.instance.collection('serviceProviders').get();
-//
-//     workersList = querySnapshot.docs.map((DocumentSnapshot doc) {
-//       return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
-//     }).where((worker) {
-//       // Calculate the distance between the user's current location and the worker's location
-//       double distance = calculateDistance(userLat, userLng, double.parse(worker.lat)
-//       , double.parse(worker.lng));
-//       print("Distance=="+distance.toString());
-//
-//       // Filter workers within 20 km
-//       return distance <= 20;
-//
-//     }).toList();
-//
-//     update();
-//
-//
-//     print("Workers loaded: ${workersList.length} workers found within 20 km.");
-//   } catch (e) {
-//     // Handle any errors
-//     print("Error fetching workers: $e");
-//   }
-// }
 double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
   const R = 6371; // Radius of the Earth in km
   double dLat = _deg2rad(lat2 - lat1);
@@ -291,24 +255,7 @@ double _deg2rad(double deg) {
   return deg * (pi / 180);
 }
 
-//  Future<void> getAllWorkers() async {
-//     try {
-//       // Fetch all documents from the 'ads' collection
-//       QuerySnapshot querySnapshot =
-//       await FirebaseFirestore.instance.collection('serviceProviders')
-//       .get();
 
-//       workersList = querySnapshot.docs.map((DocumentSnapshot doc) {
-//         return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
-//       }).toList();
-//        update(); 
-
-//       print("Workers loaded: ${workersList.length} ads found.");
-//     } catch (e) {
-//       // Handle any errors
-//       print("Error fetching ads: $e");
-//     }
-//   }
   Future<void> getAds() async {
     try {
       // Fetch all documents from the 'ads' collection
@@ -471,8 +418,6 @@ List<WorkerProvider> workersSubCatList=[];
     }
 
   }
-
-
 
 
 

@@ -13,7 +13,17 @@ class MyLocal implements Translations{
       {
         "ar":{
 
+          "selectCountry":"اختر دولتك ",
+          "start":"ابدأ",
+          "skip":"تخطي",
+
           "days":" يوم ",
+          "selectDate":"اختر التاريخ ",
+           "cancel":"الغاء",
+          "ok":"موافقة ",
+
+          "selectTime":"اختر الوقت ",
+
           "serviceName":"اسم الخدمة",
 
           "portImages":"عرض معرض الاعمال ",
@@ -362,11 +372,11 @@ class MyLocal implements Translations{
 
         },
         "en":{
-
+          "selectCountry":"Select Country ",
+          "start":"Start",
+          "skip":"Skip",
           "days":"Days",
-
           "noProfit":"No Profit Now",
-
           "portImages":" View Portfolio ",
 
           "serviceImages":"Service Images ",
@@ -474,6 +484,9 @@ We place great importance on the privacy of our users. No personal data is colle
 
           "payNow2":"Pay Now  ",
 
+          "cancel":"Cancel",
+          "ok":"Ok",
+
                "makeComment":"Make Comment",
 
                 "emailUsed":"This Email Is Is Used Before",
@@ -482,7 +495,7 @@ We place great importance on the privacy of our users. No personal data is colle
 
           "wrongData":"Wrong Data",
 
-
+           "selectDate":"Select Date",
 
            "allServices":"All Services",
 
@@ -502,6 +515,7 @@ We place great importance on the privacy of our users. No personal data is colle
 
               "profile":"My Profile",
 
+                "selectTime":"Select Time",
 
            
             "isEdit":"Changes to the deal have been sent",

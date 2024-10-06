@@ -14,6 +14,7 @@ class MyLocal implements Translations{
         "ar":{
 
           "selectCountry":"اختر دولتك ",
+          "address":"المنطقة ",
           "start":"ابدأ",
           "skip":"تخطي",
 
@@ -372,7 +373,9 @@ class MyLocal implements Translations{
 
         },
         "en":{
+
           "selectCountry":"Select Country ",
+          "address":"Address",
           "start":"Start",
           "skip":"Skip",
           "days":"Days",

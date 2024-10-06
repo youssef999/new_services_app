@@ -12,6 +12,9 @@ class Task {
   final String user_email;
   final String user_name;
   final String phone;
+  final String locationLink;
+  final String locationDes;
+  final String locationName;
   final bool hasAcceptedProposal;
 
   Task({
@@ -26,6 +29,9 @@ class Task {
     required this.time,
     required this.title,
     required this.user_email,
+    required this.locationName,
+    required this.locationDes,
+    required this.locationLink,
     required this.user_name,
     required this.phone,
     required this.hasAcceptedProposal,
@@ -38,6 +44,9 @@ class Task {
       hasAcceptedProposal: json['hasAcceptedProposal'] ?? false,
       cat: json['cat'] ?? '',
       date: json['date'] ?? '',
+      locationDes: json['locationDescription'] ?? '',
+      locationLink: json['locationLink'] ?? '',
+      locationName: json['address'] ?? '',
       image: json['image'] ?? '',
       description: json['description'] ?? '',
       end_time: json['end_time'] ?? '',

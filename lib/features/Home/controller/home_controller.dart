@@ -205,18 +205,21 @@ List<bool> checkListValues=[];
 
 
 getAllAddress() async {
-  // final box=GetStorage();
-  // String country=box.read('country')??'';
+
+  final box=GetStorage();
+  String country=box.read('country')??'';
+
 addressName.clear();
+
   try {
     // Reference to the Firestore collection
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('adresses')
-        //.where('country',isEqualTo: country) // Replace with your collection name
+        .collection('city')
+        .where('country',isEqualTo: country) // Replace with your collection name
         .get();
     for (var doc in querySnapshot.docs) {
-      if (doc['name'] != null) {
-        addressName.add(doc['name']);
+      if (doc['city'] != null) {
+        addressName.add(doc['city']);
         checkListValues.add(false);
         update();
       }
@@ -226,7 +229,6 @@ addressName.clear();
     return [];
   }
   update();
-
 }
 
 
@@ -373,49 +375,105 @@ List<WorkerProvider> workersSubCatList=[];
 
 
 
-  Future<void> getAllWorkers(String cat) async {
+  Future<void> getAllWorkers(String cat,String city) async {
 
      print("CAT==="+cat);
    // workersList=[];
-    if(cat=='All'){
-      try {
-        QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('serviceProviders')
-            .get();
-        workersList = querySnapshot.docs.map((DocumentSnapshot doc) {
-          return WorkerProvider
-              .fromFirestore(doc.data() as
-          Map<String, dynamic>, doc.id);
-        }).toList();
-        update();
-        print("Workers loaded: ${workersList.length} ads found.");
-      } catch (e) {
-        print("Error fetching ads: $e");
-      }
-      update();
-    }
-    else{
-      try {
-        // Fetch all documents from the 'ads' collection
-        QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('serviceProviders')
-            .where('cat',isEqualTo:cat)
-            .get();
-        // Map each document to an Ad instance and add to adsList
-       workersCatList= querySnapshot.docs.map((DocumentSnapshot doc) {
-          // Convert the document data to the Ad model using fromFirestore
-          return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
-        }).toList();
-        update();
-        print("Workers loaded: ${workersList.length} ads found.");
-      } catch (e) {
-        // Handle any errors
-        print("Error fetching ads: $e");
-      }
-      update();
 
-    }
+     if(city!='اختر الموقع'){
+
+       if(cat=='All'){
+         try {
+           QuerySnapshot querySnapshot =
+           await FirebaseFirestore.instance
+               .collection('serviceProviders')
+               .where('city',isEqualTo: city)
+               .get();
+           workersList = querySnapshot.docs.map((DocumentSnapshot doc) {
+             return WorkerProvider
+                 .fromFirestore(doc.data() as
+             Map<String, dynamic>, doc.id);
+           }).toList();
+           update();
+           print("Workers loaded: ${workersList.length} ads found.");
+         } catch (e) {
+           print("Error fetching ads: $e");
+         }
+         update();
+       }
+       else{
+         try {
+           // Fetch all documents from the 'ads' collection
+           QuerySnapshot querySnapshot =
+           await FirebaseFirestore.instance.collection('serviceProviders')
+               .where('cat',isEqualTo:cat)
+               .where('city',isEqualTo: city)
+               .get();
+           // Map each document to an Ad instance and add to adsList
+           workersCatList= querySnapshot.docs.map((DocumentSnapshot doc) {
+             // Convert the document data to the Ad model using fromFirestore
+             return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+           }).toList();
+           update();
+           print("Workers loaded: ${workersList.length} ads found.");
+         } catch (e) {
+           // Handle any errors
+           print("Error fetching ads: $e");
+         }
+         update();
+
+       }
+
+
+
+     }else{
+
+
+       if(cat=='All'){
+         try {
+           QuerySnapshot querySnapshot =
+           await FirebaseFirestore.instance
+               .collection('serviceProviders')
+
+               .get();
+           workersList = querySnapshot.docs.map((DocumentSnapshot doc) {
+             return WorkerProvider
+                 .fromFirestore(doc.data() as
+             Map<String, dynamic>, doc.id);
+           }).toList();
+           update();
+           print("Workers loaded: ${workersList.length} ads found.");
+         } catch (e) {
+           print("Error fetching ads: $e");
+         }
+         update();
+       }
+       else{
+         try {
+           // Fetch all documents from the 'ads' collection
+           QuerySnapshot querySnapshot =
+           await FirebaseFirestore.instance.collection('serviceProviders')
+               .where('cat',isEqualTo:cat)
+               .get();
+           // Map each document to an Ad instance and add to adsList
+           workersCatList= querySnapshot.docs.map((DocumentSnapshot doc) {
+             // Convert the document data to the Ad model using fromFirestore
+             return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+           }).toList();
+           update();
+           print("Workers loaded: ${workersList.length} ads found.");
+         } catch (e) {
+           // Handle any errors
+           print("Error fetching ads: $e");
+         }
+         update();
+
+       }
+
+     }
+
+
+
 
   }
 

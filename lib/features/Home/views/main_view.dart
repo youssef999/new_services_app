@@ -102,7 +102,6 @@ class HelloConvexAppBar extends StatefulWidget {
 class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
   @override
   Widget build(BuildContext context) {
-    //Color backgroundCovex = Colors.white;
 
     return Scaffold(
       backgroundColor: AppColors.appBarColor,
@@ -130,105 +129,4 @@ class _HelloConvexAppBarState extends State<HelloConvexAppBar> {
   }
 }
 
-// void showBottomSheet(BuildContext context) {
-//   showModalBottomSheet(
-//     context: context,
-//     builder: (BuildContext builderContext) {
-//       return Container(
-//         height: 300,
-//         decoration: BoxDecoration(
-//            color: Colors.black,
-//             borderRadius: BorderRadius.circular(1)),
-//         child: const Card(
-//             child: GridWidget()),
-//       );
-//     },
-//   );
-// }
 
-// class GridWidget extends StatelessWidget {
-//   const GridWidget({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<String> imageList = [
-//       AppAssets.homeIcon,
-//       AppAssets.homeIcon,
-//       AppAssets.homeIcon,
-//       AppAssets.homeIcon,
-//     ];
-
-//     List<String> txtList = [
-
-//       //'profile'.tr,
-//       'Home',
-//       'Home',
-//       'Home',
-//       'Home',
-//     ];
-
-//     return Padding(
-//       padding: const EdgeInsets.only(top:18.0,left: 10,right: 10),
-//       child: GridView.builder(
-//         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//               crossAxisCount: 4, // Number of columns
-//               crossAxisSpacing: 1.6, // Spacing between columns
-//               mainAxisSpacing: 1.7,
-//               childAspectRatio:0.9// Spacing between rows
-//           ),
-//           physics:const NeverScrollableScrollPhysics(),
-//           itemCount: txtList.length,
-//           itemBuilder: (context, index) {
-//             return Padding(
-//               padding: const EdgeInsets.all(4.0),
-//               child: InkWell(
-//                 child: Container(
-//                   decoration:BoxDecoration(
-//                       borderRadius:BorderRadius.circular(12),
-//                       // border:Border.all(color:Colors.grey)
-//                       color:Colors.black
-
-//                   ),
-//                   child: Column(
-//                     children: [
-//                       const SizedBox(
-//                         height: 7,
-//                       ),
-//                       SizedBox(
-//                         height: 30,
-//                         child: Image.asset(imageList[index]),
-//                       ),
-//                       const SizedBox(
-//                         height: 6,
-//                       ),
-//                       Center(child: Padding(
-//                         padding: const EdgeInsets.all(3.0),
-//                         child: Text(txtList[index],
-//                           style:const TextStyle(fontSize: 12,
-//                               fontWeight: FontWeight.w500,
-//                               color:Colors.black
-//                           ),
-//                         ),
-//                       ),
-//                       )
-
-//                     ],
-//                   ),
-//                 ),
-//                 onTap: () {
-//                   if (index == 0) {
-//                     GoRouter.of(context).push(AppRouter.kHomeView);
-//                   }
-
-//                   if (index == 1) {
-//                     GoRouter.of(context).push(AppRouter.kHomeView);
-//                   }
-
-//                   //
-//                 },
-//               ),
-//             );
-//           }),
-//     );
-//   }
-//}

@@ -10,6 +10,7 @@ import 'package:freelancerApp/features/workers/controllers/workers_controller.da
 import 'package:freelancerApp/features/workers/models/workers.dart';
 import 'package:freelancerApp/features/workers/widgets/workers_widget.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 // ignore: must_be_immutable
 class WorkersCatView extends StatefulWidget {
@@ -25,10 +26,13 @@ class WorkersCatView extends StatefulWidget {
 class _WorkersCatViewState extends State<WorkersCatView> {
 
 HomeController controller =Get.put(HomeController());
-
+final box = GetStorage();
 @override
   void initState() {
-    controller.getAllWorkers(widget.cat);
+
+  String address=box.read('address')?? 'اختر الموقع';
+    controller.getAllWorkers(widget.cat,address);
+
     super.initState();
   }
 

@@ -24,6 +24,7 @@ import '../../Home/models/cat.dart';
 import '../views/verfied_email.dart';
 
 class AuthController extends GetxController {
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -32,21 +33,28 @@ class AuthController extends GetxController {
   TextEditingController roleId = TextEditingController();
   TextEditingController empCatController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-
   TextEditingController detailsController = TextEditingController();
+  String workerAddress='x';
+
+  final box=GetStorage();
 
   bool loading = false;
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   Rx<int> isSelected = 1.obs;
   int regRoleId = 1;
   GlobalKey<FormState>? loginFormKey;
   changeRoleId(int val) {
     regRoleId = val;
+    update();
+  }
+
+  changeWorkerAddress(String newAddress){
+    workerAddress=newAddress;
     update();
   }
 
@@ -71,15 +79,16 @@ class AuthController extends GetxController {
   final List<String> catNames = [];
   final List<String> countryNames = [];
   final List<String> cityNames = [];
+  final List<String> addressNames = [];
 
   String selectedItem = 'خدمات الكمبيوتر';
-
 
 
 
   List<String>countryList = [
     'مصر','الكويت','السعودية'
   ];
+
   List<String>countryImageList = [
 
     AppAssets.egyptImage,
@@ -91,7 +100,9 @@ class AuthController extends GetxController {
 
   String selectedCity = 'القاهرة';
 
-  final box=GetStorage();
+  String selectedAddress = 'مصر الجديدة';
+
+
 
   changeCountry(String country){
     selectedCountry=country;
@@ -99,6 +110,37 @@ class AuthController extends GetxController {
     update();
     print("COUNTRY====$country");
     getCities(country);
+  }
+
+  changeAddress(String address){
+    selectedAddress=address;
+    // box.write('country', country);
+    update();
+    print("ADDRESS====$address");
+    getAddress(selectedCity);
+  }
+
+  getAddress(String city) async {
+    addressNames.clear();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('locations')
+        .where('city', isEqualTo: city)
+        .get();
+    try {
+      List<Map<String, dynamic>> data = querySnapshot.docs
+          .map((DocumentSnapshot doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      for(int i=0;i<data.length;i++){
+        addressNames.add(data[i]['name']);
+      }
+      selectedAddress = data[0]['name'];
+    } catch (e) {
+      print("E....cc...");
+      print(e);
+      print("E...xx....");
+    }
+    print("address====$addressNames");
+    update();
   }
 
 
@@ -128,12 +170,14 @@ class AuthController extends GetxController {
       print("E...xx....");
     }
     print("CITY====$cityNames");
+    getAddress(selectedCity);
     update();
   }
 
   changeSelectedCity(String city) {
     selectedCity = city;
     update();
+    getAddress(selectedCity);
   }
 
   XFile? pickedImageXFile;
@@ -403,15 +447,21 @@ class AuthController extends GetxController {
    List<Map<String,dynamic>>users=[];
    List<String> usersEmails=[];
 
-  void getAllUsers() async {
+  void getAllUsers(String type) async {
+    print("TYPE=="+type);
     try {
+
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('UserData').get();
+      await FirebaseFirestore.instance.collection(type).get();
 
       List<Map<String, dynamic>> data = querySnapshot.docs
           .map((DocumentSnapshot doc) => doc.data() as Map<String, dynamic>)
           .toList();
+
       users = data;
+
+      print('USERS==='+users.toString());
+      print('USERS==='+data.toString());
     } catch (error) {
       // ignore: avoid_print
       print("Error fetching data: $error");
@@ -428,25 +478,26 @@ class AuthController extends GetxController {
 
   tryToLogin(BuildContext context, String roleId) async {
 
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
-
+    final GoogleSignInAccount? gUser =
+    await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication gAuth =
+    await gUser!.authentication;
     final credintional = GoogleAuthProvider.credential(
         accessToken: gAuth.accessToken, idToken: gAuth.idToken);
     return await FirebaseAuth.instance
         .signInWithCredential(credintional)
         .then((value) {
-
       print("Sign in done");
       appMessage(text: 'Done', fail: false, context: context);
       final box = GetStorage();
+
+      print("MAILS=="+usersEmails.toString());
       if (usersEmails.contains(value.user!.email)) {
         box.write('email', value.user!.email.toString());
         print("HERE main home");
         Get.offAll(const MainHome());
       } else {
         box.write('email', value.user!.email.toString());
-
         print("HERE sign up");
        Get.offAll(SignupView(roleId: roleId,
        email: value.user!.email.toString(),
@@ -523,30 +574,48 @@ class AuthController extends GetxController {
 
   }
 
-  register(String roleId, String email, String password, String phone,BuildContext context) async {
+  register(String roleId, String email, String password,
+      String phone,BuildContext context,bool isGoogle) async {
     final box = GetStorage();
     box.write('roleId', roleId);
-    try {
-      await _auth
-          .createUserWithEmailAndPassword(
-              email: email,
-              //emailController.text,
-              password: password
-              //passController.text,
-              )
-          .then((user) async {
-        if (roleId == '0') {
-          addNewUser(user, phone,context);
-        } else {
-          addNewWorker(context);
-        }
-        box.write('email', emailController.text);
-        appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
+    if (isGoogle==true) {
+      if (roleId == '0') {
+        addNewUser( phone,context);
+      } else {
+        addNewWorker(context);
+      }
+      box.write('email', emailController.text);
+      appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
 
-      });
-    } catch (e) {
-      print("EEE==" + e.toString());
+    }else{
+      try {
+        await _auth
+            .createUserWithEmailAndPassword(
+            email: email,
+
+            password: password
+
+        )
+            .then((user) async {
+          if (roleId == '0') {
+            addNewUser( phone,context);
+          } else {
+            addNewWorker(context);
+          }
+          box.write('email', emailController.text);
+          appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
+
+        });
+      } catch (e) {
+        print("EEE==" + e.toString());
+        if(e.toString().contains('The email address is already in use by another account.')){
+          appMessage(text: 'البريد الالكتروني مستخدم من قبل', fail: false, context: context);
+        }
+      }
     }
+
+
+
   }
 
   sendEmailVerfication() async {
@@ -557,7 +626,11 @@ class AuthController extends GetxController {
   List<Cat> catList = [];
   List<String> catListNames = [];
 
+
+
   Future<void> getCats() async {
+
+
     try {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('cat').get();
@@ -577,7 +650,7 @@ class AuthController extends GetxController {
     }
   }
 
-  addNewUser(UserCredential user, String phone,BuildContext context) async {
+  addNewUser( String phone,BuildContext context) async {
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
@@ -589,7 +662,7 @@ class AuthController extends GetxController {
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(user.user?.uid)
+          .doc(result)
           .set({
         'name': nameController.text,
         'email': emailController.text,
@@ -614,12 +687,18 @@ class AuthController extends GetxController {
   }
 
   addNewWorker(BuildContext context) async {
+
+    // add address or cities
     addNewAddress();
+
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
     String result = '';
     final box = GetStorage();
+    String lat=box.read('lat').toString();
+    String lng=box.read('lng').toString();
+
     for (int i = 0; i < 12; i++) {
       result += chars[random.nextInt(chars.length)];
     }
@@ -634,8 +713,8 @@ class AuthController extends GetxController {
         'details': detailsController.text,
         'price': priceController.text,
         'id': result,
-        "lat": "",
-        "lng": "",
+        "lat": lat,
+        "lng": lng,
         'image': imageLink,
         'rating': 0,
         'country':countryController.text,

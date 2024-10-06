@@ -117,70 +117,112 @@ class _AddWorkState extends State<AddWork> {
                   icon: Icons.description,
                   obs: false,
                   controller: controller.description),
-              const SizedBox(
-                height: 10,
-              ),
-            
+
+
+
+              // InkWell(
+              //   child: Container(
+              //     decoration:BoxDecoration(
+              //       borderRadius:BorderRadius.circular(12),
+              //       color:AppColors.cardColor
+              //     ),
+              //     child:Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: Column(children: [
+              //
+              //         Row(
+              //           children: [
+              //             Icon(Icons.location_on,color:AppColors.primary,
+              //
+              //             ),
+              //             const SizedBox(width: 12,),
+              //             Text('الموقع',
+              //             style:TextStyle(color:AppColors.secondaryTextColor,
+              //             fontSize: 18,fontWeight:FontWeight.bold
+              //             ),
+              //             ),
+              //           ],
+              //         ),
+              //         const SizedBox(height: 7,),
+              //
+              //          (controller.locationName.text.length>1)?
+              //         Text(controller.locationName,
+              //         style:TextStyle(color:AppColors.greyTextColor,
+              //         fontSize: 18,fontWeight:FontWeight.bold
+              //         ),
+              //         ): Text(locationName,
+              //         style:TextStyle(color:AppColors.greyTextColor,
+              //         fontSize: 18,fontWeight:FontWeight.bold
+              //         ),
+              //         )
+              //
+              //       ],),
+              //     ),
+              //   ),
+              //   onTap:(){
+              //
+              //     Get.to(const SearchPlacesView());
+              //
+              //   },
+              // ),
               const SizedBox(
                 height: 10,
               ),
 
-              InkWell(
-                child: Container(
-                  decoration:BoxDecoration(
-                    borderRadius:BorderRadius.circular(12),
-                    color:AppColors.cardColor
-                  ),
-                  child:Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(children: [
-                
+
+              Container(
+                decoration:BoxDecoration(
+                  borderRadius:BorderRadius.circular(12),
+                  color:AppColors.cardColor
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(13.0),
+                  child: Column(
+                    children: [
                       Row(
                         children: [
-                          Icon(Icons.location_on,color:AppColors.primary,
-                          
+                          Icon(Icons.wrong_location,color:AppColors.primary,
                           ),
-                          const SizedBox(width: 12,),
-                          Text('الموقع',
-                          style:TextStyle(color:AppColors.secondaryTextColor,
-                          fontSize: 18,fontWeight:FontWeight.bold
-                          ),
-                          ),
+                          Text("الموقع",style: TextStyle
+                            (color: AppColors.secondaryTextColor,
+                              fontSize: 22,fontWeight: FontWeight.bold),),
                         ],
                       ),
-                      const SizedBox(height: 7,),
-                
-                       (controller.locationName.length>1)?
-                      Text(controller.locationName,
-                      style:TextStyle(color:AppColors.greyTextColor,
-                      fontSize: 18,fontWeight:FontWeight.bold
+
+                     const SizedBox(height: 13,),
+                      CustomTextFormField(
+                          hint: 'اسم عنوانك او منطقتك',
+                          max: 2,
+                          color: Colors.black,
+                          icon: Icons.location_pin,
+                          obs: false,
+                          controller: controller.locationName),
+                      const SizedBox(
+                        height: 10,
                       ),
-                      ): Text(locationName,
-                      style:TextStyle(color:AppColors.greyTextColor,
-                      fontSize: 18,fontWeight:FontWeight.bold
+                      CustomTextFormField(
+                          hint: 'وصف الموقع ',
+                          max: 4,
+                          color: Colors.black,
+                          icon: Icons.location_pin,
+                          obs: false,
+                          controller: controller.locationDescription),
+
+                      const SizedBox(
+                        height: 10,
                       ),
-                      )
-                      
-                    ],),
+                      CustomTextFormField(
+                          hint: 'رابط الموقع علي الخريطة'+ "  "+"( اختياري )  ",
+                          max: 3,
+                          color: Colors.black,
+                          icon: Icons.link,
+                          obs: false,
+                          controller: controller.locationLink),
+                    ],
                   ),
                 ),
-                onTap:(){
-
-                  Get.to(const SearchPlacesView());  
-                
-                },
               ),
 
-               const SizedBox(
-                height: 10,
-              ),
-              CustomTextFormField(
-                  hint: 'وصف الموقع ',
-                  max: 3,
-                  color: Colors.black,
-                  icon: Icons.location_pin,
-                  obs: false,
-                  controller: controller.locationDescription),
 
 
                 const SizedBox(

@@ -29,10 +29,12 @@ class _LoginViewState extends State<LoginView> {
   AuthController controller = Get.put(AuthController());
   @override
   void initState() {
-
-    controller.getAllUsers();
+    if(widget.type=='0'){
+      controller.getAllUsers('users');
+    }else{
+      controller.getAllUsers('serviceProviders');
+    }
     super.initState();
-
   }
 
   @override

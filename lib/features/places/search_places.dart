@@ -1,5 +1,6 @@
 
 import 'package:freelancerApp/features/Work/controllers/work_controller.dart';
+import 'package:freelancerApp/features/auth/controllers/auth_controller.dart';
 import 'package:freelancerApp/features/places/map_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesView>
 
   MapController controller=Get.put(MapController());
   WorkController workController=Get.put(WorkController());
+  AuthController authController=Get.put(AuthController());
 
   String mapKey='AIzaSyDA-D-AYyDPASQgA2p98xxzZHXMusGcblk';
 
@@ -59,9 +61,12 @@ class _SearchPlacesScreenState extends State<SearchPlacesView>
             onPressed: (){
               if(searchController.text.length>2){
                 Get.off(const MapViewSelect());
+
                 final box = GetStorage();
-                box.write('locationName',searchController.text);
-                workController.changeLocationName(searchController.text);
+
+                authController.changeWorkerAddress(searchController.text);
+              //  box.write('workerAddress',searchController.text);
+             //   workController.changeLocationName(searchController.text);
               }
               else{
                 appMessage(text: 'enterPlace'.tr, fail: true,
@@ -78,7 +83,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesView>
           builder: (context) {
             return Column(
               children: [
-                const SizedBox(height: 22,),
+                const SizedBox(height: 12,),
                 //search place ui
                 Padding(
                   padding: const EdgeInsets.all(2.0),

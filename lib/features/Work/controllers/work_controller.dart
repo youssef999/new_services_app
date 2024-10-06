@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/const/app_message.dart';
 import 'package:freelancerApp/features/Home/models/cat.dart';
@@ -21,18 +24,20 @@ class WorkController extends GetxController {
   TextEditingController minPrice = TextEditingController();
   TextEditingController maxPrice = TextEditingController();
   TextEditingController locationDescription=TextEditingController();
+  TextEditingController locationLink=TextEditingController();
+  TextEditingController locationName=TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   TimeOfDay? endSelectedTime;
   bool validation = false;
-  String locationName='';
-
-
-
-  changeLocationName(String name){
-    locationName=name;
-    update();
-  }
+  // String locationName='';
+  //
+  //
+  //
+  // changeLocationName(String name){
+  //   locationName=name;
+  //   update();
+  // }
   List<User> userDataList = [];
 
   getUserData() async {
@@ -121,54 +126,67 @@ class WorkController extends GetxController {
     }
     update();
   }
-
   Future<void> addWorkToFirestore(BuildContext context) async {
-    checkValidation(context);
-    Future.delayed(const Duration(seconds: 2), () async {
-      if (validation == true) {
-        // Generate a new document ID
-        String docId = FirebaseFirestore
-            .instance.collection('tasks').doc().id;
 
-        Map<String, dynamic> data = {
-          "id": docId, // Add the document ID as a field
-          "title": title.text,
-          "user_name": userDataList[0].name,
-          "user_phone": userDataList[0].phone,
-          "description": description.text,
-          "minPrice": minPrice.text,
-          "maxPrice": maxPrice.text,
-          "date": selectedDate.toString(),
-          "time": selectedTime.toString(),
-          "user_email": "test@gmail.com",
-          "end_time": endSelectedTime.toString(),
-          "hasAcceptedProposal": false,
-          //"image": images,
-        };
+    uploadMultiImageToFirebaseStorage(images).then((v){
+      Future.delayed(const Duration(seconds: 1), ()
+      async {
+        checkValidation(context);
+        if (validation == true) {
+          // Generate a new document ID
+          String docId = FirebaseFirestore
+              .instance.collection('tasks').doc().id;
 
-        try {
-          // Create a reference with the generated document ID
-          CollectionReference collection = FirebaseFirestore.instance.collection('tasks');
-          await collection.doc(docId).set(data).then((value) {
-            appMessage(text: 'تم اضافة مشروعك بنجاح', fail: false,context: context);
-            Get.offAll(const MainHome());
-            title.clear();
-            description.clear();
-            minPrice.clear();
-            maxPrice.clear();
-            selectedDate = null;
-            selectedTime = null;
-            endSelectedTime = null;
-            images.clear();
-            update();
-          });
-          print("Data added successfully!");
-        } catch (e) {
-          print("Error adding data: $e");
+          Map<String, dynamic> data = {
+            "id": docId,
+            "image":downloadUrls[0],
+            "title": title.text,
+            "user_name": userDataList[0].name,
+            "user_phone": userDataList[0].phone,
+            "description": description.text,
+            "address": locationName.text,
+            "locationLink": locationLink.text,
+            "locationDescription": locationDescription.text,
+            "minPrice": minPrice.text,
+            "maxPrice": maxPrice.text,
+            "date": selectedDate.toString(),
+            "time": selectedTime.toString(),
+            "user_email": userDataList[0].email,
+            "end_time": endSelectedTime.toString(),
+            "hasAcceptedProposal": false,
+            //"image": images,
+          };
+
+          try {
+            // Create a reference with the generated document ID
+            CollectionReference collection = FirebaseFirestore.instance.collection('tasks');
+            await collection.doc(docId).set(data).then((value) {
+              appMessage(text: 'تم اضافة مشروعك بنجاح', fail: false,context: context);
+              Get.offAll(const MainHome());
+              title.clear();
+              description.clear();
+              minPrice.clear();
+              maxPrice.clear();
+              selectedDate = null;
+              selectedTime = null;
+              endSelectedTime = null;
+              images.clear();
+              update();
+            });
+            print("Data added successfully!");
+          } catch (e) {
+            print("Error adding data: $e");
+          }
         }
-      }
+      });
     });
+
   }
+
+
+
+  List<String> downloadUrls = [];
+  String downloadUrl = '';
 List<Cat>catList=[];
 List<SubCat>subCatList=[];
 List<String>catListNames=[];
@@ -176,6 +194,33 @@ List<String>subCatListNames=[];
 String selectedCat='خدمات الصيانة';
 String selectedSubCat='فني طابعات و احبار';
 
+
+  Future uploadMultiImageToFirebaseStorage(List<XFile> images)
+  async {
+
+     print("UPLOAD IMAGES....");
+     print("UPLOAD IMAGES======"+images.length.toString());
+    for (int i = 0; i < images.length; i++) {
+      print("HERE=="+i.toString());
+      try {
+        String fileName = DateTime.now()
+            .millisecondsSinceEpoch.toString();
+        Reference reference =
+        FirebaseStorage.instance.ref().child('images2024/$fileName');
+        UploadTask uploadTask = reference.putFile(File(images[i].path));
+        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+        downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        downloadUrls.add(downloadUrl);
+      } catch (e) {
+        // Handle any errors that occur during the upload process
+        // ignore: avoid_print
+        print('Error uploading image to Firebase Storage: $e');
+      }
+      print("DOWNLOAD URLS===="+downloadUrls.length.toString());
+      print("DOWNLOAD URLS===="+downloadUrls.toString());
+    }
+    return downloadUrls;
+  }
   Future<void> getCats() async {
     catList=[];
     catListNames=[];
@@ -262,7 +307,13 @@ String selectedSubCat='فني طابعات و احبار';
       appMessage(text: 'ادخل وقت  نهائي لتنفيذ المشروع', fail: true, context: context);
     } else if (selectedDate == null) {
       appMessage(text: 'ادخل تاريخ تنفيذ المشروع', fail: true, context: context);
-    } else {
+    }else if (locationName.text.isEmpty) {
+      appMessage(text: 'ادخل عنوان الموقع', fail: true, context: context);
+    }else if (locationDescription.text.isEmpty) {
+      appMessage(text: 'ادخل وصف الموقع',
+          fail: true, context: context);
+    }
+    else {
       validation = true;
       update();
     }

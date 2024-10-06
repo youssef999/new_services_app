@@ -33,9 +33,10 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
-    controller.getUserLocation();
+    String address=box.read('address')?? 'اختر الموقع';
+   // controller.getUserLocation();
     controller.getAllAddress();
-    controller.getAllWorkers('All');
+    controller.getAllWorkers('All',address);
     controller.getAds();
     controller.getCats();
     controller.getSubCats();
@@ -72,12 +73,12 @@ class _HomeViewState extends State<HomeView> {
                 Text(
                 address,
                   style: TextStyle(
-                    color: AppColors.mainTextColor,
+                    color: Colors.grey[300],
                     fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(width: 24,),
+                const SizedBox(width: 15,),
                 Icon(Icons.arrow_drop_down_circle_outlined,
                 color:AppColors.mainTextColor,
                 )
@@ -120,9 +121,11 @@ class _HomeViewState extends State<HomeView> {
                       color: AppColors.greyTextColor,
                     ),
                     onTap: () {
+
                       Get.to(CatView(
                         catList: controller.catList,
                       ));
+
                     },
                   ),
                 ],

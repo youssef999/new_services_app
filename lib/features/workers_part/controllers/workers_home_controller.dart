@@ -6,6 +6,7 @@ import 'package:freelancerApp/features/Home/models/cat.dart';
 import 'package:freelancerApp/features/Tasks/models/task.dart';
 import 'package:freelancerApp/features/workers_part/views/filter_tasks.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WorkersHomeController extends GetxController{
 
@@ -16,6 +17,17 @@ class WorkersHomeController extends GetxController{
 List<String>catNamesList=[];
 List<bool> checkListValues=[];
 String selectedCat='';
+
+
+  void launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      await launch(url);
+     // throw 'Could not launch $url';
+    }
+  }
+
 
  Future<void> getCats() async {
     try {

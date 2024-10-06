@@ -13,7 +13,7 @@ class OnBoardingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnBoardingSlider(
-      finishButtonText: 'register'.tr,
+      finishButtonText: 'start'.tr,
       onFinish: () {
         Get.offAll(const FirstView());
       },
@@ -75,7 +75,7 @@ class OnBoardingView extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 'تطبيق شامل يتيح لك العثور على العمال وطلب الخدمات بكل سهولة في أي وقت وأي مكان.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -110,7 +110,7 @@ class OnBoardingView extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 'من العمال المحترفين إلى الفنيين المهرة، نوفر لك أفضل الحلول في جميع المجالات.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -145,7 +145,7 @@ class OnBoardingView extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 'انضم إلينا واطلب خدماتك بسهولة من خلال التطبيق في خطوات بسيطة وسريعة.',
                 textAlign: TextAlign.center,
                 style: TextStyle(

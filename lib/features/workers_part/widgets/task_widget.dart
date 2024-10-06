@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/const/constant.dart';
+import 'package:freelancerApp/features/workers_part/controllers/workers_home_controller.dart';
 import 'package:get/get.dart';
 import 'package:freelancerApp/Core/widgets/custom_button.dart';
-
 import 'package:intl/intl.dart';
-
 import '../../../Core/resources/app_colors.dart';
 import '../../Tasks/models/task.dart';
 import '../views/add_propasal.dart';
@@ -20,11 +19,11 @@ class TaskWidget extends StatefulWidget {
 class _TaskWidgetState extends State<TaskWidget> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  WorkersHomeController controller = Get.put(WorkersHomeController());
 
   @override
   void initState() {
     super.initState();
-
     // Animation controller
     _controller = AnimationController(
       vsync: this,
@@ -32,7 +31,6 @@ class _TaskWidgetState extends State<TaskWidget> with SingleTickerProviderStateM
       lowerBound: 0.95,
       upperBound: 1.0,
     );
-
     _scaleAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
   }
 
@@ -57,14 +55,14 @@ class _TaskWidgetState extends State<TaskWidget> with SingleTickerProviderStateM
             color: AppColors.cardColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
+                color: Colors.black.withOpacity(0.05), // Reduced shadow intensity
+                blurRadius: 12, // Softer shadow
                 offset: const Offset(0, 4),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,10 +71,10 @@ class _TaskWidgetState extends State<TaskWidget> with SingleTickerProviderStateM
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        height: 150, // Fixed height for the image
+                        width: MediaQuery.of(context).size.width * 0.78,
+                        height: 160, // Slightly increased height for a balanced look
                         color: AppColors.secondaryTextColor,
                         child: Image.network(
                           widget.task.image,
@@ -88,40 +86,130 @@ class _TaskWidgetState extends State<TaskWidget> with SingleTickerProviderStateM
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-
+                const SizedBox(height: 12),
                 // Task title
                 Text(
-                  'عنوان العمل المطلوب: ${widget.task.title}',
+                  'عنوان العمل المطلوب  :  ${widget.task.title}',
                   style: TextStyle(
                     color: AppColors.secondaryTextColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20, // Increased font size for emphasis
                   ),
                 ),
                 const SizedBox(height: 10),
+                // Task location info
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey[100], // Lighter background for contrast
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            'الموقع',
+                            style: TextStyle(
+                              color: AppColors.secondaryTextColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20, // Balanced heading size
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Text(
+                              "عنوان موقع العميل: ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.secondaryTextColor,
+                              ),
+                            ),
+                            const SizedBox(width: 9),
+                            Flexible(
+                              child: Text(
+                                widget.task.locationName,
+                                style: TextStyle(
+                                  color: AppColors.greyTextColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Text(
+                              "وصف للعنوان: ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.secondaryTextColor,
+                              ),
+                            ),
+                            const SizedBox(width: 9),
+                            Flexible(
+                              child: Text(
+                                widget.task.locationDes,
+                                maxLines: 4,
+                                style: TextStyle(
+                                  color: AppColors.greyTextColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        if (widget.task.locationLink.isNotEmpty)
+                          InkWell(
+                            child: Row(
+                              children: [
+                                Icon(Icons.link_outlined, color: AppColors.primary, size: 20),
+                                const SizedBox(width: 9),
+                                Text(
+                                  'عرض علي الخريطة',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              controller.launchUrl(widget.task.locationLink);
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const Divider(),
 
                 // Task date and time
                 Row(
                   children: [
-                     Icon(Icons.calendar_today, color:
-                    AppColors.primary, size: 20),
+                    Icon(Icons.calendar_today, color: AppColors.primary, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       formatDate(widget.task.date),
                       style: TextStyle(color: AppColors.primary, fontSize: 14),
                     ),
                     const SizedBox(width: 16),
-                  Icon(Icons.access_time, color: AppColors.primary, size: 20),
+                    Icon(Icons.access_time, color: AppColors.primary, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      widget.task.time,
+                      widget.task.time.toString().replaceAll('TimeOfDay', ''),
                       style: TextStyle(color: AppColors.primary, fontSize: 14),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-
+                const SizedBox(height: 16),
                 // Pricing (Min and Max prices)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

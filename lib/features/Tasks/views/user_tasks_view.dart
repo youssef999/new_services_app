@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/resources/app_colors.dart';
+import 'package:freelancerApp/core/resources/app_styles.dart';
 import 'package:freelancerApp/core/resources/colors.dart';
 import 'package:freelancerApp/core/widgets/Custom_button.dart';
 import 'package:freelancerApp/core/widgets/custom_app_bar.dart';
@@ -39,7 +40,7 @@ class _UserTasksViewState extends State<UserTasksView> {
 
         if (status == 'finished' && !isDialogShown) {
           isDialogShown = true;
-        //  showTaskCompletionConfirmationDialog(taskId);
+          //  showTaskCompletionConfirmationDialog(taskId);
         }
         await Future.delayed(
             const Duration(seconds: 5)); // Poll every 5 seconds
@@ -238,45 +239,65 @@ class _UserTasksViewState extends State<UserTasksView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('خدماتك', context),
+      appBar: AppBar(
+        elevation: 0.1,
+        centerTitle: true,
+        toolbarHeight: 60,
+        backgroundColor: AppColors.primary,
+        title: Padding(
+          padding: const EdgeInsets.all(7),
+          child: Text(
+            "خدماتك",
+            style: Styles.appBarTextStyle,
+          ),
+        ),
+      ),
       body: GetBuilder<UserTasksController>(builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView(
-            children: [
-              const SizedBox(
-                height: 12,
-              ),
-              (controller.userTaskList.isEmpty)
-                  ? Center(
-                      child: Column(children: [
-                      Image.asset(
-                        AppAssets.noTasks,
-                        height: 300,
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      const Text("لا يوجد مهام",
-                          style: TextStyle(
-                              fontSize: 21, fontWeight: FontWeight.w600))
-                    ]))
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controller.userTaskList.length,
-                      itemBuilder: (context, index) {
-                        listenToProposalStatus(
-                            controller.userTaskList[index].id);
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TaskWidget(
-                            controller: controller,
-                            task: controller.userTaskList[index],
-                          ),
-                        );
-                      })
-            ],
+        return RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              controller.getUserTaskList();
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView(
+              children: [
+                const SizedBox(
+                  height: 12,
+                ),
+                (controller.userTaskList.isEmpty)
+                    ? Center(
+                        child: Column(children: [
+                        Image.asset(
+                          AppAssets.noTasks,
+                          height: 300,
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Text("لا يوجد مهام",
+                            style: TextStyle(
+                                fontSize: 21, fontWeight: FontWeight.w600))
+                      ]))
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        reverse: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.userTaskList.length,
+                        itemBuilder: (context, index) {
+                          listenToProposalStatus(
+                              controller.userTaskList[index].id);
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TaskWidget(
+                              controller: controller,
+                              task: controller.userTaskList[index],
+                            ),
+                          );
+                        })
+              ],
+            ),
           ),
         );
       }),
@@ -312,30 +333,56 @@ class TaskWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 31,
-                          backgroundImage: NetworkImage(task.image),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 31,
+                              backgroundImage: NetworkImage(task.image),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  task.title,
+                                  style: TextStyle(
+                                      color: AppColors.secondaryTextColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  task.date.replaceAll('00:00:00.000', ''),
+                                  style: TextStyle(
+                                      color: AppColors.greyTextColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         const SizedBox(
-                          width: 8,
+                          height: 20,
                         ),
-                        Column(
+                        Row(
                           children: [
-                            Text(
-                              task.title,
+                            const Text(
+                              "حالة الخدمة : ",
                               style: TextStyle(
-                                  color: AppColors.secondaryTextColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700),
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              task.date.replaceAll('00:00:00.000', ''),
-                              style: TextStyle(
-                                  color: AppColors.greyTextColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500),
+                              controller.getArabicStatus(task.status),
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -361,7 +408,7 @@ class TaskWidget extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            task.hasAcceptedProposal
+            task.status == 'accepted'
                 ? Row(
                     children: [
                       CustomButton(
@@ -372,36 +419,50 @@ class TaskWidget extends StatelessWidget {
                           }),
                     ],
                   )
-                : FittedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomButton(
-                            btnColor: Colors.green,
-                            text: 'العروض',
-                            onPressed: () {
-                              Get.to(ProposalScreen(taskId: task.id));
-                            }),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        CustomButton(
-                            text: 'تعديل ',
-                            onPressed: () {
-                              Get.to(EditTaskScreen(task: task));
-                            }),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              controller.showDeleteConfirmationDialog(
-                                  context, task.id);
-                            },
-                            icon: const Icon(Icons.delete))
-                      ],
-                    ),
-                  ),
+                : task.status == 'done'
+                    ? const SizedBox()
+                    : task.status == 'canceled'
+                        ? const SizedBox()
+                        : FittedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                CustomButton(
+                                    btnColor: Colors.green,
+                                    text: 'العروض',
+                                    onPressed: () {
+                                      Get.to(ProposalScreen(taskId: task.id));
+                                    }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                CustomButton(
+                                    text: 'تعديل ',
+                                    onPressed: () {
+                                      Get.to(EditTaskScreen(task: task));
+                                    }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                CustomButton(
+                                    text: 'الغاء ',
+                                    btnColor: Colors.red,
+                                    onPressed: () {
+                                      controller.showCancelConfirmationDialog(
+                                          context, task.id);
+                                    }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      controller.showDeleteConfirmationDialog(
+                                          context, task.id);
+                                    },
+                                    icon: const Icon(Icons.delete))
+                              ],
+                            ),
+                          ),
             const SizedBox(
               height: 12,
             ),

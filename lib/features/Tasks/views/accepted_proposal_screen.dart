@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freelancerApp/core/resources/app_colors.dart';
+import 'package:freelancerApp/core/widgets/Custom_button.dart';
 import 'package:intl/intl.dart';
 
 class AcceptedProposalScreen extends StatelessWidget {
@@ -12,12 +13,13 @@ class AcceptedProposalScreen extends StatelessWidget {
   Future<Map<String, dynamic>?> fetchAcceptedProposal(String taskId) async {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
-      final CollectionReference acceptedProposalsCollection =
-          firestore.collection('accepted_proposals');
+      final CollectionReference proposalsCollection =
+          firestore.collection('proposals');
 
       // Query Firestore for the document with the given taskId
-      final QuerySnapshot querySnapshot = await acceptedProposalsCollection
+      final QuerySnapshot querySnapshot = await proposalsCollection
           .where('task_id', isEqualTo: taskId)
+          .where('status', isEqualTo: 'accepted')
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -30,6 +32,48 @@ class AcceptedProposalScreen extends StatelessWidget {
       print('Error fetching accepted proposal: $e');
       return null; // Return null in case of error
     }
+  }
+
+  Future<void> updateTaskStatus(String taskId) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final DocumentReference taskDocRef =
+          firestore.collection('tasks').doc(taskId);
+
+      // Update the status to "done"
+      await taskDocRef.update({'status': 'done'});
+      print("Task status updated to 'done'.");
+    } catch (e) {
+      print('Error updating task status: $e');
+    }
+  }
+
+  void showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('تأكيد'),
+          content: const Text('هل قام مقدم الخدمة بانهاء هذا العمل؟'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text('لا'),
+            ),
+            TextButton(
+              onPressed: () {
+                updateTaskStatus(taskId); // Update task status
+                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop();
+              },
+              child: const Text('نعم'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -60,23 +104,21 @@ class AcceptedProposalScreen extends StatelessWidget {
             String formatDate(String dateString) {
               try {
                 DateTime date = DateTime.parse(dateString);
-                // Format the date to "yyyy-M-dd" (e.g., "2024-4-09")
-                return DateFormat('yyyy-M-dd').format(date);
+                return DateFormat('yyyy-MM-dd').format(date);
               } catch (e) {
                 print('Error formatting date: $e');
-                return dateString; // Return original if formatting fails
+                return dateString;
               }
             }
 
             String formatTime(String timeString) {
               try {
-                // Extract time inside "TimeOfDay(07:31)" by removing "TimeOfDay(" and ")"
-                String time =
-                    timeString.replaceAll("TimeOfDay(", "").replaceAll(")", "");
-                return time; // Returns the time in "07:31" format
+                return timeString
+                    .replaceAll("TimeOfDay(", "")
+                    .replaceAll(")", "");
               } catch (e) {
                 print('Error formatting time: $e');
-                return timeString; // Return original if formatting fails
+                return timeString;
               }
             }
 
@@ -86,33 +128,41 @@ class AcceptedProposalScreen extends StatelessWidget {
               child: ListView(
                 children: [
                   DetailItem(label: 'الاسم', value: proposalData['name']),
-
                   DetailItem(
                       label: 'التفاصيل',
                       value:
                           proposalData['details'] ?? "الانهاء و التسليم فوري"),
                   DetailItem(
                       label: 'البريد الإلكتروني', value: proposalData['email']),
-                  DetailItem(label: 'الهاتف', value: proposalData['phone']),
                   DetailItem(label: 'السعر', value: proposalData['price']),
-                  DetailItem(label: 'الفئة', value: proposalData['task_cat']),
+                  DetailItem(
+                      label: 'الفئة', value: proposalData['task_cat'] ?? ""),
                   DetailItem(
                       label: 'تاريخ المهمة',
                       value: formatDate(proposalData['task_date'])),
                   DetailItem(
                       label: 'وصف المهمة',
                       value: proposalData['task_description']),
-
                   DetailItem(
                       label: 'وقت المهمة',
                       value: formatTime(proposalData['task_time'])),
                   DetailItem(
                       label: 'عنوان المهمة', value: proposalData['task_title']),
                   const SizedBox(height: 20),
-                  // Display task image if available
                   proposalData['task_image'] != null
                       ? Image.network(proposalData['task_image'])
                       : Container(),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomButton(
+                          text: 'انتهاء الخدمة',
+                          onPressed: () {
+                            showConfirmationDialog(context);
+                          }),
+                    ],
+                  ),
                 ],
               ),
             );

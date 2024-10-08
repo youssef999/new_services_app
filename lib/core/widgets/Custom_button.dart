@@ -24,8 +24,8 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: 150,
-        height: 50,
+        width: 120,
+        height: 40,
         child: InkWell(
             child: Container(
               decoration: BoxDecoration(
@@ -47,7 +47,7 @@ class CustomButton extends StatelessWidget {
                     text,
                     style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.w400),
                   ),
                 ),

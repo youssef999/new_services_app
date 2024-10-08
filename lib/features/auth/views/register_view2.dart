@@ -22,11 +22,10 @@ import '../../../core/resources/app_styles.dart';
 import 'register_view2.dart';
 
 class SignupView extends StatefulWidget {
-
   String roleId;
   String email;
 
-  SignupView({super.key, required this.roleId,required this.email});
+  SignupView({super.key, required this.roleId, required this.email});
 
   @override
   State<SignupView> createState() => _SignupViewState();
@@ -37,12 +36,12 @@ class _SignupViewState extends State<SignupView> {
   @override
   void initState() {
     controller.getCats();
-    if(widget.email!='x'){
-      controller.emailController.text=widget.email;
+    if (widget.email != 'x') {
+      controller.emailController.text = widget.email;
     }
-   // if(widget.roleId=='1'){
-      controller.getCities('مصر');
-   // }
+    // if(widget.roleId=='1'){
+    controller.getCities('مصر');
+    // }
     super.initState();
   }
 
@@ -64,7 +63,7 @@ class _SignupViewState extends State<SignupView> {
 class UserRegisterView extends StatelessWidget {
   String email;
   AuthController controller;
-  UserRegisterView({super.key, required this.controller,required this.email});
+  UserRegisterView({super.key, required this.controller, required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -88,22 +87,17 @@ class UserRegisterView extends StatelessWidget {
                       fit: BoxFit.fill,
                       width: 300,
                     ),
-                    Text(
-                      'أهلا بك  ',
-                      style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold),
+                    const Custom_Text(
+                      text: 'أهلا بك  ',
+                      fontSize: 26,
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(
-                      'أطلب خدمتك من اي مكان',
-                      style: TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                    Custom_Text(
+                      text: 'قم بالتسجيل في I NEED و أطلب خدمتك \n من اي مكان',
+                      fontSize: 16,
+                      color: AppColors.greyTextColor,
                     ),
                     const SizedBox(
                       height: 20,
@@ -158,26 +152,23 @@ class UserRegisterView extends StatelessWidget {
                         CustomButton(
                             text: 'انشاء حساب',
                             onPressed: () {
-
-                              if(email=='x'){
+                              if (email == 'x') {
                                 controller.register(
-                                  '0',
-                                  controller.emailController.text,
-                                  controller.passController.text,
-                                  controller.phoneController.text,
-                                  context,false
-
-                                );
-                              }else{
+                                    '0',
+                                    controller.emailController.text,
+                                    controller.passController.text,
+                                    controller.phoneController.text,
+                                    context,
+                                    false);
+                              } else {
                                 controller.register(
-                                  '0',
-                                  controller.emailController.text,
-                                  controller.passController.text,
-                                  controller.phoneController.text,
-                                  context,true
-                                );
+                                    '0',
+                                    controller.emailController.text,
+                                    controller.passController.text,
+                                    controller.phoneController.text,
+                                    context,
+                                    true);
                               }
-
                             }),
                         const SizedBox(
                           height: 6,
@@ -200,21 +191,16 @@ class UserRegisterView extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "لديك حساب بالفعل؟".tr,
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.black),
+                            Custom_Text(
+                              text: "لديك حساب بالفعل؟".tr,
                             ),
                             TextButton(
                               onPressed: () {
                                 Get.back();
                               },
-                              child: Text(
-                                'تسجيل حساب'.tr,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.primary),
+                              child: Custom_Text(
+                                text: 'تسجيل حساب'.tr,
+                                color: AppColors.primary,
                               ),
                             )
                           ],
@@ -233,11 +219,8 @@ class UserRegisterView extends StatelessWidget {
 }
 
 class WorkerRegisterView extends StatefulWidget {
-  String email ;
- WorkerRegisterView({
-    super.key,
-    required this.email
-  });
+  String email;
+  WorkerRegisterView({super.key, required this.email});
 
   @override
   State<WorkerRegisterView> createState() => _WorkerRegisterViewState();
@@ -246,19 +229,21 @@ class WorkerRegisterView extends StatefulWidget {
 class _WorkerRegisterViewState extends State<WorkerRegisterView> {
   AuthController controller = Get.put(AuthController());
 
-   final box = GetStorage();
+  final box = GetStorage();
 
-   String address='x';
+  String address = 'x';
 
-   @override
+  @override
   void initState() {
-    address=box.read('workerAddress')??'x';
+    address = box.read('workerAddress') ?? 'x';
     controller.loginFormKey = GlobalKey<FormState>();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar('', context),
       body: GetBuilder<AuthController>(
         builder: (_) {
@@ -342,7 +327,6 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                               );
                             })),
 
-
                         const SizedBox(height: 20),
                         CustomTextFormField(
                           hint: 'password'.tr,
@@ -369,7 +353,8 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                           icon: Icons.price_change,
                           validateMessage: 'ادخل السعر ',
                           controller: controller.priceController,
-                        ),const SizedBox(height: 20),
+                        ),
+                        const SizedBox(height: 20),
 
                         // drop down country
                         Container(
@@ -386,7 +371,7 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                                   controller.changeCountry(newValue!);
                                 },
                                 items:
-                                controller.countryList.map((String item) {
+                                    controller.countryList.map((String item) {
                                   return DropdownMenuItem<String>(
                                     value: item,
                                     child: Padding(
@@ -448,7 +433,8 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                                 onChanged: (newValue) {
                                   controller.changeAddress(newValue!);
                                 },
-                                items: controller.addressNames.map((String item) {
+                                items:
+                                    controller.addressNames.map((String item) {
                                   return DropdownMenuItem<String>(
                                     value: item,
                                     child: Padding(
@@ -481,8 +467,6 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                         //   controller: controller.cityController,
                         // ),
                         const SizedBox(height: 20),
-
-
 
                         // InkWell(
                         //   child: Row(
@@ -530,28 +514,27 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                         //   },
                         // ),
 
-
-
                         const SizedBox(height: 20),
                         CustomButton(
                           text: 'انشاء حساب',
                           onPressed: () {
-                            if(widget.email=='x'){
+                            if (widget.email == 'x') {
                               controller.register(
                                   '1',
                                   controller.emailController.text,
                                   controller.passController.text,
-                                  controller.phoneController.text,context,false
-                              );
-                            }else{
+                                  controller.phoneController.text,
+                                  context,
+                                  false);
+                            } else {
                               controller.register(
                                   '1',
                                   controller.emailController.text,
                                   controller.passController.text,
-                                  controller.phoneController.text,context,true
-                              );
+                                  controller.phoneController.text,
+                                  context,
+                                  true);
                             }
-
                           },
                         ),
                         const SizedBox(height: 6),

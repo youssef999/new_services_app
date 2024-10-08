@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:freelancerApp/features/settings/models/user.dart' as AppUser;
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SettingsController extends GetxController {
   List<AppUser.User> userData =
@@ -13,29 +14,70 @@ class SettingsController extends GetxController {
   Future<void> getUserData() async {
     userData = []; // Clear the list before fetching new data
     try {
-      // Get the currently logged-in user
-      firebase_auth.User? currentUser =
-          firebase_auth.FirebaseAuth.instance.currentUser;
+      final box = GetStorage();
 
-      if (currentUser != null) {
-        // Fetch the document for the current user from the 'users' collection using the user ID
-        DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUser.uid) // Use the user ID directly
+      // Get the currently logged-in user's email
+      String? currentUserEmail = box.read('email');
+
+      if (currentUserEmail != null) {
+        log(box.read('roleId'));
+        // Query the 'users' collection for the document where 'email' matches the current user's email
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection(
+                box.read('roleId') == '0' ? 'users' : 'serviceProviders')
+            .where('email', isEqualTo: currentUserEmail)
             .get();
 
-        if (docSnapshot.exists) {
-          // Map the fetched document to a User object
-          AppUser.User user = AppUser.User.fromFirestore(
-              docSnapshot.data() as Map<String, dynamic>, docSnapshot.id);
-          userData = [user]; // Update userData with the fetched user
+        if (querySnapshot.docs.isNotEmpty) {
+          // Map the fetched document(s) to a list of User objects
+          userData = querySnapshot.docs.map((doc) {
+            return AppUser.User.fromFirestore(
+                doc.data() as Map<String, dynamic>, doc.id);
+          }).toList();
+
           update(); // Notify the listeners that data has been updated
-          print("User data loaded: ${userData.length} user found.");
+          print("User data loaded: ${userData.length} user(s) found.");
         } else {
-          print("No user data found for the current user.");
+          print("No user data found for the current email.");
         }
       } else {
-        print("No user is currently logged in.");
+        print("No email found for the current user.");
+      }
+    } catch (e) {
+      // Handle any errors
+      print("Error fetching user data: $e");
+    }
+  }
+
+  Future<void> getWorkerData() async {
+    userData = []; // Clear the list before fetching new data
+    try {
+      final box = GetStorage();
+
+      // Get the currently logged-in user's email
+      String? currentUserEmail = box.read('email');
+
+      if (currentUserEmail != null) {
+        // Query the 'users' collection for the document where 'email' matches the current user's email
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: currentUserEmail)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          // Map the fetched document(s) to a list of User objects
+          userData = querySnapshot.docs.map((doc) {
+            return AppUser.User.fromFirestore(
+                doc.data() as Map<String, dynamic>, doc.id);
+          }).toList();
+
+          update(); // Notify the listeners that data has been updated
+          print("User data loaded: ${userData.length} user(s) found.");
+        } else {
+          print("No user data found for the current email.");
+        }
+      } else {
+        print("No email found for the current user.");
       }
     } catch (e) {
       // Handle any errors

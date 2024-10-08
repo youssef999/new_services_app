@@ -3,6 +3,7 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/resources/app_colors.dart';
+import 'package:freelancerApp/core/resources/app_styles.dart';
 import 'package:freelancerApp/core/widgets/custom_app_bar.dart';
 import 'package:freelancerApp/features/auth/views/login_view.dart';
 import 'package:freelancerApp/features/settings/controllers/settings_controller.dart';
@@ -31,7 +32,19 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('الاعدادات', context),
+      appBar: AppBar(
+        elevation: 0.1,
+        centerTitle: true,
+        toolbarHeight: 60,
+        backgroundColor: AppColors.primary,
+        title: Padding(
+          padding: const EdgeInsets.all(7),
+          child: Text(
+            "الاعدادات",
+            style: Styles.appBarTextStyle,
+          ),
+        ),
+      ),
       body: GetBuilder<SettingsController>(builder: (_) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -40,9 +53,9 @@ class _SettingsViewState extends State<SettingsView> {
               const SizedBox(
                 height: 12,
               ),
-              // (controller.userData.isNotEmpty)
-              //     ? UserCardWidget(userData: controller.userData[0])
-              //     : const Center(child: CircularProgressIndicator()),
+              (controller.userData.isNotEmpty)
+                  ? UserCardWidget(userData: controller.userData[0])
+                  : const Center(child: CircularProgressIndicator()),
               const SizedBox(
                 height: 30,
               ),
@@ -151,13 +164,22 @@ class UserCardWidget extends StatelessWidget {
         children: [
           CircleAvatar(
             backgroundColor: AppColors.primary,
-            radius: 44,
-            backgroundImage: NetworkImage(userData.image),
+            radius: 36,
+            backgroundImage:
+                userData.image.isNotEmpty ? NetworkImage(userData.image) : null,
+            child: userData.image.isEmpty
+                ? const Icon(
+                    Icons.person, // or any icon you prefer
+                    size: 44, // adjust size as needed
+                    color: Colors.white, // icon color
+                  )
+                : null,
           ),
           const SizedBox(
             width: 12,
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 userData.name,

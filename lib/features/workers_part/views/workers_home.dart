@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/resources/app_assets.dart';
 
@@ -15,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/Core/widgets/custom_text.dart';
-
-
 
 class WorkersHome extends StatefulWidget {
   const WorkersHome({super.key});
@@ -40,22 +35,27 @@ class _WorkersHomeState extends State<WorkersHome> {
     return GetBuilder<WorkersHomeController>(
       builder: (_) {
         return Scaffold(
+          backgroundColor: AppColors.backgroundColor,
           appBar: AppBar(
             elevation: 0.2,
             backgroundColor: AppColors.primary,
-            title:  Text("المهام",style:TextStyle(
-              color: AppColors.mainTextColor,
-              fontSize: 24,fontWeight:FontWeight.w600
-            ),),
+            title: Text(
+              "المهام",
+              style: TextStyle(
+                  color: AppColors.mainTextColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600),
+            ),
             centerTitle: true,
             actions: [
               IconButton(
                 onPressed: () {
                   controller.openFilterDialog(context);
                 },
-                icon:  Icon(Icons.filter_list,
-
-                color:AppColors.mainTextColor,),
+                icon: Icon(
+                  Icons.filter_list,
+                  color: AppColors.mainTextColor,
+                ),
               ),
             ],
           ),
@@ -69,19 +69,20 @@ class _WorkersHomeState extends State<WorkersHome> {
                 (controller.tasksList.isEmpty)
                     ? _buildEmptyTaskState()
                     : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.tasksList.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TaskWidget(task: controller.tasksList[index]),
-                    );
-                  },
-                ),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.tasksList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                TaskWidget(task: controller.tasksList[index]),
+                          );
+                        },
+                      ),
                 const SizedBox(height: 20),
                 // New Features Section
-                FeaturesSection(),
+                const FeaturesSection(),
                 const SizedBox(height: 20),
               ],
             ),
@@ -116,6 +117,8 @@ class _WorkersHomeState extends State<WorkersHome> {
 }
 
 class FeaturesSection extends StatelessWidget {
+  const FeaturesSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -136,31 +139,32 @@ class FeaturesSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.star_border,
-            text: '١- الحصول على تقييم جيد يعطيك إمكانية اختيارك في الكثير من الأعمال',
+            text:
+                '١- الحصول على تقييم جيد يعطيك إمكانية اختيارك في الكثير من الأعمال',
           ),
           const SizedBox(height: 8),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.work_outline,
-            text: '٢- يتم ظهور عدد مشاريعك للعملاء مما يوفر لك فرص عمل أقوى وأكثر',
+            text:
+                '٢- يتم ظهور عدد مشاريعك للعملاء مما يوفر لك فرص عمل أقوى وأكثر',
           ),
           const SizedBox(height: 8),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.security_outlined,
             text: '٣- التطبيق يساعد في ضمان حقوقك',
           ),
           const SizedBox(height: 8),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.card_giftcard,
             text:
-            '٤- مستقبلاً سيتم إضافة ميزات للفنيين الأكثر عملاً وتحصيل نقاط كهدايا',
+                '٤- مستقبلاً سيتم إضافة ميزات للفنيين الأكثر عملاً وتحصيل نقاط كهدايا',
           ),
           const SizedBox(height: 8),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.warning_amber_outlined,
-            text:
-            '٥- التعامل الخارجي يعد مخالفة لسياستنا وقد يعرض حسابك للحظر',
+            text: '٥- التعامل الخارجي يعد مخالفة لسياستنا وقد يعرض حسابك للحظر',
           ),
         ],
       ),
@@ -172,7 +176,7 @@ class FeatureItem extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  FeatureItem({required this.icon, required this.text});
+  const FeatureItem({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {

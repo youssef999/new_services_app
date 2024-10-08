@@ -33,73 +33,76 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
-    String address=box.read('address')?? 'اختر الموقع';
-   // controller.getUserLocation();
+    String address = box.read('address') ?? 'اختر الموقع';
+    // controller.getUserLocation();
     controller.getAllAddress();
-    controller.getAllWorkers('All',address);
+    controller.getAllWorkers('All', address);
     controller.getAds();
     controller.getCats();
     controller.getSubCats();
     super.initState();
   }
+
   final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
-    String address=box.read('address')?? 'اختر الموقع';
+    String address = box.read('address') ?? 'اختر الموقع';
     return Scaffold(
-      appBar:
-      AppBar(
-        elevation: 0.7,
-        backgroundColor: AppColors.primary,
-        title: Column(children: [
-
-          Text(
-              "الرئيسية",
-              style: TextStyle(
-                color: AppColors.mainTextColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-
-          InkWell(
-            child: Row(
-              //mainAxisAlignment:MainAxisAlignment.center,
-              children: [
-                // Icon(Icons.location_on_rounded,
-                //   size: 20,color: AppColors.secondaryTextColor,),
-               const SizedBox(width: 2,),
-                Text(
-                address,
-                  style: TextStyle(
-                    color: Colors.grey[300],
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+          elevation: 0.7,
+          toolbarHeight: 90,
+          backgroundColor: AppColors.primary,
+          title: Column(
+            children: [
+              Text(
+                "الرئيسية",
+                style: TextStyle(
+                  color: AppColors.mainTextColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(width: 15,),
-                Icon(Icons.arrow_drop_down_circle_outlined,
-                color:AppColors.mainTextColor,
-                )
-              ],
-            ),
-            onTap:(){
-              Get.to(AddressView(
-                addressName: controller.addressName
-              ));
-            },
-          ),
-          const SizedBox(height: 10,),
-
-        ],)
-      ),
-
-
-
+              ),
+              InkWell(
+                child: Row(
+                  //mainAxisAlignment:MainAxisAlignment.center,
+                  children: [
+                    // Icon(Icons.location_on_rounded,
+                    //   size: 20,color: AppColors.secondaryTextColor,),
+                    const SizedBox(
+                      width: 2,
+                    ),
+                    Text(
+                      address,
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Icon(
+                      Icons.arrow_drop_down_circle_outlined,
+                      color: AppColors.mainTextColor,
+                    )
+                  ],
+                ),
+                onTap: () {
+                  Get.to(AddressView(addressName: controller.addressName));
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          )),
       body: Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 15,
-
+        padding: const EdgeInsets.only(
+          left: 15.0,
+          right: 15,
         ),
         child: GetBuilder<HomeController>(builder: (_) {
           return ListView(
@@ -118,14 +121,12 @@ class _HomeViewState extends State<HomeView> {
                     child: Custom_Text(
                       text: 'جميع التصنيفات',
                       fontSize: 16,
-                      color: AppColors.greyTextColor,
+                      color: AppColors.primary,
                     ),
                     onTap: () {
-
                       Get.to(CatView(
                         catList: controller.catList,
                       ));
-
                     },
                   ),
                 ],
@@ -134,27 +135,26 @@ class _HomeViewState extends State<HomeView> {
               Padding(
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 10, right: 10),
-                  child: GridView.builder(
-                      itemCount: controller.catList.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                          childAspectRatio: 0.97
-                          ),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: CatWidget(cat: controller.catList[index]),
-                        );
-                      })),
+                  child: SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.catList.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: CatWidget(cat: controller.catList[index]),
+                          );
+                        }),
+                  )),
               const SizedBox(height: 6),
               // CatListView(controller: controller),
-             // const SizedBox(height: 5),
+              // const SizedBox(height: 5),
 
-              Divider(thickness: 0.1,
-              color:AppColors.primary,
+              Divider(
+                thickness: 0.6,
+                color: AppColors.grey,
               ),
               const SizedBox(height: 6),
 
@@ -166,50 +166,46 @@ class _HomeViewState extends State<HomeView> {
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
                       children: [
-
                         Row(
-                          mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
                                 CircleAvatar(
                                   radius: 31,
-                                  backgroundImage: NetworkImage(
+                                  backgroundColor:
+                                      AppColors.greyTextColor.withOpacity(0.2),
+                                  child: Image.network(
                                     controller.catList[i].imageUrl,
+                                    width: 40,
                                   ),
                                 ),
                                 const SizedBox(
                                   width: 11,
                                 ),
-                                Text(
-                                  controller.catList[i].name,
-                                  style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                                Custom_Text(
+                                  text: controller.catList[i].name,
                                 )
                               ],
                             ),
-
                             InkWell(
-                              child: Text("المزيد",
-                                style: TextStyle(color: AppColors.primary),),
-                              onTap:(){
-
-                               Get.to(SubCatView(cat: controller.catList[i].name,
-
-                               ));
-
+                              child: Custom_Text(
+                                text: "المزيد",
+                                color: AppColors.primary,
+                              ),
+                              onTap: () {
+                                Get.to(SubCatView(
+                                  cat: controller.catList[i].name,
+                                ));
                               },
                             ),
-
-
-
                           ],
                         ),
                         const SizedBox(
                           height: 5,
                         ),
                         SizedBox(
-                          height: 154,
+                          height: 166,
                           //width: double.infinity,
                           child: ListView.builder(
                               shrinkWrap: true,
@@ -226,55 +222,62 @@ class _HomeViewState extends State<HomeView> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
-                                        height: 102,
-                                        width: 122,
+                                        height: 130,
+                                        width: 130,
                                         decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey[500]!.withOpacity(0.2), // Shadow color
-                                                spreadRadius: 5, // Spread radius
-                                                blurRadius: 7, // Blur radius
-                                                offset: const Offset(0, 3), // Changes the position of the shadow
+                                                color: Colors.grey[500]!
+                                                    .withOpacity(
+                                                        0.2), // Shadow color
+                                                spreadRadius:
+                                                    2, // Spread radius
+                                                blurRadius: 2, // Blur radius
+                                                offset: const Offset(0,
+                                                    2), // Changes the position of the shadow
                                               ),
                                             ],
                                             border: Border.all(
-                                              color: AppColors.grey
-                                            ),
+                                                color: AppColors.grey),
                                             borderRadius:
                                                 BorderRadius.circular(12),
                                             color: AppColors.cardColor),
                                         child: Padding(
                                           padding: const EdgeInsets.all(0.0),
                                           child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              const SizedBox(
-                                                height: 1,
-                                              ),
                                               ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                                 child: Image.network(
                                                   controller
                                                       .subCatList[index].image,
-                                                  width: MediaQuery.of(context).size.width,
-                                                  height: 75,
-                                                  fit:BoxFit.fill,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  height: 76,
+                                                  fit: BoxFit.fill,
                                                 ),
                                               ),
                                               const SizedBox(
-                                                height: 9,
+                                                height: 20,
                                               ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(left:3.0,right: 3),
-                                                child: Text(
-                                                  controller
-                                                      .subCatList[index].name,
-                                                  style: TextStyle(
-                                                      color: AppColors
-                                                          .secondaryTextColor,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 10,
+                                                          right: 10,
+                                                          bottom: 10),
+                                                  child: Custom_Text(
+                                                    text: controller
+                                                        .subCatList[index].name,
+                                                    fontSize: 14,
+                                                    textAlign: TextAlign.center,
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -301,23 +304,20 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                 ),
-
+              const SizedBox(
+                height: 16,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Custom_Text(
-                      text: "الاعلي تقييما ",
+                      text: "أعلي مقدمين الخدمات تقييما",
                       fontSize: 20,
                       color: AppColors.secondaryTextColor),
                   InkWell(
-                    child: Text(
-                      "الجميع ",
-                      style: TextStyle(
-                        textBaseline: TextBaseline.ideographic,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.greyTextColor,
-                      ),
+                    child: Custom_Text(
+                      text: "الجميع ",
+                      color: AppColors.primary,
                     ),
                     onTap: () {
                       Get.to(AllWorkers(
@@ -328,13 +328,13 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
 
-              const SizedBox(height: 11),
+              const SizedBox(height: 20),
 
               WorkerProvidersList(controller: controller),
-              const SizedBox(height: 11),
+              const SizedBox(height: 20),
 
               // New Features Section
-              FeaturesSection(),
+              const FeaturesSection(),
 
               const SizedBox(height: 16),
             ],
@@ -417,6 +417,8 @@ class WorkerProviderWithCatWidget extends StatelessWidget {
 }
 
 class FeaturesSection extends StatelessWidget {
+  const FeaturesSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -437,17 +439,17 @@ class FeaturesSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.star_border,
             text: '١- تقييم الفني أمام الجميع',
           ),
           const SizedBox(height: 8),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.report_problem_outlined,
             text: '٢- إمكانية تقديم شكاوي',
           ),
           const SizedBox(height: 8),
-          FeatureItem(
+          const FeatureItem(
             icon: Icons.verified_user_outlined,
             text:
                 '٣- ظهورك كعميل مميز يعطي الفنيين الرغبة بتنفيذ طلبك بأفضل جودة',
@@ -462,11 +464,12 @@ class FeatureItem extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  FeatureItem({required this.icon, required this.text});
+  const FeatureItem({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Icon(icon, color: AppColors.primary, size: 28),
         const SizedBox(width: 12),
@@ -500,11 +503,11 @@ class AdsWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
         width: double.infinity, // Make the container take full width
-        height: 130.0, // Set the height
+        height: 180.0, // Set the height
         child: CarouselSlider.builder(
           itemCount: adsList!.length, // Use adsList safely with null-check
           options: CarouselOptions(
-            height: 125.0, // Set the desired height
+            height: 160.0, // Set the desired height
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 8),
             autoPlayAnimationDuration: const Duration(seconds: 1),
@@ -519,8 +522,8 @@ class AdsWidget extends StatelessWidget {
                   placeholder: (context, url) =>
                       const Center(child: CircularProgressIndicator()),
                   width: double.infinity, // Ensure the image takes full width
-                  height: 130.0, // Match the height of the carousel
-                  fit: BoxFit.cover,
+                  height: 180.0, // Match the height of the carousel
+                  fit: BoxFit.fill,
                 ));
           },
         ),
@@ -572,6 +575,9 @@ class WorkerProvidersList extends StatelessWidget {
               ));
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, crossAxisSpacing: 4, childAspectRatio: 0.88));
+            mainAxisSpacing: 10,
+            crossAxisCount: 2,
+            crossAxisSpacing: 4,
+            childAspectRatio: 0.88));
   }
 }

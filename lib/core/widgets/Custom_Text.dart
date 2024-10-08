@@ -11,26 +11,25 @@ class Custom_Text extends StatelessWidget {
   final double height;
 
   const Custom_Text(
-      {super.key, required this.text,
+      {super.key,
+      required this.text,
       this.fontSize = 16.0,
-        this.fontWeight=FontWeight.w500,
-        this.textAlign=TextAlign.center,
+      this.fontWeight = FontWeight.w500,
+      this.textAlign = TextAlign.center,
       this.color = Colors.black,
       this.alignment = Alignment.center,
       this.height = 1});
 
   @override
   Widget build(BuildContext context) {
-    return 
-     Text(  
-        text,
-          style: GoogleFonts.cairo(
-            color:color,
-            fontSize: fontSize,
-              fontWeight:fontWeight,
-          )
-      
+    return Text(
+      text,
+      style: GoogleFonts.cairo(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+      textAlign: textAlign,
     );
   }
 }
-

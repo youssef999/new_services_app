@@ -18,20 +18,19 @@ import 'register_view2.dart';
 
 class LoginView extends StatefulWidget {
   final String type;
-  LoginView({super.key, required this.type});
+  const LoginView({super.key, required this.type});
 
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-
   AuthController controller = Get.put(AuthController());
   @override
   void initState() {
-    if(widget.type=='0'){
+    if (widget.type == '0') {
       controller.getAllUsers('users');
-    }else{
+    } else {
       controller.getAllUsers('serviceProviders');
     }
     super.initState();
@@ -45,7 +44,8 @@ class _LoginViewState extends State<LoginView> {
     print("TYPEEEE===" + widget.type);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor, // Improved background color for better contrast
+      backgroundColor: AppColors
+          .backgroundColor, // Improved background color for better contrast
       appBar: AppBar(
         toolbarHeight: 42,
         backgroundColor: AppColors.primary,
@@ -78,22 +78,16 @@ class _LoginViewState extends State<LoginView> {
                               fit: BoxFit.cover,
                             ),
                             const SizedBox(height: 4),
-                            Text(
-                              'أهلاً بك في التطبيق',
-                              style: TextStyle(
-                                color: AppColors.secondaryTextColor,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            const Custom_Text(
+                              text: 'أهلاً بك في I NEED',
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              'قم بتسجيل الدخول للمتابعة',
-                              style: TextStyle(
-                                color: AppColors.greyTextColor,
-                                fontSize: 18,
-                              ),
+                            Custom_Text(
+                              text: 'قم بتسجيل الدخول للمتابعة',
+                              color: AppColors.greyTextColor,
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -102,10 +96,7 @@ class _LoginViewState extends State<LoginView> {
                       const SizedBox(height: 40),
                       // Email Input
                       Padding(
-                        padding: const EdgeInsets.only
-                          (left: 8.0,
-                        right: 8
-                        ),
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
                         child: CustomTextFormField(
                           hint: 'البريد الالكتروني',
                           obs: false,
@@ -118,9 +109,7 @@ class _LoginViewState extends State<LoginView> {
                       const SizedBox(height: 20),
                       // Password Input
                       Padding(
-                        padding: const EdgeInsets.only(left: 8.0,
-                        right: 8
-                        ),
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
                         child: CustomTextFormField(
                           hint: 'كلمة المرور ',
                           obs: true,
@@ -130,20 +119,19 @@ class _LoginViewState extends State<LoginView> {
                           icon: Icons.lock, // Icon for password
                         ),
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 15),
                       // Forgot Password
                       Align(
                         alignment: Alignment.centerRight,
-                        child: InkWell(
-                          onTap: () {
-                            Get.to(const ForgotPass());
-                          },
-                          child: Text(
-                            'نسيت كلمة المرور؟',
-                            style: TextStyle(
-                              color: AppColors.secondaryTextColor,
-                              fontSize: 15,
-                              decoration: TextDecoration.underline,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: InkWell(
+                            onTap: () {
+                              Get.to(const ForgotPass());
+                            },
+                            child: const Custom_Text(
+                              text: 'نسيت كلمة المرور؟',
+                              fontSize: 14,
                             ),
                           ),
                         ),
@@ -151,27 +139,26 @@ class _LoginViewState extends State<LoginView> {
                       const SizedBox(height: 25),
                       // Login Button
 
-                      (controller.isLoading==false)?
-                      Padding(
-                        padding: const EdgeInsets.only(left:28.0
-                        ,right: 28
-                        ),
-                        child: CustomButton(
-                          text: 'تسجيل دخول',
-                          onPressed: () {
-                          //  controller.loginWithPhone( context);
-                            controller.userLogin(widget.type,context);
-                          },
-                          color1: AppColors.primary,
-                          color2: AppColors.secondaryTextColor,
-                          //fontSize: 18,
-                        ),
-                      ):Center(child: CircularProgressIndicator(
-                        color:AppColors.primary,
-                      )),
-                      
-                      
-                      
+                      (controller.isLoading == false)
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 28.0, right: 28),
+                              child: CustomButton(
+                                text: 'تسجيل دخول',
+                                onPressed: () {
+                                  //  controller.loginWithPhone( context);
+                                  controller.userLogin(widget.type, context);
+                                },
+                                color1: AppColors.primary,
+                                color2: AppColors.secondaryTextColor,
+                                //fontSize: 18,
+                              ),
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            )),
+
                       const SizedBox(height: 15),
                       // Divider
                       Center(
@@ -180,7 +167,8 @@ class _LoginViewState extends State<LoginView> {
                           children: [
                             Expanded(child: Divider(color: Colors.grey[300])),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
                                 'أو'.tr,
                                 style: TextStyle(
@@ -195,63 +183,70 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      
-                      InkWell(
-                        child: Container(
-                          decoration:BoxDecoration(
-                            borderRadius: BorderRadius.circular(21),
-                            color: AppColors.primary,
-                          ),
-                          padding:const  EdgeInsets.all(10),
-                          child: Row(children: [
 
-                            Image.asset(AppAssets.googleIcon,
-                            width:50 ,
-                            height: 31,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
+                        child: InkWell(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(26),
+                              color: AppColors.primary,
                             ),
-
-                          const  SizedBox(width: 12,),
-
-                            Text('تسجيل دخول بواسطة جوجل',
-                              style:TextStyle(color: AppColors.mainTextColor,
-                                  fontSize: 18,fontWeight: FontWeight.bold),)
-
-                          ],),
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 18,
+                                  child: Image.asset(
+                                    AppAssets.googleIcon,
+                                    width: 30,
+                                    height: 20,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Text(
+                                  'تسجيل دخول بواسطة جوجل',
+                                  style: TextStyle(
+                                      color: AppColors.mainTextColor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            print(
+                                "TRY TO LOGIN======" + widget.type.toString());
+                            controller.tryToLogin(context, widget.type);
+                          },
                         ),
-                        onTap:(){
-                          print("TRY TO LOGIN======"+widget.type.toString());
-                          controller.tryToLogin(context, widget.type);
-                        },
                       ),
-                      
-                      
-                      
+
                       // Register Option
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "لا تمتلك حساب ؟",
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          const Custom_Text(
+                            text: "لا تمتلك حساب ؟",
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.to(SignupView(roleId: widget.type,
-                              email: 'x',
+                              Get.to(SignupView(
+                                roleId: widget.type,
+                                email: 'x',
                               ));
                             },
-                            child: Text(
-                              'انشاء حساب'.tr,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
+                            child: Custom_Text(
+                              text: 'انشاء حساب'.tr,
+                              color: AppColors.primary,
                             ),
                           ),
                         ],
                       ),
-
                     ],
                   ),
                 ),
@@ -263,4 +258,3 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
-

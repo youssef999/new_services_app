@@ -27,9 +27,9 @@ class _WorkersWidgetState extends State<WorkersWidget> {
 
   @override
   void initState() {
-    String address=box.read('address')?? 'اختر الموقع';
+    String address = box.read('address') ?? 'اختر الموقع';
     super.initState();
-   controller.getAllWorkers(widget.cat, address);
+    controller.getAllWorkers(widget.cat, address);
   }
 
   @override
@@ -39,23 +39,20 @@ class _WorkersWidgetState extends State<WorkersWidget> {
       child: GetBuilder<HomeController>(
         builder: (_) {
           return GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.workersList.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: WorkerCardWidget(worker:
-                controller.workersList[index]),
-              );
-
-            }, gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            crossAxisSpacing: 4,
-            childAspectRatio: 0.88
-            )
-          );
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.workersList.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      WorkerCardWidget(worker: controller.workersList[index]),
+                );
+              },
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 4,
+                  childAspectRatio: 0.88));
         },
       ),
     );
@@ -63,19 +60,18 @@ class _WorkersWidgetState extends State<WorkersWidget> {
 }
 
 class WorkerCardWidget extends StatelessWidget {
-
   WorkerProvider worker;
- WorkerCardWidget({super.key,required this.worker});
+  WorkerCardWidget({super.key, required this.worker});
 
   @override
   Widget build(BuildContext context) {
-    return  InkWell(
+    return InkWell(
       child: Container(
         margin: const EdgeInsets.all(1.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
-            border:Border.all(color:Colors.grey[400]!,width: 1),
+            border: Border.all(color: Colors.grey[400]!, width: 1),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.4),
@@ -91,16 +87,38 @@ class WorkerCardWidget extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: CachedNetworkImage(
-                  imageUrl: worker.image,
-                  width: MediaQuery.of(context).size.width * 0.88,
-                ),
+                child: worker.image.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: worker.image,
+                        width: MediaQuery.of(context).size.width * 0.88,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.broken_image,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width * 0.88,
+                        height: MediaQuery.of(context).size.width * 0.2,
+                        color: Colors.grey[300],
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
               ),
-             const SizedBox(height: 12,),
+              const SizedBox(
+                height: 12,
+              ),
               Custom_Text(
                 text: worker.name,
                 fontSize: 21,
-                fontWeight:FontWeight.w600,
+                fontWeight: FontWeight.w600,
               ),
               Custom_Text(
                 text: worker.cat,
@@ -111,7 +129,7 @@ class WorkerCardWidget extends StatelessWidget {
                 color: Colors.amber,
                 allowHalf: true,
                 allowClear: true,
-                initialValue:double.parse(worker.rate.toString()),
+                initialValue: double.parse(worker.rate.toString()),
                 readOnly: true,
                 onChange: (value) => print(value),
               ),
@@ -119,16 +137,9 @@ class WorkerCardWidget extends StatelessWidget {
           ),
         ),
       ),
-      onTap:(){
-
-        Get.to(WorkerDetails(
-            worker:worker
-        ));
-
-
-
+      onTap: () {
+        Get.to(WorkerDetails(worker: worker));
       },
     );
   }
 }
-

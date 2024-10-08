@@ -73,7 +73,10 @@ import 'package:freelancerApp/core/resources/app_styles.dart';
 
 import 'package:get/get.dart';
 
-PreferredSizeWidget CustomAppBar(String text, BuildContext context) {
+PreferredSizeWidget CustomAppBar(
+  String text,
+  BuildContext context,
+) {
   return AppBar(
     elevation: 0.1,
     centerTitle: true,
@@ -82,7 +85,10 @@ PreferredSizeWidget CustomAppBar(String text, BuildContext context) {
       onPressed: () {
         Get.back();
       },
-      icon:  Icon(Icons.arrow_back,color:AppColors.appBarIconColor,),
+      icon: Icon(
+        Icons.arrow_back,
+        color: AppColors.appBarIconColor,
+      ),
     ),
     backgroundColor: AppColors.primary,
     title: Padding(

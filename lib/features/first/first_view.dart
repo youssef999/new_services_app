@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/resources/app_colors.dart';
@@ -15,11 +12,12 @@ class FirstView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('مرحبا بك في تطبيقنا',
-            style: TextStyle(color: AppColors.mainTextColor,
-            fontSize: 24,fontWeight: FontWeight.w600
-            )),
+            style: TextStyle(
+                color: AppColors.mainTextColor,
+                fontSize: 24,
+                fontWeight: FontWeight.w600)),
         centerTitle: true,
-        backgroundColor: AppColors.appBarColor,
+        backgroundColor: AppColors.primary,
         elevation: 0,
       ),
       body: Padding(
@@ -27,7 +25,7 @@ class FirstView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Text(
               'استمتع بأفضل تجربة تسجيل في تطبيقنا',
               style: TextStyle(
@@ -37,7 +35,7 @@ class FirstView extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 40),
             Text(
               'يرجى اختيار نوع التسجيل أدناه',
               style: TextStyle(
@@ -121,10 +119,7 @@ class FirstView extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              AppAssets.workers,
-                              width: 90
-                            ),
+                            child: Image.asset(AppAssets.workers, width: 90),
                           ),
                           const SizedBox(height: 10),
                           Text(

@@ -12,6 +12,7 @@ class Task {
   final String user_email;
   final String user_name;
   final String phone;
+  final String status;
   final String locationLink;
   final String locationDes;
   final String locationName;
@@ -22,6 +23,7 @@ class Task {
     required this.cat,
     required this.date,
     required this.image,
+    required this.status,
     required this.description,
     required this.end_time,
     required this.maxPrice,
@@ -57,6 +59,7 @@ class Task {
       user_email: json['user_email'] ?? '',
       user_name: json['user_name'] ?? '',
       phone: json['phone'] ?? '',
+      status: json['status'] ?? '',
     );
   }
 

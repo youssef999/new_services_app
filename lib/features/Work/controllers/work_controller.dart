@@ -23,9 +23,9 @@ class WorkController extends GetxController {
   TextEditingController address = TextEditingController();
   TextEditingController minPrice = TextEditingController();
   TextEditingController maxPrice = TextEditingController();
-  TextEditingController locationDescription=TextEditingController();
-  TextEditingController locationLink=TextEditingController();
-  TextEditingController locationName=TextEditingController();
+  TextEditingController locationDescription = TextEditingController();
+  TextEditingController locationLink = TextEditingController();
+  TextEditingController locationName = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   TimeOfDay? endSelectedTime;
@@ -81,7 +81,7 @@ class WorkController extends GetxController {
 
   Future<void> selectEndTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
-       helpText: "selectTime".tr,
+      helpText: "selectTime".tr,
       cancelText: 'cancel'.tr,
       confirmText: 'ok'.tr,
       context: context,
@@ -126,20 +126,20 @@ class WorkController extends GetxController {
     }
     update();
   }
-  Future<void> addWorkToFirestore(BuildContext context) async {
 
-    uploadMultiImageToFirebaseStorage(images).then((v){
-      Future.delayed(const Duration(seconds: 1), ()
-      async {
+  Future<void> addWorkToFirestore(BuildContext context) async {
+    uploadMultiImageToFirebaseStorage(images).then((v) {
+      Future.delayed(const Duration(seconds: 1), () async {
         checkValidation(context);
         if (validation == true) {
           // Generate a new document ID
-          String docId = FirebaseFirestore
-              .instance.collection('tasks').doc().id;
+          String docId =
+              FirebaseFirestore.instance.collection('tasks').doc().id;
 
           Map<String, dynamic> data = {
             "id": docId,
-            "image":downloadUrls[0],
+            "status": "pending",
+            "image": downloadUrls[0],
             "title": title.text,
             "user_name": userDataList[0].name,
             "user_phone": userDataList[0].phone,
@@ -159,9 +159,11 @@ class WorkController extends GetxController {
 
           try {
             // Create a reference with the generated document ID
-            CollectionReference collection = FirebaseFirestore.instance.collection('tasks');
+            CollectionReference collection =
+                FirebaseFirestore.instance.collection('tasks');
             await collection.doc(docId).set(data).then((value) {
-              appMessage(text: 'تم اضافة مشروعك بنجاح', fail: false,context: context);
+              appMessage(
+                  text: 'تم اضافة مشروعك بنجاح', fail: false, context: context);
               Get.offAll(const MainHome());
               title.clear();
               description.clear();
@@ -180,33 +182,26 @@ class WorkController extends GetxController {
         }
       });
     });
-
   }
-
-
 
   List<String> downloadUrls = [];
   String downloadUrl = '';
-List<Cat>catList=[];
-List<SubCat>subCatList=[];
-List<String>catListNames=[];
-List<String>subCatListNames=[];
-String selectedCat='خدمات الصيانة';
-String selectedSubCat='فني طابعات و احبار';
+  List<Cat> catList = [];
+  List<SubCat> subCatList = [];
+  List<String> catListNames = [];
+  List<String> subCatListNames = [];
+  String selectedCat = 'خدمات الصيانة';
+  String selectedSubCat = 'فني طابعات و احبار';
 
-
-  Future uploadMultiImageToFirebaseStorage(List<XFile> images)
-  async {
-
-     print("UPLOAD IMAGES....");
-     print("UPLOAD IMAGES======"+images.length.toString());
+  Future uploadMultiImageToFirebaseStorage(List<XFile> images) async {
+    print("UPLOAD IMAGES....");
+    print("UPLOAD IMAGES======" + images.length.toString());
     for (int i = 0; i < images.length; i++) {
-      print("HERE=="+i.toString());
+      print("HERE==" + i.toString());
       try {
-        String fileName = DateTime.now()
-            .millisecondsSinceEpoch.toString();
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
         Reference reference =
-        FirebaseStorage.instance.ref().child('images2024/$fileName');
+            FirebaseStorage.instance.ref().child('images2024/$fileName');
         UploadTask uploadTask = reference.putFile(File(images[i].path));
         TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
         downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -216,27 +211,26 @@ String selectedSubCat='فني طابعات و احبار';
         // ignore: avoid_print
         print('Error uploading image to Firebase Storage: $e');
       }
-      print("DOWNLOAD URLS===="+downloadUrls.length.toString());
-      print("DOWNLOAD URLS===="+downloadUrls.toString());
+      print("DOWNLOAD URLS====" + downloadUrls.length.toString());
+      print("DOWNLOAD URLS====" + downloadUrls.toString());
     }
     return downloadUrls;
   }
+
   Future<void> getCats() async {
-    catList=[];
-    catListNames=[];
+    catList = [];
+    catListNames = [];
     print("HERE CATS......");
     try {
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('cat').get();
-      catList =
-          querySnapshot.docs.map((DocumentSnapshot doc) {
-        return Cat.fromFirestore
-          (doc.data() as Map<String, dynamic>, doc.id);
+          await FirebaseFirestore.instance.collection('cat').get();
+      catList = querySnapshot.docs.map((DocumentSnapshot doc) {
+        return Cat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
-      for(int i=0;i<catList.length;i++){
+      for (int i = 0; i < catList.length; i++) {
         catListNames.add(catList[i].name);
       }
-      selectedCat=catList[0].name;
+      selectedCat = catList[0].name;
       update();
       print("Cats loaded: ${catList.length}.");
     } catch (e) {
@@ -245,37 +239,33 @@ String selectedSubCat='فني طابعات و احبار';
   }
 
   Future<void> getSubCats(String cat) async {
-    subCatList=[];
-    subCatListNames=[];
+    subCatList = [];
+    subCatListNames = [];
     print("HERE CATS......");
     try {
-      if(cat.length>1){
-        QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('sub_cat')
-            .where('cat',isEqualTo: cat)
+      if (cat.length > 1) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('sub_cat')
+            .where('cat', isEqualTo: cat)
             .get();
-       subCatList =
-            querySnapshot.docs.map((DocumentSnapshot doc) {
-              return SubCat.fromFirestore
-                (doc.data() as Map<String, dynamic>, doc.id);
-            }).toList();
-      }
-      else{
+        subCatList = querySnapshot.docs.map((DocumentSnapshot doc) {
+          return SubCat.fromFirestore(
+              doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
+      } else {
         QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('sub_cat')
-            .get();
-   subCatList =
-            querySnapshot.docs.map((DocumentSnapshot doc) {
-              return SubCat.fromFirestore
-                (doc.data() as Map<String, dynamic>, doc.id);
-            }).toList();
+            await FirebaseFirestore.instance.collection('sub_cat').get();
+        subCatList = querySnapshot.docs.map((DocumentSnapshot doc) {
+          return SubCat.fromFirestore(
+              doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
       }
 
-      print("Subcat==XXX="+subCatList.length.toString());
-      for(int i=0;i<subCatList.length;i++){
+      print("Subcat==XXX=" + subCatList.length.toString());
+      for (int i = 0; i < subCatList.length; i++) {
         subCatListNames.add(subCatList[i].name);
       }
-      selectedSubCat=subCatListNames[0];
+      selectedSubCat = subCatListNames[0];
       update();
       print("sub Cat loaded: ${catList.length}.");
       print("sub Cat loaded: ${subCatListNames}.");
@@ -284,17 +274,15 @@ String selectedSubCat='فني طابعات و احبار';
     }
   }
 
-
-
-  changeCatValue(String cat){
-    selectedCat=cat;
+  changeCatValue(String cat) {
+    selectedCat = cat;
     update();
     getSubCats(cat);
   }
 
   checkValidation(BuildContext context) {
     if (title.text.isEmpty) {
-      appMessage(text: 'ادخل عنوان المشروع', fail: true,context: context);
+      appMessage(text: 'ادخل عنوان المشروع', fail: true, context: context);
     } else if (description.text.isEmpty) {
       appMessage(text: 'ادخل وصف المشروع', fail: true, context: context);
     } else if (minPrice.text.isEmpty) {
@@ -304,16 +292,18 @@ String selectedSubCat='فني طابعات و احبار';
     } else if (selectedTime == null) {
       appMessage(text: 'ادخل وقت تنفيذ المشروع', fail: true, context: context);
     } else if (endSelectedTime == null) {
-      appMessage(text: 'ادخل وقت  نهائي لتنفيذ المشروع', fail: true, context: context);
+      appMessage(
+          text: 'ادخل وقت  نهائي لتنفيذ المشروع',
+          fail: true,
+          context: context);
     } else if (selectedDate == null) {
-      appMessage(text: 'ادخل تاريخ تنفيذ المشروع', fail: true, context: context);
-    }else if (locationName.text.isEmpty) {
+      appMessage(
+          text: 'ادخل تاريخ تنفيذ المشروع', fail: true, context: context);
+    } else if (locationName.text.isEmpty) {
       appMessage(text: 'ادخل عنوان الموقع', fail: true, context: context);
-    }else if (locationDescription.text.isEmpty) {
-      appMessage(text: 'ادخل وصف الموقع',
-          fail: true, context: context);
-    }
-    else {
+    } else if (locationDescription.text.isEmpty) {
+      appMessage(text: 'ادخل وصف الموقع', fail: true, context: context);
+    } else {
       validation = true;
       update();
     }

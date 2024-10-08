@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
+import 'package:freelancerApp/core/resources/app_styles.dart';
 import 'package:freelancerApp/core/widgets/Custom_button.dart';
 import 'package:freelancerApp/core/widgets/custom_app_bar.dart';
 import 'package:freelancerApp/core/widgets/custom_dropdown.dart';
@@ -23,21 +24,22 @@ class AddWork extends StatefulWidget {
 }
 
 class _AddWorkState extends State<AddWork> {
-  WorkController controller = Get.put(WorkController(),
- // permanent: true
+  WorkController controller = Get.put(
+    WorkController(),
+    // permanent: true
   );
 
-  final box=GetStorage();
+  final box = GetStorage();
   @override
   void initState() {
-
     print("caaaat===" + widget.cat);
     controller.getUserData();
     controller.getCats().then((v) {
       if (widget.cat.length > 1) {
         print("HERE..");
         controller.selectedCat = widget.cat;
-      }  if (widget.subCat.length > 1) {
+      }
+      if (widget.subCat.length > 1) {
         print("HERE..");
         controller.selectedSubCat = widget.subCat;
       }
@@ -48,13 +50,23 @@ class _AddWorkState extends State<AddWork> {
 
   @override
   Widget build(BuildContext context) {
-     String locationName=box.read('locationName')
-     ??'الموقع الخاص بتقديم الخدمة';
-
-
+    String locationName =
+        box.read('locationName') ?? 'الموقع الخاص بتقديم الخدمة';
 
     return Scaffold(
-      appBar: CustomAppBar('أضف خدمة', context),
+      appBar: AppBar(
+        elevation: 0.1,
+        centerTitle: true,
+        toolbarHeight: 60,
+        backgroundColor: AppColors.primary,
+        title: Padding(
+          padding: const EdgeInsets.all(7),
+          child: Text(
+            "أضف خدمة",
+            style: Styles.appBarTextStyle,
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(top: 13.0, left: 13, right: 13),
         child: GetBuilder<WorkController>(builder: (_) {
@@ -118,8 +130,6 @@ class _AddWorkState extends State<AddWork> {
                   obs: false,
                   controller: controller.description),
 
-
-
               // InkWell(
               //   child: Container(
               //     decoration:BoxDecoration(
@@ -169,27 +179,32 @@ class _AddWorkState extends State<AddWork> {
                 height: 10,
               ),
 
-
               Container(
-                decoration:BoxDecoration(
-                  borderRadius:BorderRadius.circular(12),
-                  color:AppColors.cardColor
-                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.cardColor),
                 child: Padding(
                   padding: const EdgeInsets.all(13.0),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.wrong_location,color:AppColors.primary,
+                          Icon(
+                            Icons.wrong_location,
+                            color: AppColors.primary,
                           ),
-                          Text("الموقع",style: TextStyle
-                            (color: AppColors.secondaryTextColor,
-                              fontSize: 22,fontWeight: FontWeight.bold),),
+                          Text(
+                            "الموقع",
+                            style: TextStyle(
+                                color: AppColors.secondaryTextColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
-
-                     const SizedBox(height: 13,),
+                      const SizedBox(
+                        height: 13,
+                      ),
                       CustomTextFormField(
                           hint: 'اسم عنوانك او منطقتك',
                           max: 2,
@@ -207,12 +222,11 @@ class _AddWorkState extends State<AddWork> {
                           icon: Icons.location_pin,
                           obs: false,
                           controller: controller.locationDescription),
-
                       const SizedBox(
                         height: 10,
                       ),
                       CustomTextFormField(
-                          hint: 'رابط الموقع علي الخريطة'+ "  "+"( اختياري )  ",
+                          hint: 'رابط الموقع علي الخريطة' "  " "( اختياري )  ",
                           max: 3,
                           color: Colors.black,
                           icon: Icons.link,
@@ -223,9 +237,7 @@ class _AddWorkState extends State<AddWork> {
                 ),
               ),
 
-
-
-                const SizedBox(
+              const SizedBox(
                 height: 10,
               ),
 
@@ -274,7 +286,7 @@ class _AddWorkState extends State<AddWork> {
               ),
 
               Text(
-              ' القسم الفرعي ',
+                ' القسم الفرعي ',
                 style: TextStyle(
                     color: AppColors.secondaryTextColor,
                     fontSize: 18,
@@ -290,7 +302,7 @@ class _AddWorkState extends State<AddWork> {
                     borderRadius: BorderRadius.circular(13),
                     color: Colors.white),
                 child: DropdownButton<String>(
-                  underline:const SizedBox.shrink(),
+                  underline: const SizedBox.shrink(),
                   isExpanded: true,
                   value: controller.selectedSubCat,
                   onChanged: (String? newValue) {
@@ -315,11 +327,9 @@ class _AddWorkState extends State<AddWork> {
                 ),
               ),
 
-
               const SizedBox(
                 height: 14,
               ),
-
 
               (controller.selectedDate == null)
                   ? InkWell(

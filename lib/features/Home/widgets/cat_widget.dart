@@ -1,5 +1,3 @@
-
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/Core/resources/app_colors.dart';
@@ -30,10 +28,9 @@ class CatWidget extends StatelessWidget {
               height: 5,
             ),
             Center(
-              child:Text(
-                cat.name,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 12),
+              child: Custom_Text(
+                text: cat.name,
+                fontSize: 12,
               ),
               // child: Custom_Text(
               //     text: cat.name,
@@ -45,7 +42,6 @@ class CatWidget extends StatelessWidget {
       ),
       onTap: () {
         Get.to(SubCatView(cat: cat.name));
-
       },
     );
   }

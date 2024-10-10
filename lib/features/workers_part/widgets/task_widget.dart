@@ -21,12 +21,11 @@ class _TaskWidgetState extends State<TaskWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  WorkersHomeController controller = Get.put(WorkersHomeController());
+  final WorkersHomeController controller = Get.put(WorkersHomeController());
 
   @override
   void initState() {
     super.initState();
-    // Animation controller
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -45,15 +44,14 @@ class _TaskWidgetState extends State<TaskWidget>
 
   @override
   Widget build(BuildContext context) {
-    // Check if the task status is 'canceled'
     if (widget.task.status == 'canceled') {
-      return const SizedBox.shrink(); // Return an empty widget if canceled
+      return const SizedBox.shrink();
     }
 
     return GestureDetector(
-      onTapDown: (_) => _controller.reverse(), // Scale down on tap
-      onTapUp: (_) => _controller.forward(), // Scale back up on release
-      onTapCancel: () => _controller.forward(), // Handle tap cancel
+      onTapDown: (_) => _controller.reverse(),
+      onTapUp: (_) => _controller.forward(),
+      onTapCancel: () => _controller.forward(),
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
@@ -89,138 +87,142 @@ class _TaskWidgetState extends State<TaskWidget>
               const SizedBox(height: 12),
               Custom_Text(
                 text: 'عنوان العمل المطلوب: ${widget.task.title}',
-                color: AppColors.primary,
+                color: Colors.black,
                 fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
               const SizedBox(height: 12),
-
-              // Location Info
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, color: AppColors.primary),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            'الموقع: ${widget.task.locationName}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.secondaryTextColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.description, color: AppColors.primary),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            'وصف: ${widget.task.locationDes}',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.greyTextColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (widget.task.locationLink.isNotEmpty)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          icon: Icon(Icons.link, color: AppColors.primary),
-                          label: Text(
-                            'عرض على الخريطة',
-                            style: TextStyle(color: AppColors.primary),
-                          ),
-                          onPressed: () {
-                            controller.launchUrl(widget.task.locationLink);
-                          },
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-
+              _buildLocationInfo(),
               const Divider(height: 20, thickness: 1.2),
-
-              // Date and Time
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.calendar_today, color: AppColors.primary),
-                      const SizedBox(width: 5),
-                      Text(
-                        formatDate(widget.task.date),
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, color: AppColors.primary),
-                      const SizedBox(width: 5),
-                      Text(
-                        widget.task.time.toString().replaceAll('TimeOfDay', ''),
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              _buildDateTimeInfo(),
               const SizedBox(height: 12),
-
-              // Pricing
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.grey[100],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildPriceColumn("اقل سعر", widget.task.minPrice),
-                    _buildPriceColumn("اعلي سعر", widget.task.maxPrice),
-                  ],
-                ),
-              ),
+              _buildPricingInfo(),
               const SizedBox(height: 12),
-
-              // Add Proposal Button
+              // Add Proposal Button conditionally displayed
               Center(
-                child: CustomButton(
-                  text: 'اضف عرضك',
-                  onPressed: () {
-                    Get.to(AddProposal(task: widget.task));
+                child: FutureBuilder<bool>(
+                  future: controller.checkProposalExists(widget.task.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    // Hide button if proposal exists
+                    if (snapshot.hasData && snapshot.data!) {
+                      return const SizedBox.shrink();
+                    }
+                    return CustomButton(
+                      text: 'اضف عرضك',
+                      onPressed: () {
+                        Get.to(AddProposal(task: widget.task));
+                      },
+                    );
                   },
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLocationInfo() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.location_on, color: Colors.black),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'الموقع: ${widget.task.locationName}',
+                  style: TextStyle(
+                      fontSize: 18, color: AppColors.secondaryTextColor),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(Icons.description, color: Colors.black),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'وصف: ${widget.task.locationDes}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+          if (widget.task.locationLink.isNotEmpty)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                icon: Icon(Icons.link, color: AppColors.primary),
+                label: Text('عرض على الخريطة',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: AppColors.primary)),
+                onPressed: () {
+                  controller.launchUrl(widget.task.locationLink);
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateTimeInfo() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.calendar_today, color: Colors.black),
+            const SizedBox(width: 5),
+            Text(
+              formatDate(widget.task.date),
+              style: const TextStyle(color: Colors.black, fontSize: 14),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            const Icon(Icons.access_time, color: Colors.black),
+            const SizedBox(width: 5),
+            Text(
+              widget.task.time.toString().replaceAll('TimeOfDay', ''),
+              style: const TextStyle(color: Colors.black, fontSize: 14),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPricingInfo() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey[100],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildPriceColumn("اقل سعر", widget.task.minPrice),
+          _buildPriceColumn("اعلي سعر", widget.task.maxPrice),
+        ],
       ),
     );
   }

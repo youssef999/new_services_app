@@ -64,7 +64,7 @@ class _AddProposalState extends State<AddProposal> {
             CustomButton(
               text: 'اضف الان',
               onPressed: () {
-                controller.addProposal(task: widget.task,context: context);
+                controller.addProposal(task: widget.task, context: context);
               },
             ),
           ],
@@ -142,7 +142,10 @@ class TaskWidget extends StatelessWidget {
                 Icon(Icons.access_time, color: AppColors.primary, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  task.time.replaceAll('TimeOfDay', '').replaceAll('(', '').replaceAll(')', ''),
+                  task.time
+                      .replaceAll('TimeOfDay', '')
+                      .replaceAll('(', '')
+                      .replaceAll(')', ''),
                   style: TextStyle(color: AppColors.primary, fontSize: 14),
                 ),
               ],

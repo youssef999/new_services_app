@@ -107,12 +107,12 @@ class AuthController extends GetxController {
   }
 
   changeAddress(String address) {
-    print("ADDRESS=="+address);
+    print("ADDRESS==" + address);
     selectedAddress = address;
     // box.write('country', country);
     update();
     print("ADDRESS====$address");
-   // getAddress(selectedCity);
+    // getAddress(selectedCity);
   }
 
   getAddress(String city) async {
@@ -206,10 +206,10 @@ class AuthController extends GetxController {
     update();
     getSubCats(val);
   }
+
   changeSubCatValue(String val) {
     selectedSubCat = val;
     update();
-
   }
 
   captureImage() async {
@@ -565,17 +565,12 @@ class AuthController extends GetxController {
 
   register(String roleId, String email, String password, String phone,
       BuildContext context, bool isGoogle) async {
-
-
     ImageController controller = Get.put(ImageController());
 
-    if(controller.images.isEmpty && roleId == '1'){
-      appMessage(text: 'ادخل صورتك الشخصية', fail:true, context: context);
-    }else{
-      uploadMultiImageToFirebaseStorage(
-          controller.images
-      ).then((v) async {
-
+    if (controller.images.isEmpty && roleId == '1') {
+      appMessage(text: 'ادخل صورتك الشخصية', fail: true, context: context);
+    } else {
+      uploadMultiImageToFirebaseStorage(controller.images).then((v) async {
         final box = GetStorage();
         box.write('roleId', roleId);
 
@@ -590,7 +585,8 @@ class AuthController extends GetxController {
         } else {
           try {
             await _auth
-                .createUserWithEmailAndPassword(email: email, password: password)
+                .createUserWithEmailAndPassword(
+                    email: email, password: password)
                 .then((user) async {
               if (roleId == '0') {
                 addNewUser(phone, context);
@@ -598,7 +594,8 @@ class AuthController extends GetxController {
                 addNewWorker(context);
               }
               box.write('email', emailController.text);
-              appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
+              appMessage(
+                  text: 'تم التسجيل بنجاح', fail: false, context: context);
             });
           } catch (e) {
             print("EEE==" + e.toString());
@@ -613,8 +610,6 @@ class AuthController extends GetxController {
         }
       });
     }
-
-
   }
 
   sendEmailVerfication() async {
@@ -627,14 +622,13 @@ class AuthController extends GetxController {
   List<String> catListNames = [];
   List<String> subCatListNames = [];
 
-   String selectedSubCat='فني طابعات و احبار';
+  String selectedSubCat = 'فني طابعات و احبار';
 
   Future<void> getCats() async {
-    catListNames=[];
+    catListNames = [];
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('cat')
-              .get();
+          await FirebaseFirestore.instance.collection('cat').get();
 
       catList = querySnapshot.docs.map((DocumentSnapshot doc) {
         return Cat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
@@ -655,11 +649,11 @@ class AuthController extends GetxController {
   }
 
   Future<void> getSubCats(String cat) async {
-    subCatListNames=[];
+    subCatListNames = [];
     try {
-      QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('sub_cat')
-      .where('cat',isEqualTo:cat )
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('sub_cat')
+          .where('cat', isEqualTo: cat)
           .get();
 
       subCatList = querySnapshot.docs.map((DocumentSnapshot doc) {
@@ -678,9 +672,6 @@ class AuthController extends GetxController {
       print("Error fetching ads: $e");
     }
   }
-
-
-
 
   Future<void> saveUserToken(String userId) async {
     final token = await FirebaseMessaging.instance.getToken();
@@ -749,7 +740,6 @@ class AuthController extends GetxController {
     String lng = box.read('lng').toString();
     ImageController controller = Get.put(ImageController());
 
-
     for (int i = 0; i < 12; i++) {
       result += chars[random.nextInt(chars.length)];
     }
@@ -774,9 +764,10 @@ class AuthController extends GetxController {
         'address': selectedAddress,
         'ratingCount': 0
       }).then((value) {
+        saveWorkerToken(result);
         update();
         print("DONE");
-        appMessage(text: 'welcome'.tr, fail: false, context: context);
+        appMessage(text: 'مرحبا'.tr, fail: false, context: context);
         box.write('email', emailController.text);
         box.write('name', nameController.text);
         Get.offAll(const MainHome());

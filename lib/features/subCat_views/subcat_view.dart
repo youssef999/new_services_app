@@ -27,7 +27,7 @@ class _SubCatViewState extends State<SubCatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('', context),
+      appBar: CustomAppBar(widget.cat, context),
       body: Padding(
         padding: const EdgeInsets.all(16.0), // Adjusted padding for better spacing
         child: GetBuilder<WorkController>(builder: (_) {

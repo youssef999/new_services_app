@@ -25,8 +25,11 @@ class _WorkersHomeState extends State<WorkersHome> {
 //
   @override
   void initState() {
-    controller.getTaskList();
-    controller.getCats();
+    controller.getEmpCategoryAndCity();
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      controller.getTaskList();
+      controller.getCats();
+    });
     super.initState();
   }
 
@@ -47,17 +50,17 @@ class _WorkersHomeState extends State<WorkersHome> {
                   fontWeight: FontWeight.w600),
             ),
             centerTitle: true,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  controller.openFilterDialog(context);
-                },
-                icon: Icon(
-                  Icons.filter_list,
-                  color: AppColors.mainTextColor,
-                ),
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     onPressed: () {
+            //       controller.openFilterDialog(context);
+            //     },
+            //     icon: Icon(
+            //       Icons.filter_list,
+            //       color: AppColors.mainTextColor,
+            //     ),
+            //   ),
+            // ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),

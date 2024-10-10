@@ -6,7 +6,7 @@
 import 'package:freelancerApp/Core/widgets/Custom_Text.dart';
 import 'package:freelancerApp/core/widgets/Custom_button.dart';
 import 'package:freelancerApp/core/widgets/custom_app_bar.dart';
-import 'package:freelancerApp/features/auth/views/login_view.dart';
+import 'package:freelancerApp/features/auth/views/login_view2.dart';
 import 'package:freelancerApp/routes/app_routes.dart';
 import 'package:get/get.dart';
 

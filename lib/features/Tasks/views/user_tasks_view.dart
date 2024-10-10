@@ -374,14 +374,14 @@ class TaskWidget extends StatelessWidget {
                               "حالة الخدمة : ",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700),
                             ),
                             Text(
                               controller.getArabicStatus(task.status),
                               style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 20,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold),
                             ),
                           ],

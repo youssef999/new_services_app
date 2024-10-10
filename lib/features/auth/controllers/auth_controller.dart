@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/widgets/Custom_Text.dart';
 import 'package:freelancerApp/core/widgets/custom_loading.dart';
+import 'package:freelancerApp/features/Home/models/sub_cat.dart';
 import 'package:freelancerApp/features/Home/views/main_view.dart';
 import 'package:freelancerApp/features/Home/views/select_country.dart';
 import 'package:freelancerApp/features/auth/views/register_view2.dart';
@@ -20,6 +21,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import '../../../../Core/const/app_message.dart';
+import '../../../core/widgets/image/image_controller.dart';
 import '../../Home/models/cat.dart';
 import '../views/verfied_email.dart';
 
@@ -105,11 +107,12 @@ class AuthController extends GetxController {
   }
 
   changeAddress(String address) {
+    print("ADDRESS=="+address);
     selectedAddress = address;
     // box.write('country', country);
     update();
     print("ADDRESS====$address");
-    getAddress(selectedCity);
+   // getAddress(selectedCity);
   }
 
   getAddress(String city) async {
@@ -201,6 +204,12 @@ class AuthController extends GetxController {
   changeCatValue(String val) {
     selectedItem = val;
     update();
+    getSubCats(val);
+  }
+  changeSubCatValue(String val) {
+    selectedSubCat = val;
+    update();
+
   }
 
   captureImage() async {
@@ -556,21 +565,21 @@ class AuthController extends GetxController {
 
   register(String roleId, String email, String password, String phone,
       BuildContext context, bool isGoogle) async {
-    final box = GetStorage();
-    box.write('roleId', roleId);
-    if (isGoogle == true) {
-      if (roleId == '0') {
-        addNewUser(phone, context);
-      } else {
-        addNewWorker(context);
-      }
-      box.write('email', emailController.text);
-      appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
-    } else {
-      try {
-        await _auth
-            .createUserWithEmailAndPassword(email: email, password: password)
-            .then((user) async {
+
+
+    ImageController controller = Get.put(ImageController());
+
+    if(controller.images.isEmpty && roleId == '1'){
+      appMessage(text: 'ادخل صورتك الشخصية', fail:true, context: context);
+    }else{
+      uploadMultiImageToFirebaseStorage(
+          controller.images
+      ).then((v) async {
+
+        final box = GetStorage();
+        box.write('roleId', roleId);
+
+        if (isGoogle == true) {
           if (roleId == '0') {
             addNewUser(phone, context);
           } else {
@@ -578,18 +587,34 @@ class AuthController extends GetxController {
           }
           box.write('email', emailController.text);
           appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
-        });
-      } catch (e) {
-        print("EEE==" + e.toString());
-        if (e.toString().contains(
-            'The email address is already in use by another account.')) {
-          appMessage(
-              text: 'البريد الالكتروني مستخدم من قبل',
-              fail: false,
-              context: context);
+        } else {
+          try {
+            await _auth
+                .createUserWithEmailAndPassword(email: email, password: password)
+                .then((user) async {
+              if (roleId == '0') {
+                addNewUser(phone, context);
+              } else {
+                addNewWorker(context);
+              }
+              box.write('email', emailController.text);
+              appMessage(text: 'تم التسجيل بنجاح', fail: false, context: context);
+            });
+          } catch (e) {
+            print("EEE==" + e.toString());
+            if (e.toString().contains(
+                'The email address is already in use by another account.')) {
+              appMessage(
+                  text: 'البريد الالكتروني مستخدم من قبل',
+                  fail: false,
+                  context: context);
+            }
+          }
         }
-      }
+      });
     }
+
+
   }
 
   sendEmailVerfication() async {
@@ -598,12 +623,18 @@ class AuthController extends GetxController {
   }
 
   List<Cat> catList = [];
+  List<SubCat> subCatList = [];
   List<String> catListNames = [];
+  List<String> subCatListNames = [];
+
+   String selectedSubCat='فني طابعات و احبار';
 
   Future<void> getCats() async {
+    catListNames=[];
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('cat').get();
+          await FirebaseFirestore.instance.collection('cat')
+              .get();
 
       catList = querySnapshot.docs.map((DocumentSnapshot doc) {
         return Cat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
@@ -614,11 +645,42 @@ class AuthController extends GetxController {
         catListNames.add(catList[i].name);
         update();
       }
+      selectedItem = catList[0].name;
+      update();
+
       print("Cats loaded: ${catList.length} ads found.");
     } catch (e) {
       print("Error fetching ads: $e");
     }
   }
+
+  Future<void> getSubCats(String cat) async {
+    subCatListNames=[];
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('sub_cat')
+      .where('cat',isEqualTo:cat )
+          .get();
+
+      subCatList = querySnapshot.docs.map((DocumentSnapshot doc) {
+        return SubCat.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+      update();
+
+      for (int i = 0; i < subCatList.length; i++) {
+        subCatListNames.add(subCatList[i].name);
+        update();
+      }
+      selectedSubCat = subCatListNames[0];
+      update();
+      print("sub Cats loaded: ${subCatList.length} ads found.");
+    } catch (e) {
+      print("Error fetching ads: $e");
+    }
+  }
+
+
+
 
   Future<void> saveUserToken(String userId) async {
     final token = await FirebaseMessaging.instance.getToken();
@@ -678,7 +740,6 @@ class AuthController extends GetxController {
   addNewWorker(BuildContext context) async {
     // add address or cities
     addNewAddress();
-
     const String chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789)*&1!';
     Random random = Random();
@@ -686,6 +747,8 @@ class AuthController extends GetxController {
     final box = GetStorage();
     String lat = box.read('lat').toString();
     String lng = box.read('lng').toString();
+    ImageController controller = Get.put(ImageController());
+
 
     for (int i = 0; i < 12; i++) {
       result += chars[random.nextInt(chars.length)];
@@ -698,16 +761,17 @@ class AuthController extends GetxController {
         'name': nameController.text,
         'email': emailController.text,
         'cat': selectedItem,
+        'subCat': selectedSubCat,
         'details': detailsController.text,
         'price': priceController.text,
         'id': result,
         "lat": lat,
         "lng": lng,
-        'image': imageLink,
+        'image': downloadUrls[0],
         'rating': 0,
-        'country': countryController.text,
-        'city': cityController.text,
-        'address': addressController.text,
+        'country': selectedCountry,
+        'city': selectedCity,
+        'address': selectedAddress,
         'ratingCount': 0
       }).then((value) {
         update();

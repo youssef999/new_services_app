@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/features/Home/models/cat.dart';
 import 'package:freelancerApp/features/Tasks/models/task.dart';
+import 'package:freelancerApp/features/workers/models/workers.dart';
 import 'package:freelancerApp/features/workers_part/views/filter_tasks.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WorkersHomeController extends GetxController{
@@ -117,15 +119,41 @@ changeCatValue(int index,bool val){
  
 }
 
+  List<WorkerProvider> workerData=[];
+getEmpCategoryAndCity() async {
+  workerData=[];
+  final box=GetStorage();
+  String email=box.read('email');
+  try {
+    print("GET TASKS");
+    // Fetch all documents from the 'ads' collection
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.
+        collection('serviceProviders')
+        .where('email',isEqualTo: email)
+    // .where('user_email',isEqualTo: 'test@gmail.com')
+        .get();
+    workerData = querySnapshot.docs.map((DocumentSnapshot doc) {
+      return WorkerProvider.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+    }).toList();
+    update();
+    print("Woeker Data: ${workerData.length} .");
+  } catch (e) {
+    print("Error fetching ads: $e");
+  }
+}
 
   Future<void> getTaskList() async {
-
+  print("cat==="+workerData[0].cat);
+  print("city==="+workerData[0].city);
   tasksList=[];
     try {
       print("GET TASKS");
       // Fetch all documents from the 'ads' collection
       QuerySnapshot querySnapshot =
       await FirebaseFirestore.instance.collection('tasks')
+      .where('cat',isEqualTo: workerData[0].cat)
+     .where('city',isEqualTo: workerData[0].city)
      // .where('user_email',isEqualTo: 'test@gmail.com')
       .get();
       tasksList = querySnapshot.docs.map((DocumentSnapshot doc) {

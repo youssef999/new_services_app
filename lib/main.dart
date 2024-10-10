@@ -17,6 +17,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'core/resources/check_theme.dart';
 import 'features/Home/views/home_view.dart';
+import 'features/splash/splash_view.dart';
 
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -53,6 +54,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   List<Map<String, dynamic>> tokenList = [];
   String? token = '';
+
   addTokenToFireBase() async {
     await FirebaseFirestore.instance.collection('tokens').add({
       'token': token,
@@ -88,17 +90,18 @@ class _MainAppState extends State<MainApp> {
         locale: lang,
         translations: MyLocal(),
         navigatorKey: navigatorKey,
-        title: "",
-        home: OnBoardingView(),
+        title: "I NEED",
+        home:const SplashView(),
        // home: const MainHome(),
         theme: ThemeData(
             // تطبيق خط Cairo كنوع النص الافتراضي
             textTheme: GoogleFonts.cairoTextTheme(
           Theme.of(context).textTheme,
         )),
+
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.cupertino,
-        navigatorObservers: [BotToastNavigatorObserver()],
+        // navigatorObservers: [BotToastNavigatorObserver()],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         builder: (context, widget) {
           Function botToast = BotToastInit();
@@ -113,14 +116,16 @@ class _MainAppState extends State<MainApp> {
         // fallbackLocale: lang,
       );
     } else {
+
       return GetMaterialApp(
         locale: lang,
         navigatorKey: navigatorKey,
         // translations: MyLocal(),
         //locale:lang,
         translations: MyLocal(),
-        title: " ",
-        home: OnBoardingView(),
+        title: "I NEED ",
+        home: const SplashView(),
+        //OnBoardingView(),
         //const MainHome(),
         // locale: lang,
         //  supportedLocales: supportedLocales,
@@ -128,7 +133,7 @@ class _MainAppState extends State<MainApp> {
         // getPages: Theme1AppPages.routes,
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.cupertino,
-        navigatorObservers: [BotToastNavigatorObserver()],
+        // navigatorObservers: [BotToastNavigatorObserver()],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         builder: (context, widget) {
           Function botToast = BotToastInit();

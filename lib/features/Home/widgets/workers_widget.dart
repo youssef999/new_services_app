@@ -90,6 +90,7 @@ class WorkerCardWidget extends StatelessWidget {
                 child: worker.image.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: worker.image,
+                        height: 97,
                         width: MediaQuery.of(context).size.width * 0.88,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => const Center(
@@ -113,7 +114,7 @@ class WorkerCardWidget extends StatelessWidget {
                       ),
               ),
               const SizedBox(
-                height: 12,
+                height: 2,
               ),
               Custom_Text(
                 text: worker.name,

@@ -22,7 +22,7 @@ getWorkerProposal()async{
       // Fetch all documents from the 'ads' collection
       QuerySnapshot querySnapshot =
       await FirebaseFirestore.instance.collection('proposals')
-      .where('email',isEqualTo:'test3@gmail.com' )
+      .where('email',isEqualTo:email)
      // .where('user_email',isEqualTo: 'test@gmail.com')
       .get();
       proposalList = querySnapshot.docs.map((DocumentSnapshot doc) {

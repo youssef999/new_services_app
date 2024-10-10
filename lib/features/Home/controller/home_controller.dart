@@ -143,7 +143,7 @@ List<bool> checkListValues=[];
       selectedCountry='';
       update();
     }
-    print("SELECTED CAT: $selectedCountry");
+    print("SELECTED address==: $selectedCountry");
 
   }
 
@@ -342,7 +342,10 @@ List<WorkerProvider> workersSubCatList=[];
 
     Future<void> getWorkersWithSubCat
         (String subCat,String cat) async {
-
+      final box=GetStorage();
+      String city=box.read('address');
+      print("CITY==="+city);
+     // dd
       workersSubCatList=[];
      print("subCAT==="+subCat);
      print("cat=="+cat);
@@ -354,7 +357,8 @@ List<WorkerProvider> workersSubCatList=[];
         await FirebaseFirestore.instance
         .collection('serviceProviders')
         .where('cat',isEqualTo: cat)
-          .where('sub_cat',isEqualTo:subCat)
+          .where('subCat',isEqualTo:subCat)
+            .where('city',isEqualTo: city)
             .get();
         // Map each document to an Ad instance and add to adsList
        data= querySnapshot.docs.map((DocumentSnapshot doc) {
@@ -378,10 +382,10 @@ List<WorkerProvider> workersSubCatList=[];
   Future<void> getAllWorkers(String cat,String city) async {
 
      print("CAT==="+cat);
+     print("CITY==="+city);
    // workersList=[];
 
      if(city!='اختر الموقع'){
-
        if(cat=='All'){
          try {
            QuerySnapshot querySnapshot =
@@ -424,10 +428,7 @@ List<WorkerProvider> workersSubCatList=[];
 
        }
 
-
-
      }else{
-
 
        if(cat=='All'){
          try {
@@ -448,6 +449,8 @@ List<WorkerProvider> workersSubCatList=[];
          }
          update();
        }
+
+
        else{
          try {
            // Fetch all documents from the 'ads' collection

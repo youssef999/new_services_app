@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:freelancerApp/Core/resources/app_colors.dart';
-import 'package:freelancerApp/features/auth/views/login_view.dart';
-import 'package:freelancerApp/features/first/first_view.dart';
+import 'package:freelancerApp/features/auth/views/login_view2.dart';
+import 'package:freelancerApp/features/first/first_view2.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../first/first_view.dart';
 
 class OnBoardingView extends StatelessWidget {
   final Color kDarkBlueColor = AppColors.primary;
@@ -12,10 +15,14 @@ class OnBoardingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box=GetStorage();
     return OnBoardingSlider(
       finishButtonText: 'start'.tr,
       onFinish: () {
+
         Get.offAll(const FirstView());
+        box.write('onBoarding', true);
+
       },
       finishButtonStyle: FinishButtonStyle(
         backgroundColor: kDarkBlueColor,

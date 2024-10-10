@@ -130,16 +130,20 @@ class WorkController extends GetxController {
   Future<void> addWorkToFirestore(BuildContext context) async {
     uploadMultiImageToFirebaseStorage(images).then((v) {
       Future.delayed(const Duration(seconds: 1), () async {
+        final box=GetStorage();
+        String city=box.read('address')??'';
         checkValidation(context);
         if (validation == true) {
           // Generate a new document ID
           String docId =
               FirebaseFirestore.instance.collection('tasks').doc().id;
-
           Map<String, dynamic> data = {
             "id": docId,
             "status": "pending",
             "image": downloadUrls[0],
+            "cat": selectedCat,
+            'city': city,
+            "sub_cat": selectedSubCat,
             "title": title.text,
             "user_name": userDataList[0].name,
             "user_phone": userDataList[0].phone,

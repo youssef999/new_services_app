@@ -15,7 +15,8 @@ class AppAssets {
    static const String users = '$imagePath/user2.png';
      static const String emptyTasks = '$imagePath/empty.avif';
      static const String whatsAppIcon = '$imagePath/whats.webp';
- 
+     static const String emptyTask2 = '$imagePath/order_empty.webp';
+
  static const String addServiceIcon = '$imagePath/add_service.png';
  
      static const String egyptImage = '$imagePath/egy.avif';

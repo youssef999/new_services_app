@@ -22,7 +22,7 @@ class _SubCatHomeViewState extends State<SubCatHomeView> {
 
   @override
   void initState() {
-    controller.getCats();
+    //controller.getCats();
     controller.getWorkersWithSubCat(
         widget.subcat, widget.cat);
 
@@ -32,7 +32,7 @@ class _SubCatHomeViewState extends State<SubCatHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar('', context),
+      appBar: CustomAppBar(widget.cat, context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: GetBuilder<HomeController>(builder: (_) {
@@ -140,7 +140,7 @@ class WorkerProvidersList extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: 0.85,
+        childAspectRatio: 0.71,
       ),
     );
   }

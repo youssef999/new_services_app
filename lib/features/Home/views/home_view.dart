@@ -133,21 +133,19 @@ class _HomeViewState extends State<HomeView> {
               ),
               const SizedBox(height: 6),
               Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10.0, left: 10, right: 10),
+                  padding: const EdgeInsets.only(top:28.0,left: 10,right: 10),
                   child: SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                  //  height: 200,
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics:const NeverScrollableScrollPhysics(),
                         itemCount: controller.catList.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: CatWidget(cat: controller.catList[index]),
-                          );
-                        }),
-                  )),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3)
+                        , itemBuilder: (context, index) {
+                      return CatWidget(cat: controller.catList[index]);
+                    }),
+                  )
+              ),
               const SizedBox(height: 6),
               // CatListView(controller: controller),
               // const SizedBox(height: 5),
@@ -311,12 +309,12 @@ class _HomeViewState extends State<HomeView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Custom_Text(
-                      text: "أعلي مقدمين الخدمات تقييما",
+                      text: "مقدمين خدمات متميزيت",
                       fontSize: 20,
                       color: AppColors.secondaryTextColor),
                   InkWell(
                     child: Custom_Text(
-                      text: "الجميع ",
+                      text: "المزيد",
                       color: AppColors.primary,
                     ),
                     onTap: () {
@@ -566,7 +564,8 @@ class WorkerProvidersList extends StatelessWidget {
     return GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: controller.workersList.length,
+        itemCount: (controller.workersList.length > 4)
+            ? 4:controller.workersList.length,
         itemBuilder: (context, index) {
           return Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8),

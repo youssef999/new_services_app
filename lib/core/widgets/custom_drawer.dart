@@ -7,7 +7,7 @@ import 'package:freelancerApp/Core/resources/app_colors.dart';
 import 'package:freelancerApp/core/resources/app_assets.dart';
 import 'package:freelancerApp/core/resources/app_styles.dart';
 import 'package:freelancerApp/core/resources/colors.dart';
-import 'package:freelancerApp/features/auth/views/login_view.dart';
+import 'package:freelancerApp/features/auth/views/login_view2.dart';
 import 'package:freelancerApp/features/dark/dark_view.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -94,7 +94,7 @@ import 'package:share_plus/share_plus.dart';
         onTap:(){
           final box=GetStorage();
           box.remove('email');
-          Get.offAll( LoginView(type: 'user',));
+        //  Get.offAll( LoginView(type: 'user',));
 
         },
         ),

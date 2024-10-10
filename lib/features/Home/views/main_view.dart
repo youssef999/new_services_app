@@ -2,12 +2,13 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancerApp/core/resources/app_colors.dart';
 import 'package:freelancerApp/features/Home/views/home_view.dart';
+import 'package:freelancerApp/features/settings/views/settings_view.dart';
 import 'package:freelancerApp/features/workers_part/views/workers_home.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:iconly/iconly.dart';
 import '../../Tasks/views/user_tasks_view.dart';
 import '../../Work/views/add_work.dart';
-import '../../settings/views/settings_view.dart';
+import '../../settings/views/settings_view2.dart';
 import '../../workers_part/views/worker_taks.dart';
 
 class MainHome extends StatefulWidget {
@@ -17,7 +18,7 @@ class MainHome extends StatefulWidget {
   State createState() => _State();
 }
 
-List<Widget> fragmentScreens = [
+List<Widget> fragmentScreens =[
   const HomeView(),
   AddWork(cat: '', subCat: '',),
   const UserTasksView(),
@@ -42,6 +43,8 @@ int indexNumber = 0;
 class _State extends State<MainHome> {
   @override
   void initState() {
+
+    indexNumber = 0;
     final box = GetStorage();
     String roleId = box.read('roleId') ?? '0';
     print("ROLEID====" + roleId);

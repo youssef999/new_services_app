@@ -49,11 +49,14 @@ class _SignupViewState extends State<SignupView> {
   Widget build(BuildContext context) {
     if (widget.roleId == '0') {
       return UserRegisterView(
+        roleId: widget.roleId,
         controller: controller,
         email: widget.email,
       );
     } else {
       return WorkerRegisterView(
+        roleId: widget.roleId,
+
         email: widget.email,
       );
     }
@@ -63,7 +66,10 @@ class _SignupViewState extends State<SignupView> {
 class UserRegisterView extends StatelessWidget {
   String email;
   AuthController controller;
-  UserRegisterView({super.key, required this.controller, required this.email});
+  String roleId;
+  UserRegisterView({super.key,
+    required this.roleId,
+    required this.controller, required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +77,7 @@ class UserRegisterView extends StatelessWidget {
     controller.loginFormKey = GlobalKey<FormState>();
 
     return Scaffold(
+      appBar: CustomAppBar('حساب المستخدم', context),
       body: GetBuilder<AuthController>(builder: (_) {
         return Form(
           key: controller.loginFormKey,
@@ -126,6 +133,17 @@ class UserRegisterView extends StatelessWidget {
                             icon: Icons.email,
                             validateMessage: 'wrongEmail'.tr,
                             controller: controller.emailController),
+
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextFormField(
+                            hint: 'رقم الهاتف',
+                            obs: false,
+                            color: AppColors.primary,
+                            validateMessage: 'رقم الهاتف غير صحيح'.tr,
+                            obx: false,
+                            controller: controller.phoneController),
                         const SizedBox(
                           height: 20,
                         ),
@@ -136,16 +154,7 @@ class UserRegisterView extends StatelessWidget {
                             validateMessage: 'wrongPass'.tr,
                             obx: true,
                             controller: controller.passController),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextFormField(
-                            hint: 'الهاتف'.tr,
-                            obs: true,
-                            color: AppColors.primary,
-                            validateMessage: 'رقم الهاتف غير صحيح'.tr,
-                            obx: true,
-                            controller: controller.phoneController),
+
                         const SizedBox(
                           height: 20,
                         ),
@@ -220,7 +229,8 @@ class UserRegisterView extends StatelessWidget {
 
 class WorkerRegisterView extends StatefulWidget {
   String email;
-  WorkerRegisterView({super.key, required this.email});
+  String roleId;
+  WorkerRegisterView({super.key, required this.email,required this.roleId});
 
   @override
   State<WorkerRegisterView> createState() => _WorkerRegisterViewState();
@@ -236,6 +246,7 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
   @override
   void initState() {
     address = box.read('workerAddress') ?? 'x';
+    controller.getSubCats('خدمات الكمبيوتر');
     controller.loginFormKey = GlobalKey<FormState>();
     super.initState();
   }
@@ -244,7 +255,7 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar('', context),
+      appBar: CustomAppBar('حساب مقدم الخدمة ', context),
       body: GetBuilder<AuthController>(
         builder: (_) {
           return Form(
@@ -289,7 +300,9 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                             Text(
                               "اختر القسم ",
                               style: TextStyle(
-                                  color: AppColors.secondaryTextColor),
+                                  color: AppColors.secondaryTextColor,
+                              fontSize: 18,fontWeight:FontWeight.w600
+                              ),
                             ),
                           ],
                         ),
@@ -328,6 +341,58 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                             })),
 
                         const SizedBox(height: 20),
+
+
+
+                        Row(
+                          children: [
+                            Text(
+                              "اختر القسم الفرعي ",
+                              style: TextStyle(
+                                  color: AppColors.secondaryTextColor,
+                                  fontSize: 18,fontWeight:FontWeight.w600
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // drop down category
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.DropDownColor,
+                            ),
+                            // child: Obx(() =>
+
+                            child: GetBuilder<AuthController>(builder: (_) {
+                              return DropdownButton<String>(
+                                underline: const SizedBox.shrink(),
+                                value: controller.selectedSubCat,
+                                onChanged: (newValue) {
+                                  controller. changeSubCatValue(newValue!);
+                                },
+                                items:
+                                controller.subCatListNames.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        item,
+                                        style: TextStyle(
+                                            color: AppColors.greyTextColor),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            })),
+
+                        const SizedBox(height: 20),
+
+
+
                         CustomTextFormField(
                           hint: 'password'.tr,
                           obs: true,
@@ -449,70 +514,10 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                                 }).toList(),
                               );
                             })),
-                        // CustomTextFormField(
-                        //   hint: 'البلد',
-                        //   obs: false,
-                        //   color: AppColors.primary,
-                        //   icon: Icons.price_change,
-                        //   validateMessage: ' ',
-                        //   controller: controller.countryController,
-                        // ),
 
-                        // CustomTextFormField(
-                        //   hint: 'المدينة',
-                        //   obs: false,
-                        //   color: AppColors.primary,
-                        //   icon: Icons.location_city,
-                        //   validateMessage: ' ',
-                        //   controller: controller.cityController,
-                        // ),
                         const SizedBox(height: 20),
 
-                        // InkWell(
-                        //   child: Row(
-                        //     children: [
-                        //       Container(
-                        //         width: MediaQuery.of(context).size.width*0.89,
-                        //         decoration:BoxDecoration(
-                        //           borderRadius: BorderRadius.circular(12),
-                        //           color: Colors.grey[200],
-                        //         ),
-                        //         child:Padding(
-                        //           padding: const EdgeInsets.all(8.0),
-                        //           child: Column(children: [
-                        //             const SizedBox(height: 4,),
-                        //             ( controller.workerAddress=='x')?Container(
-                        //               child: Row(
-                        //                 children: [
-                        //                   Text("قم بتحديد المنطقة",
-                        //                   style: TextStyle(color:AppColors
-                        //                       .greyTextColor,fontSize: 16,
-                        //                       fontWeight: FontWeight.bold),),
-                        //                 ],
-                        //               ),
-                        //             ):
-                        //             Row(
-                        //               children: [
-                        //                 Text("address".tr+"  :  ",
-                        //                 style: TextStyle(
-                        //
-                        //                     color:AppColors.secondaryTextColor),
-                        //                 ),
-                        //                 Text(controller.workerAddress,
-                        //                 style:TextStyle(color:AppColors.
-                        //                secondaryTextColor),
-                        //                 ),
-                        //               ],
-                        //             )
-                        //           ],),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   onTap:(){
-                        //     Get.to(const SearchPlacesView());
-                        //   },
-                        // ),
+
 
                         const SizedBox(height: 20),
                         CustomButton(
@@ -520,7 +525,7 @@ class _WorkerRegisterViewState extends State<WorkerRegisterView> {
                           onPressed: () {
                             if (widget.email == 'x') {
                               controller.register(
-                                  '1',
+                                  widget.roleId,
                                   controller.emailController.text,
                                   controller.passController.text,
                                   controller.phoneController.text,

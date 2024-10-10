@@ -2,6 +2,8 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:freelancerApp/Core/resources/app_assets.dart';
+import 'package:freelancerApp/core/resources/app_colors.dart';
 import 'package:freelancerApp/core/widgets/custom_app_bar.dart';
 import 'package:freelancerApp/features/workers_part/controllers/worker_tasks_controller.dart';
 import 'package:freelancerApp/features/workers_part/widgets/proposal_widget.dart';
@@ -27,9 +29,10 @@ WorkerTasksController controller =Get.put(WorkerTasksController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:CustomAppBar('', context),
+      appBar:CustomAppBar('عملك ', context),
       body:ListView(children: [
 
+        (controller.proposalList.isNotEmpty)?
         GetBuilder<WorkerTasksController>(
           builder: (_) {
             return ListView.builder(
@@ -44,7 +47,19 @@ WorkerTasksController controller =Get.put(WorkerTasksController());
              }
              );
           }
-        ),
+        ):
+            Center(
+              child:Column(children: [
+
+                Image.asset(AppAssets.emptyTask2),
+                const SizedBox(height: 10,),
+                Text('لا مهام قيد التنفيذ الان',
+                  style: TextStyle(color: AppColors.secondaryTextColor,
+                  fontSize: 21,fontWeight: FontWeight.bold
+                  ),),
+
+              ],),
+            )
 
       ],),
     );

@@ -25,7 +25,6 @@ class ProposalWidget extends StatelessWidget {
   
 FilterTasksController controller =Get.put(FilterTasksController());
 
-
     return Container(
       decoration:BoxDecoration(
         borderRadius:BorderRadius.circular(12),
@@ -41,25 +40,22 @@ FilterTasksController controller =Get.put(FilterTasksController());
          Row(
            children: [
              ClipRRect(
-               child: Container(
-                width: MediaQuery.of(context).size.width*085/100,
-                decoration:BoxDecoration(
-                  borderRadius:BorderRadius.circular(10),color: AppColors.secondaryTextColor
-                ),
-                 child: Padding(
-                   padding: const EdgeInsets.all(4.0),
+               borderRadius:BorderRadius.circular(22),
+                 child:
+                 Card(
+                   color:Colors.grey[200],
                    child: Image.network(task.image,
-                   width: MediaQuery.of(context).size.width
+                   height: 160,
+                   fit:BoxFit.fill,
+                   width: MediaQuery.of(context).size.width*0.88,
                    ),
                  ),
-               ),
              ),
            ],
          ),
            const SizedBox(height: 10,),
 
            Row(
-      
              children: [
                Container(
                 decoration:BoxDecoration(
@@ -89,33 +85,23 @@ FilterTasksController controller =Get.put(FilterTasksController());
                ),
              const  SizedBox(width: 22,),
 
-
-
-               (task.status=='تمت الموافقة')?
+               (task.status=='accepted')?
                 InkWell(
                   child: Image.asset(AppAssets.whatsAppIcon,
                             height:82,width: 55,
                             ),
                             onTap:(){
-                    
                      controller.openWhatsApp(task.user_phone);
-                
                             },
+
                 ):const SizedBox()
              ],
            ),
 
           const SizedBox(height: 11,),
 
-
-
-
-
-
-
           Row(
             children: [
-
   //'عنوان العمل المطلوب' +
 
                Text(
@@ -140,7 +126,6 @@ FilterTasksController controller =Get.put(FilterTasksController());
         
           Row(
             children: [
-
               Text('موعد العمل : ',
               style: TextStyle(
                 color:AppColors.secondaryTextColor,
